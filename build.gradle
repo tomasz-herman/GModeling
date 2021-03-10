@@ -1,0 +1,48 @@
+plugins {
+    id 'java'
+    id 'application'
+    id 'org.beryx.runtime' version '1.12.1'
+}
+
+group 'pl.edu.pw.mini.mg1'
+version '1.0'
+
+targetCompatibility = 15
+
+repositories {
+    mavenCentral()
+    maven {
+        url 'https://oss.sonatype.org/content/repositories/snapshots/'
+    }
+    maven {
+        url = uri('https://maven.pkg.github.com/tomasz-herman/WindowBuilder')
+        credentials {
+            username = "token"
+            password = "\u0033\u0038\u0038\u0063\u0034\u0034\u0062\u0039\u0037\u0034\u0032\u0035\u0065\u0061\u0036\u0065\u0064\u0066\u0031\u0065\u0030\u0033\u0039\u0032\u0066\u0063\u0064\u0031\u0064\u0065\u0031\u0039\u0036\u0039\u0038\u0064\u0064\u0039\u0039\u0061"
+        }
+    }
+}
+
+dependencies {
+    implementation 'org.joml:joml:1.10.0'
+    implementation 'org.jogamp.jogl:jogl-all-main:2.3.2'
+    implementation 'org.jogamp.gluegen:gluegen-rt-main:2.3.2'
+    implementation 'com.formdev:flatlaf:1.0'
+    implementation 'com.hermant:windowbuilder:1.0.2'
+    implementation 'com.intellij:forms_rt:7.0.3'
+
+}
+
+application {
+    mainClassName = 'pl.edu.pw.mini.mg1.Main'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'pl.edu.pw.mini.mg1.Main'
+    }
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it)}
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
