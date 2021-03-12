@@ -1,7 +1,10 @@
 package pl.edu.pw.mini.mg1.graphics;
 
+import com.jogamp.common.nio.Buffers;
 import com.jogamp.opengl.GL4;
 import com.jogamp.opengl.util.GLBuffers;
+import org.joml.Matrix4fc;
+import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.utils.IOUtils;
 
 import java.nio.ByteBuffer;
@@ -21,6 +24,22 @@ public class Shader {
         programID = createProgram(gl, shaderList);
 
         shaderList.forEach(gl::glDeleteShader);
+    }
+
+    public void loadFloat(GL4 gl, String name, float value) {
+        int location = gl.glGetUniformLocation(programID, name);
+        gl.glUniform1f(location, value);
+    }
+
+    public void loadVector3f(GL4 gl, String name, Vector3fc vector) {
+        int location = gl.glGetUniformLocation(programID, name);
+        gl.glUniform3f(location, vector.x(), vector.y(), vector.z());
+    }
+
+    public void loadMatrix4f(GL4 gl, String name, Matrix4fc matrix) {
+        int location = gl.glGetUniformLocation(programID, name);
+        gl.glUniformMatrix4fv(location, 1, false,
+                matrix.get(Buffers.newDirectFloatBuffer(16)));
     }
 
     private int createProgram(GL4 gl, List<Integer> shaderList) {
