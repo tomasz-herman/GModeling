@@ -31,10 +31,21 @@ dependencies {
     implementation 'com.hermant:windowbuilder:1.0.2'
     implementation 'com.intellij:forms_rt:7.0.3'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
+    implementation 'commons-io:commons-io:2.8.0'
+
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.6.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.0'
+    testImplementation 'org.assertj:assertj-core:3.11.1'
+    testImplementation 'org.mockito:mockito-core:3.5.13'
+    testImplementation 'org.junit.jupiter:junit-jupiter-engine'
+}
+
+tasks.named('test') {
+    useJUnitPlatform()
 }
 
 application {
-    mainClassName = 'pl.edu.pw.mini.mg1.Main'
+    getMainClass().set('pl.edu.pw.mini.mg1.Main')
 }
 
 jar {
