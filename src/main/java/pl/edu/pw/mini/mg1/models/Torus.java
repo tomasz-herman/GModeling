@@ -63,4 +63,40 @@ public class Torus extends Model {
     private float z(float outerAngle, float innerAngle) {
         return (float) (Math.sin(outerAngle) * (outerRadius + innerRadius * Math.cos(innerAngle)));
     }
+
+    public int getOuterSegments() {
+        return outerSegments;
+    }
+
+    public void setOuterSegments(int outerSegments) {
+        this.outerSegments = outerSegments;
+        generateGeometry();
+    }
+
+    public int getInnerSegments() {
+        return innerSegments;
+    }
+
+    public void setInnerSegments(int innerSegments) {
+        this.innerSegments = innerSegments;
+        generateGeometry();
+    }
+
+    public float getOuterRadius() {
+        return outerRadius;
+    }
+
+    public void setOuterRadius(float outerRadius) {
+        this.outerRadius = outerRadius;
+        generateGeometry();
+    }
+
+    public float getInnerRadius() {
+        return innerRadius;
+    }
+
+    public void setInnerRadius(float innerRadius) {
+        this.innerRadius = innerRadius;
+        generateGeometry();
+    }
 }

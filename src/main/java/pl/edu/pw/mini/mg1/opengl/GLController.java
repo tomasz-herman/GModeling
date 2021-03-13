@@ -12,6 +12,7 @@ import pl.edu.pw.mini.mg1.models.Torus;
 
 import javax.swing.*;
 import java.awt.event.*;
+import java.util.function.Consumer;
 
 public class GLController implements GLEventListener, MouseListener, MouseWheelListener, MouseMotionListener {
     private Shader shader;
@@ -25,6 +26,10 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     private boolean left;
     private boolean up;
     private boolean down;
+    private boolean roll;
+    private boolean unroll;
+
+    private GLContext context;
 
     public GLController(GLJPanel gljPanel) {
         gljPanel.addGLEventListener(this);
@@ -46,6 +51,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     @Override
     public void init(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
+        context = drawable.getContext();
         gl.glClearColor(0f, 0f, 0f, 1.0f);
         gl.glClearDepth(1.0f);
         gl.glEnable(GL.GL_DEPTH_TEST);
@@ -101,6 +107,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         if(right) camera.move(0.01f, 0, 0);
         if(up) camera.move(0, 0.01f, 0);
         if(down) camera.move(0, -0.01f, 0);
+        if(roll) camera.rotate(0, 0, -0.5f);
+        if(unroll) camera.rotate(0, 0, 0.5f);
     }
 
     private void installKeyListener(GLJPanel gljPanel) {
@@ -118,6 +126,11 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         addAction(gljPanel, "released E", () -> up = false);
         addAction(gljPanel, "pressed Q", () -> down = true);
         addAction(gljPanel, "released Q", () -> down = false);
+
+        addAction(gljPanel, "pressed Z", () -> roll = true);
+        addAction(gljPanel, "released Z", () -> roll = false);
+        addAction(gljPanel, "pressed X", () -> unroll = true);
+        addAction(gljPanel, "released X", () -> unroll = false);
     }
 
     private void addAction(JComponent component, String keyStroke, Runnable action) {
@@ -132,17 +145,24 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
                 });
     }
 
+    private void runOnOpenGL(Consumer<GL4> action) {
+        context.makeCurrent();
+        action.accept(context.getGL().getGL4());
+        context.release();
+    }
+
     @Override
     public void mouseClicked(MouseEvent e) {
-
+        runOnOpenGL(gl -> {
+            torus.setOuterSegments(5);
+            torus.getMesh().load(gl);
+        });
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        switch (e.getButton()) {
-            case 1 -> lastMousePosition.set(e.getX(), e.getY());
-            case 4 -> camera.rotate(0, 0, 0.5f);
-            case 5 -> camera.rotate(0, 0, -0.5f);
+        if(SwingUtilities.isLeftMouseButton(e)) {
+            lastMousePosition.set(e.getX(), e.getY());
         }
     }
 
