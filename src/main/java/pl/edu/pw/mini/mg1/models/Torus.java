@@ -57,10 +57,10 @@ public class Torus extends Model {
     }
 
     private float y(float outerAngle, float innerAngle) {
-        return (float) (Math.sin(outerAngle) * (outerRadius + innerRadius * Math.cos(innerAngle)));
+        return (float) (innerRadius * Math.sin(innerAngle));
     }
 
     private float z(float outerAngle, float innerAngle) {
-        return (float) (innerRadius * Math.sin(innerAngle));
+        return (float) (Math.sin(outerAngle) * (outerRadius + innerRadius * Math.cos(innerAngle)));
     }
 }

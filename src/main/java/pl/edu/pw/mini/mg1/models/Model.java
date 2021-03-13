@@ -23,7 +23,10 @@ public class Model {
     private void calculateModelMatrix() {
         modelMatrix.identity()
                 .translate(position)
-                .rotateXYZ(rotation)
+                .rotateXYZ(
+                        (float) Math.toRadians(rotation.x),
+                        (float) Math.toRadians(rotation.y),
+                        (float) Math.toRadians(rotation.z))
                 .scale(scale);
     }
 
@@ -55,5 +58,17 @@ public class Model {
     public void rotate(float dx, float dy, float dz) {
         rotation.add(dx, dy, dz);
         calculateModelMatrix();
+    }
+
+    public void setPosition(float x, float y, float z) {
+        position.set(x, y, z);
+    }
+
+    public void setRotation(float x, float y, float z) {
+        rotation.set(x, y, z);
+    }
+
+    public void setScale(float x, float y, float z) {
+        scale.set(x, y, z);
     }
 }
