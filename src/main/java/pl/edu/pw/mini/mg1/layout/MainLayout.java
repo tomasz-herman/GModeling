@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jogamp.opengl.awt.GLJPanel;
 import org.jdesktop.swingx.JXPanel;
+import org.jdesktop.swingx.ScrollableSizeHint;
 import pl.edu.pw.mini.mg1.opengl.GLController;
 
 import javax.swing.*;
@@ -51,6 +52,13 @@ public class MainLayout {
         panel.add(controller, BorderLayout.CENTER);
         panel.revalidate();
         panel.repaint();
+        Dimension minimumSize = panel.getMinimumSize();
+        minimumSize.setSize(minimumSize.getWidth() + 20, -1);
+        controlsPane.setMinimumSize(minimumSize);
+        if (controlsPane.getSize().width < minimumSize.width) {
+            controlsPane.setSize(minimumSize.width, controlsPane.getHeight());
+            mainPane.setDividerLocation(mainPane.getWidth() - minimumSize.width - 20 - mainPane.getDividerSize() / 2);
+        }
     }
 
     public Container getMainPane() {
