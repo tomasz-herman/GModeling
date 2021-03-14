@@ -3,7 +3,6 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.models.Torus;
 
 import javax.swing.*;
@@ -50,15 +49,22 @@ public class TorusLayout implements Controller<Torus> {
     @Override
     public void set(Torus torus) {
         this.torus = torus;
-        innerRadius.setValue(torus.getInnerRadius());
-        outerRadius.setValue(torus.getOuterRadius());
-        innerSegments.setValue(torus.getInnerSegments());
-        outerSegments.setValue(torus.getOuterSegments());
+        refresh();
     }
 
     @Override
     public Container getMainPane() {
         return mainPane;
+    }
+
+    @Override
+    public void refresh() {
+        if (torus != null) {
+            innerRadius.setValue(torus.getInnerRadius());
+            outerRadius.setValue(torus.getOuterRadius());
+            innerSegments.setValue(torus.getInnerSegments());
+            outerSegments.setValue(torus.getOuterSegments());
+        }
     }
 
     /**

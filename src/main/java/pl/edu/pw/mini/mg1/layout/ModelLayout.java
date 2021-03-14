@@ -90,14 +90,21 @@ public class ModelLayout implements Controller<Model> {
     @Override
     public void set(Model model) {
         this.model = model;
-        scaleX.setValue(model.getScale().x());
-        scaleY.setValue(model.getScale().y());
-        scaleZ.setValue(model.getScale().z());
-        if (model instanceof Torus) {
-            specificFeaturesPane.removeAll();
-            TorusLayout layout = new TorusLayout();
-            layout.set((Torus) model);
-            specificFeaturesPane.add(layout.getMainPane());
+        refresh();
+    }
+
+    @Override
+    public void refresh() {
+        specificFeaturesPane.removeAll();
+        if (model != null) {
+            scaleX.setValue(model.getScale().x());
+            scaleY.setValue(model.getScale().y());
+            scaleZ.setValue(model.getScale().z());
+            if (model instanceof Torus) {
+                TorusLayout layout = new TorusLayout();
+                layout.set((Torus) model);
+                specificFeaturesPane.add(layout.getMainPane());
+            }
         }
     }
 

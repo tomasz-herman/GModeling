@@ -5,4 +5,5 @@ import java.awt.*;
 public interface Controller<T> {
     void set(T object);
     Container getMainPane();
+    void refresh();
 }

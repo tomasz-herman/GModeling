@@ -35,7 +35,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
     private Controller<Model> modelController;
     private Controller<PerspectiveCamera> cameraController;
-    private GLJPanel gljPanel;
+    private final GLJPanel gljPanel;
 
     public GLController(GLJPanel gljPanel) {
         this.gljPanel = gljPanel;
@@ -68,6 +68,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         camera = new PerspectiveCamera(1, 1, 1000, 60);
         camera.setPosition(0, 0, 2);
         modelController.set(torus);
+        cameraController.set(camera);
     }
 
     @Override
@@ -145,8 +146,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     private void addAction(JComponent component, String keyStroke, Runnable action) {
         component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
                 .put(KeyStroke.getKeyStroke(keyStroke), keyStroke);
-        component.getActionMap().put(keyStroke,
-                new AbstractAction() {
+        component.getActionMap().put(keyStroke, new AbstractAction() {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         action.run();
@@ -194,6 +194,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         camera.setFov(Math.clamp(1f, 179f, camera.getFov() + 0.5f * e.getWheelRotation()));
+        cameraController.refresh();
     }
 
     @Override

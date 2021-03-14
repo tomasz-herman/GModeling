@@ -8,13 +8,14 @@ import pl.edu.pw.mini.mg1.opengl.GLController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.util.Objects;
 
 public class MainLayout {
     private JSplitPane mainPane;
     private GLJPanel GLPanel;
     private JScrollPane controlsPane;
     private JComboBox<String> controllerComboBox;
-    private JXPanel panel;
+    private final JXPanel panel;
 
     public MainLayout() {
         $$$setupUI$$$();
@@ -31,12 +32,25 @@ public class MainLayout {
         ModelLayout modelController = new ModelLayout();
         loadController(modelController.getMainPane());
 
+        CameraLayout cameraController = new CameraLayout();
+        loadController(modelController.getMainPane());
+
         controller.setModelController(modelController);
+        controller.setCameraController(cameraController);
+
+        controllerComboBox.addActionListener(e -> {
+            switch ((String) Objects.requireNonNull(controllerComboBox.getSelectedItem())) {
+                case "Model" -> loadController(modelController.getMainPane());
+                case "Camera" -> loadController(cameraController.getMainPane());
+            }
+        });
     }
 
     public void loadController(Component controller) {
         panel.removeAll();
         panel.add(controller, BorderLayout.CENTER);
+        panel.revalidate();
+        panel.repaint();
     }
 
     public Container getMainPane() {
@@ -66,8 +80,8 @@ public class MainLayout {
         mainPane.setRightComponent(panel2);
         controllerComboBox = new JComboBox();
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
-        defaultComboBoxModel1.addElement("Camera");
         defaultComboBoxModel1.addElement("Model");
+        defaultComboBoxModel1.addElement("Camera");
         controllerComboBox.setModel(defaultComboBoxModel1);
         panel2.add(controllerComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         controlsPane = new JScrollPane();

@@ -44,8 +44,8 @@
             </constraints>
             <properties>
               <model>
-                <item value="Camera"/>
                 <item value="Model"/>
+                <item value="Camera"/>
               </model>
             </properties>
           </component>
