@@ -17,12 +17,17 @@ public class Torus extends Model {
         this(10, 10, 1, 0.25f);
     }
 
+    @Override
+    protected void load(GL4 gl) {
+        generateGeometry();
+        mesh.load(gl);
+    }
+
     public Torus(int outerSegments, int innerSegments, float outerRadius, float innerRadius) {
         this.outerSegments = outerSegments;
         this.innerSegments = innerSegments;
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
-        generateGeometry();
     }
 
     private void generateGeometry() {
@@ -70,7 +75,7 @@ public class Torus extends Model {
 
     public void setOuterSegments(int outerSegments) {
         this.outerSegments = outerSegments;
-        generateGeometry();
+        reload = true;
     }
 
     public int getInnerSegments() {
@@ -79,7 +84,7 @@ public class Torus extends Model {
 
     public void setInnerSegments(int innerSegments) {
         this.innerSegments = innerSegments;
-        generateGeometry();
+        reload = true;
     }
 
     public float getOuterRadius() {
@@ -88,7 +93,7 @@ public class Torus extends Model {
 
     public void setOuterRadius(float outerRadius) {
         this.outerRadius = outerRadius;
-        generateGeometry();
+        reload = true;
     }
 
     public float getInnerRadius() {
@@ -97,6 +102,6 @@ public class Torus extends Model {
 
     public void setInnerRadius(float innerRadius) {
         this.innerRadius = innerRadius;
-        generateGeometry();
+        reload = true;
     }
 }

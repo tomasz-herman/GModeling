@@ -2,17 +2,15 @@ package pl.edu.pw.mini.mg1.layout;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
-import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.models.Model;
+import pl.edu.pw.mini.mg1.models.Torus;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 
-public class ModelController {
+public class ModelLayout implements Controller<Model> {
     private JSlider rotationX;
     private JSlider rotationY;
     private JSlider rotationZ;
@@ -23,15 +21,16 @@ public class ModelController {
     private JSpinner positionY;
     private JSpinner positionZ;
     private JPanel mainPane;
+    private JPanel specificFeaturesPane;
     private Model model;
 
-    public ModelController() {
+    public ModelLayout() {
         scaleX.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.01));
         scaleY.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.01));
         scaleZ.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.01));
-        positionX.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.1));
-        positionY.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.1));
-        positionZ.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.1));
+        positionX.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
+        positionY.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
+        positionZ.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
         rotationX.addChangeListener(e -> {
             if (model != null) {
                 Vector3fc rotation = model.getRotation();
@@ -50,15 +49,59 @@ public class ModelController {
                 model.setRotation(rotation.x(), rotation.y(), rotationZ.getValue());
             }
         });
+        scaleX.addChangeListener(e -> {
+            if (model != null) {
+                Vector3fc scale = model.getScale();
+                model.setScale(((Number) scaleX.getValue()).floatValue(), scale.y(), scale.z());
+            }
+        });
+        scaleY.addChangeListener(e -> {
+            if (model != null) {
+                Vector3fc scale = model.getScale();
+                model.setScale(scale.x(), ((Number) scaleY.getValue()).floatValue(), scale.z());
+            }
+        });
+        scaleZ.addChangeListener(e -> {
+            if (model != null) {
+                Vector3fc scale = model.getScale();
+                model.setScale(scale.x(), scale.y(), ((Number) scaleZ.getValue()).floatValue());
+            }
+        });
+        positionX.addChangeListener(e -> {
+            if (model != null) {
+                Vector3fc position = model.getPosition();
+                model.setPosition(((Number) positionX.getValue()).floatValue(), position.y(), position.z());
+            }
+        });
+        positionY.addChangeListener(e -> {
+            if (model != null) {
+                Vector3fc position = model.getPosition();
+                model.setPosition(position.x(), ((Number) positionY.getValue()).floatValue(), position.z());
+            }
+        });
+        positionZ.addChangeListener(e -> {
+            if (model != null) {
+                Vector3fc position = model.getPosition();
+                model.setPosition(position.x(), position.y(), ((Number) positionZ.getValue()).floatValue());
+            }
+        });
     }
 
-    public void setModel(Model model) {
+    @Override
+    public void set(Model model) {
         this.model = model;
         scaleX.setValue(model.getScale().x());
         scaleY.setValue(model.getScale().y());
         scaleZ.setValue(model.getScale().z());
+        if (model instanceof Torus) {
+            specificFeaturesPane.removeAll();
+            TorusLayout layout = new TorusLayout();
+            layout.set((Torus) model);
+            specificFeaturesPane.add(layout.getMainPane());
+        }
     }
 
+    @Override
     public Container getMainPane() {
         return mainPane;
     }
@@ -143,9 +186,9 @@ public class ModelController {
         panel3.add(label9, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         scaleZ = new JSpinner();
         panel3.add(scaleZ, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JPanel panel4 = new JPanel();
-        panel4.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
-        mainPane.add(panel4, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        specificFeaturesPane = new JPanel();
+        specificFeaturesPane.setLayout(new BorderLayout(0, 0));
+        mainPane.add(specificFeaturesPane, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
     }
 
     /**

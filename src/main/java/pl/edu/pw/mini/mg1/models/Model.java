@@ -1,17 +1,19 @@
 package pl.edu.pw.mini.mg1.models;
 
+import com.jogamp.opengl.GL4;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 
-public class Model {
+public abstract class Model {
     protected Mesh mesh;
     private final Vector3f position;
     private final Vector3f rotation;
     private final Vector3f scale;
 
     private final Matrix4f modelMatrix;
+    protected boolean reload = true;
 
     public Model() {
         position = new Vector3f();
@@ -62,13 +64,26 @@ public class Model {
 
     public void setPosition(float x, float y, float z) {
         position.set(x, y, z);
+        calculateModelMatrix();
     }
 
     public void setRotation(float x, float y, float z) {
         rotation.set(x, y, z);
+        calculateModelMatrix();
     }
 
     public void setScale(float x, float y, float z) {
         scale.set(x, y, z);
+        calculateModelMatrix();
     }
+
+    public void validate(GL4 gl) {
+        if(reload) {
+            if(mesh != null) mesh.dispose(gl);
+            load(gl);
+        }
+        reload = false;
+    }
+
+    protected abstract void load(GL4 gl);
 }

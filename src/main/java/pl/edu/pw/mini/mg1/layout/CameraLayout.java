@@ -3,15 +3,21 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class CameraController {
+public class CameraLayout implements Controller<PerspectiveCamera> {
     private JPanel mainPane;
     private JSpinner spinner1;
     private JSpinner spinner2;
     private JSpinner spinner3;
+
+    @Override
+    public void set(PerspectiveCamera object) {
+
+    }
 
     public Container getMainPane() {
         return mainPane;

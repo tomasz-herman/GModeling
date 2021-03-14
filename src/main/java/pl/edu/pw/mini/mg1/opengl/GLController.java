@@ -8,6 +8,8 @@ import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Shader;
+import pl.edu.pw.mini.mg1.layout.Controller;
+import pl.edu.pw.mini.mg1.models.Model;
 import pl.edu.pw.mini.mg1.models.Torus;
 
 import javax.swing.*;
@@ -31,7 +33,12 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
     private GLContext context;
 
+    private Controller<Model> modelController;
+    private Controller<PerspectiveCamera> cameraController;
+    private GLJPanel gljPanel;
+
     public GLController(GLJPanel gljPanel) {
+        this.gljPanel = gljPanel;
         gljPanel.addGLEventListener(this);
 
         FPSAnimator animator = new FPSAnimator(gljPanel, 60, true);
@@ -58,9 +65,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         gl.glDepthFunc(GL.GL_LEQUAL);
         shader = new Shader(gl, "/default.vert", "/default.frag");
         torus = new Torus(100, 40, 0.5f, 0.1f);
-        torus.getMesh().load(gl);
         camera = new PerspectiveCamera(1, 1, 1000, 60);
         camera.setPosition(0, 0, 2);
+        modelController.set(torus);
     }
 
     @Override
@@ -77,6 +84,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         GL4 gl = drawable.getGL().getGL4();
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+
+        torus.validate(gl);
 
         Matrix4f mvp = camera.getViewProjectionMatrix().get(new Matrix4f());
         mvp.mul(torus.getModelMatrix());
@@ -145,22 +154,23 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
                 });
     }
 
-    private void runOnOpenGL(Consumer<GL4> action) {
+    private void runOnOpenGL(Consumer<GL4> action) throws GLException {
         context.makeCurrent();
-        action.accept(context.getGL().getGL4());
-        context.release();
+        try {
+            action.accept(context.getGL().getGL4());
+        } finally {
+            context.release();
+        }
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        runOnOpenGL(gl -> {
-            torus.setOuterSegments(5);
-            torus.getMesh().load(gl);
-        });
+        gljPanel.requestFocus();
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
+        gljPanel.requestFocus();
         if(SwingUtilities.isLeftMouseButton(e)) {
             lastMousePosition.set(e.getX(), e.getY());
         }
@@ -199,5 +209,13 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     @Override
     public void mouseMoved(MouseEvent e) {
 
+    }
+
+    public void setModelController(Controller<Model> modelController) {
+        this.modelController = modelController;
+    }
+
+    public void setCameraController(Controller<PerspectiveCamera> cameraController) {
+        this.cameraController = cameraController;
     }
 }
