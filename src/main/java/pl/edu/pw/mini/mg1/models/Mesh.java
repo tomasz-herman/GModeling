@@ -9,14 +9,20 @@ import java.util.List;
 
 public class Mesh {
     private final float[] positions;
+    private final float[] colors;
     private final int[] indices;
     private final IntBuffer vao;
     private final List<IntBuffer> vbos = new ArrayList<>();
     private final int primitivesType;
 
     public Mesh(float[] positions, int[] indices, int primitivesType) {
+        this(positions, null, indices, primitivesType);
+    }
+
+    public Mesh(float[] positions, float[] colors, int[] indices, int primitivesType) {
         this.positions = positions;
         this.indices = indices;
+        this.colors = colors;
         this.vao = GLBuffers.newDirectIntBuffer(1);
         this.primitivesType = primitivesType;
     }
@@ -25,6 +31,7 @@ public class Mesh {
         gl.glGenVertexArrays(1, vao);
         gl.glBindVertexArray(vao.get(0));
         loadData(gl, positions, 0, 3);
+        if(colors != null) loadData(gl, colors, 1, 3);
         loadIndices(gl, indices);
         gl.glBindVertexArray(0);
     }

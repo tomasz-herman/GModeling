@@ -11,10 +11,7 @@ import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.Ray;
 import pl.edu.pw.mini.mg1.graphics.Shader;
 import pl.edu.pw.mini.mg1.layout.Controller;
-import pl.edu.pw.mini.mg1.models.Model;
-import pl.edu.pw.mini.mg1.models.Point;
-import pl.edu.pw.mini.mg1.models.Scene;
-import pl.edu.pw.mini.mg1.models.Torus;
+import pl.edu.pw.mini.mg1.models.*;
 
 import javax.swing.*;
 import java.awt.event.*;
@@ -77,6 +74,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.addModel(new Torus(10, 10, 10, 2));
         scene.addModel(new Point());
         scene.getCamera().setPosition(0, 0, 2);
+        scene.addModel(new Pointer());
+        gl.glVertexAttrib3f(1, 1, 1, 1);
+
         modelController.set(torus);
         cameraController.set(scene.getCamera());
     }
