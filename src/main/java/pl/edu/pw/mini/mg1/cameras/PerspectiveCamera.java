@@ -14,9 +14,9 @@ public class PerspectiveCamera {
     private Vector3f position;
     private Vector3f rotation;
 
-    private Matrix4f viewMatrix;
-    private Matrix4f projectionMatrix;
-    private Matrix4f viewProjectionMatrix;
+    private final Matrix4f viewMatrix;
+    private final Matrix4f projectionMatrix;
+    private final Matrix4f viewProjectionMatrix;
 
     public PerspectiveCamera(float aspect, float near, float far, float fov) {
         this.aspect = aspect;
@@ -43,12 +43,6 @@ public class PerspectiveCamera {
 
     private void calculateProjectionMatrix() {
         projectionMatrix.setPerspective((float) Math.toRadians(fov), aspect, near, far);
-//        float tan = (float) Math.tan(Math.toRadians(fov) * 0.5);
-//        projectionMatrix.set(
-//                1.0f / (aspect * tan), 0, 0, 0,
-//                0, 1.0f / tan, 0, 0,
-//                0, 0, (far + near) / (near - far), -1,
-//                0, 0, (far + far) / (near - far), 0);
         viewProjectionMatrix.set(projectionMatrix)
                 .mul(viewMatrix);
     }

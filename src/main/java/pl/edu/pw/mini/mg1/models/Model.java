@@ -5,6 +5,7 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import pl.edu.pw.mini.mg1.utils.GeneratorUtils;
 
 public abstract class Model {
     protected Mesh mesh;
@@ -15,11 +16,14 @@ public abstract class Model {
     private final Matrix4f modelMatrix;
     protected boolean reload = true;
 
+    private String name;
+
     public Model() {
         position = new Vector3f();
         rotation = new Vector3f();
         scale = new Vector3f(1);
         modelMatrix = new Matrix4f();
+        name = getClass().getSimpleName() + " " + GeneratorUtils.getID();
     }
 
     private void calculateModelMatrix() {
@@ -86,4 +90,12 @@ public abstract class Model {
     }
 
     protected abstract void load(GL4 gl);
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
 }
