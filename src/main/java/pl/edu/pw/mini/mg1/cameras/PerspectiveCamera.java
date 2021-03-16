@@ -1,7 +1,7 @@
 package pl.edu.pw.mini.mg1.cameras;
 
-import com.jogamp.opengl.math.Ray;
 import org.joml.*;
+import pl.edu.pw.mini.mg1.collisions.Ray;
 
 import java.lang.Math;
 
@@ -134,18 +134,10 @@ public class PerspectiveCamera {
     }
 
     public Ray getRay(float x, float y) {
-        Ray ray = new Ray();
         Vector3f origin = new Vector3f();
         Vector3f direction = new Vector3f();
         viewProjectionMatrix.unprojectRay(x, y, new int[]{0, 0, 1, 1}, origin, direction);
-        ray.orig[0] = origin.x;
-        ray.orig[1] = origin.y;
-        ray.orig[2] = origin.z;
-
-        ray.dir[0] = direction.x;
-        ray.dir[1] = direction.y;
-        ray.dir[2] = direction.z;
-        return ray;
+        return new Ray(origin, direction);
     }
 
     public Vector3f project(Vector3fc position) {

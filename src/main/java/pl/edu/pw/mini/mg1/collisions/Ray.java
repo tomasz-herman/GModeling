@@ -14,4 +14,9 @@ public class Ray {
     public Vector3f at(float t) {
         return origin.fma(t, direction, new Vector3f());
     }
+
+    @Override
+    public String toString() {
+        return "Ray{origin=%s, direction=%s}".formatted(origin, direction);
+    }
 }

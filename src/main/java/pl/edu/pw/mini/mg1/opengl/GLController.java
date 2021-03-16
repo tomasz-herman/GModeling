@@ -2,13 +2,13 @@ package pl.edu.pw.mini.mg1.opengl;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
-import com.jogamp.opengl.math.Ray;
 import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Math;
 import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
+import pl.edu.pw.mini.mg1.collisions.Ray;
 import pl.edu.pw.mini.mg1.graphics.Shader;
 import pl.edu.pw.mini.mg1.layout.Controller;
 import pl.edu.pw.mini.mg1.models.Model;
