@@ -2,6 +2,7 @@ package pl.edu.pw.mini.mg1.opengl;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.math.Ray;
 import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Math;
 import org.joml.Matrix4f;
@@ -166,6 +167,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     @Override
     public void mouseClicked(MouseEvent e) {
         gljPanel.requestFocus();
+        Ray ray = camera.getRay((float)e.getX() / gljPanel.getWidth(), (float)e.getY() / gljPanel.getHeight());
+        System.out.println(ray);
     }
 
     @Override

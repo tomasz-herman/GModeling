@@ -1,9 +1,9 @@
 package pl.edu.pw.mini.mg1.cameras;
 
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import com.jogamp.opengl.math.Ray;
+import org.joml.*;
+
+import java.lang.Math;
 
 public class PerspectiveCamera {
     private float aspect;
@@ -11,8 +11,8 @@ public class PerspectiveCamera {
     private float far;
     private float fov;
 
-    private Vector3f position;
-    private Vector3f rotation;
+    private final Vector3f position;
+    private final Vector3f rotation;
 
     private final Matrix4f viewMatrix;
     private final Matrix4f projectionMatrix;
@@ -131,5 +131,20 @@ public class PerspectiveCamera {
         rotation.y += dy;
         rotation.z += dz;
         calculateViewMatrix();
+    }
+
+    public Ray getRay(float x, float y) {
+        Ray ray = new Ray();
+        Vector3f origin = new Vector3f();
+        Vector3f direction = new Vector3f();
+        viewProjectionMatrix.unprojectRay(x, y, new int[]{0, 0, 1, 1}, origin, direction);
+        ray.orig[0] = origin.x;
+        ray.orig[1] = origin.y;
+        ray.orig[2] = origin.z;
+
+        ray.dir[0] = direction.x;
+        ray.dir[1] = direction.y;
+        ray.dir[2] = direction.z;
+        return ray;
     }
 }
