@@ -1,7 +1,6 @@
 package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
-import com.jogamp.opengl.math.Ray;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;

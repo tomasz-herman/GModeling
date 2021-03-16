@@ -147,4 +147,8 @@ public class PerspectiveCamera {
         ray.dir[2] = direction.z;
         return ray;
     }
+
+    public Vector3f project(Vector3fc position) {
+        return viewProjectionMatrix.project(position,  new int[]{0, 0, 1, 1}, new Vector3f());
+    }
 }
