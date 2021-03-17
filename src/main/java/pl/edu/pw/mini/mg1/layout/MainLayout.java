@@ -31,18 +31,19 @@ public class MainLayout {
         panel.setScrollableTracksViewportHeight(false);
 
         ModelLayout modelController = new ModelLayout();
-        loadController(modelController.getMainPane());
-
         CameraLayout cameraController = new CameraLayout();
+        SceneLayout sceneController = new SceneLayout();
         loadController(modelController.getMainPane());
 
         controller.setModelController(modelController);
         controller.setCameraController(cameraController);
+        controller.setSceneController(sceneController);
 
         controllerComboBox.addActionListener(e -> {
             switch ((String) Objects.requireNonNull(controllerComboBox.getSelectedItem())) {
                 case "Model" -> loadController(modelController.getMainPane());
                 case "Camera" -> loadController(cameraController.getMainPane());
+                case "Scene" -> loadController(sceneController.getMainPane());
             }
         });
     }
@@ -90,6 +91,7 @@ public class MainLayout {
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("Model");
         defaultComboBoxModel1.addElement("Camera");
+        defaultComboBoxModel1.addElement("Scene");
         controllerComboBox.setModel(defaultComboBoxModel1);
         panel2.add(controllerComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         controlsPane = new JScrollPane();

@@ -46,6 +46,7 @@
               <model>
                 <item value="Model"/>
                 <item value="Camera"/>
+                <item value="Scene"/>
               </model>
             </properties>
           </component>

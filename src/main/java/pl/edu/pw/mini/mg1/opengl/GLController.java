@@ -11,6 +11,7 @@ import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.Ray;
 import pl.edu.pw.mini.mg1.graphics.Shader;
 import pl.edu.pw.mini.mg1.layout.Controller;
+import pl.edu.pw.mini.mg1.layout.SceneLayout;
 import pl.edu.pw.mini.mg1.models.*;
 
 import javax.swing.*;
@@ -38,6 +39,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
     private Controller<Model> modelController;
     private Controller<PerspectiveCamera> cameraController;
+    private Controller<Scene> sceneController;
     private final GLJPanel gljPanel;
 
     public GLController(GLJPanel gljPanel) {
@@ -66,6 +68,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         gl.glClearDepth(1.0f);
         gl.glEnable(GL.GL_DEPTH_TEST);
         gl.glDepthFunc(GL.GL_LEQUAL);
+        gl.glVertexAttrib3f(1, 1, 1, 1);
+
         shader = new Shader(gl, "/default.vert", "/default.frag");
         scene = new Scene(new PerspectiveCamera(1, 1, 1000, 60));
 
@@ -75,10 +79,10 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.addModel(new Point());
         scene.getCamera().setPosition(0, 0, 2);
         scene.addModel(new Pointer());
-        gl.glVertexAttrib3f(1, 1, 1, 1);
 
         modelController.set(torus);
         cameraController.set(scene.getCamera());
+        sceneController.set(scene);
     }
 
     @Override
@@ -100,7 +104,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
             model.validate(gl);
 
             Matrix4f mvp = scene.getCamera().getViewProjectionMatrix().get(new Matrix4f());
-            mvp.mul(torus.getModelMatrix());
+            mvp.mul(model.getModelMatrix());
 
             gl.glUseProgram(shader.getProgramID());
 
@@ -233,5 +237,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
     public void setCameraController(Controller<PerspectiveCamera> cameraController) {
         this.cameraController = cameraController;
+    }
+
+    public void setSceneController(Controller<Scene> sceneController) {
+        this.sceneController = sceneController;
     }
 }

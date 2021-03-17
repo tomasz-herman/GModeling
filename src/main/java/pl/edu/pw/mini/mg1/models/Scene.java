@@ -8,6 +8,7 @@ import java.util.List;
 
 public class Scene {
     private final List<Model> models = new ArrayList<>();
+    private final List<Pointer> pointers = new ArrayList<>();
     private PerspectiveCamera camera;
 
     public Scene(PerspectiveCamera camera) {

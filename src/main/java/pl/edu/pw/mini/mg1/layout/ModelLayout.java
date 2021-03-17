@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.models.Model;
+import pl.edu.pw.mini.mg1.models.Point;
 import pl.edu.pw.mini.mg1.models.Torus;
 
 import javax.swing.*;
@@ -104,6 +105,8 @@ public class ModelLayout implements Controller<Model> {
                 TorusLayout layout = new TorusLayout();
                 layout.set((Torus) model);
                 specificFeaturesPane.add(layout.getMainPane());
+            } else if (model instanceof Point) {
+                specificFeaturesPane.add(new JPanel());
             }
         }
     }
