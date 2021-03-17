@@ -2,6 +2,7 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
+import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -28,6 +29,7 @@ public class Torus extends Model {
         this.innerSegments = innerSegments;
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
+        this.boundingVolume = new BoundingSphere(outerRadius + innerRadius);
     }
 
     private void generateGeometry() {
@@ -93,6 +95,7 @@ public class Torus extends Model {
 
     public void setOuterRadius(float outerRadius) {
         this.outerRadius = outerRadius;
+        this.boundingVolume = new BoundingSphere(outerRadius + innerRadius);
         reload = true;
     }
 
@@ -102,6 +105,7 @@ public class Torus extends Model {
 
     public void setInnerRadius(float innerRadius) {
         this.innerRadius = innerRadius;
+        this.boundingVolume = new BoundingSphere(outerRadius + innerRadius);
         reload = true;
     }
 }

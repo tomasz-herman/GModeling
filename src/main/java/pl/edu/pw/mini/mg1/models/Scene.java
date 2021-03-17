@@ -2,6 +2,7 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
+import pl.edu.pw.mini.mg1.collisions.Ray;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,5 +38,19 @@ public class Scene {
         for (Model model : models) {
             model.getMesh().dispose(gl);
         }
+    }
+
+    public Model test(float x, float y) {
+        Ray ray = camera.getRay(x, y);
+        float minDistance = Float.POSITIVE_INFINITY;
+        Model closest = null;
+        for (Model model : models) {
+            float dist = model.test(ray);
+            if(dist > 0 && dist < minDistance) {
+                minDistance = dist;
+                closest = model;
+            }
+        }
+        return closest;
     }
 }

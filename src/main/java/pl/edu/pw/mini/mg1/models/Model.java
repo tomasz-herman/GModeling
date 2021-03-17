@@ -5,10 +5,13 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import pl.edu.pw.mini.mg1.collisions.BoundingVolume;
+import pl.edu.pw.mini.mg1.collisions.Ray;
 import pl.edu.pw.mini.mg1.utils.GeneratorUtils;
 
 public abstract class Model {
     protected Mesh mesh;
+    protected BoundingVolume boundingVolume;
     private final Vector3f position;
     private final Vector3f rotation;
     private final Vector3f scale;
@@ -97,5 +100,17 @@ public abstract class Model {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public float test(Ray ray) {
+        if(boundingVolume == null) return -1;
+        Matrix4fc invModel = modelMatrix.invert(new Matrix4f());
+        Ray transformedRay = new Ray(
+                ray.getOrigin().mulPosition(invModel, new Vector3f()),
+                ray.getDirection().mulDirection(invModel, new Vector3f()));
+        float distance = boundingVolume.test(transformedRay);
+        if(distance < 0) return -1;
+        Vector3f hit = transformedRay.at(distance).mulPosition(modelMatrix);
+        return hit.distance(ray.getOrigin());
     }
 }

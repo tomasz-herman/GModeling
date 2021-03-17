@@ -23,7 +23,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     private Scene scene;
     private Renderer renderer;
 
-    private final Vector2i lastMousePosition;
+    private final Vector2i lastMousePosition = new Vector2i();
     private boolean forward;
     private boolean backward;
     private boolean right;
@@ -54,8 +54,6 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         gljPanel.setFocusable(true);
 
         installKeyListener(gljPanel);
-
-        lastMousePosition = new Vector2i();
     }
 
     @Override
@@ -154,8 +152,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     @Override
     public void mouseClicked(MouseEvent e) {
         gljPanel.requestFocus();
-        Ray ray = scene.getCamera().getRay((float)e.getX() / gljPanel.getWidth(), (float)e.getY() / gljPanel.getHeight());
-        System.out.println(ray);
+        Model hit = scene.test((float)e.getX() / gljPanel.getWidth(), 1 - (float)e.getY() / gljPanel.getHeight());
+        modelController.set(hit);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package pl.edu.pw.mini.mg1.collisions;
 
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 
 public class Ray {
     private final Vector3f origin;
@@ -13,6 +14,14 @@ public class Ray {
 
     public Vector3f at(float t) {
         return origin.fma(t, direction, new Vector3f());
+    }
+
+    public Vector3fc getOrigin() {
+        return origin;
+    }
+
+    public Vector3fc getDirection() {
+        return direction;
     }
 
     @Override

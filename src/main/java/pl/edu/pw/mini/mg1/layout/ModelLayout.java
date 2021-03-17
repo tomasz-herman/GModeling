@@ -101,6 +101,12 @@ public class ModelLayout implements Controller<Model> {
             scaleX.setValue(model.getScale().x());
             scaleY.setValue(model.getScale().y());
             scaleZ.setValue(model.getScale().z());
+            positionX.setValue(model.getPosition().x());
+            positionY.setValue(model.getPosition().y());
+            positionZ.setValue(model.getPosition().z());
+            rotationX.setValue((int) model.getRotation().x());
+            rotationY.setValue((int) model.getRotation().y());
+            rotationZ.setValue((int) model.getRotation().z());
             if (model instanceof Torus) {
                 TorusLayout layout = new TorusLayout();
                 layout.set((Torus) model);
