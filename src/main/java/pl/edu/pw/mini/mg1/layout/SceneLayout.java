@@ -9,7 +9,6 @@ import javax.swing.*;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
 import java.awt.*;
-import java.util.Arrays;
 
 public class SceneLayout implements Controller<Scene> {
     private JTable table;
@@ -24,10 +23,7 @@ public class SceneLayout implements Controller<Scene> {
         table.getSelectionModel().addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
                 var indices = table.getSelectionModel().getSelectedIndices();
-                System.out.println(Arrays.toString(indices));
-            } else {
-                var indices = table.getSelectionModel().getSelectedIndices();
-                System.err.println(Arrays.toString(indices));
+                scene.selectModels(indices);
             }
         });
     }
@@ -44,7 +40,12 @@ public class SceneLayout implements Controller<Scene> {
 
     @Override
     public void refresh() {
-
+        ListSelectionModel selection = table.getSelectionModel();
+        int[] selected = scene.getSelected();
+        selection.clearSelection();
+        for (int i : selected) {
+            selection.addSelectionInterval(i, i);
+        }
     }
 
     private final class SceneTableModel extends AbstractTableModel {
@@ -91,7 +92,7 @@ public class SceneLayout implements Controller<Scene> {
         mainPane = new JPanel();
         mainPane.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
         final JScrollPane scrollPane1 = new JScrollPane();
-        mainPane.add(scrollPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainPane.add(scrollPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 200), null, 0, false));
         table = new JTable();
         scrollPane1.setViewportView(table);
         final Spacer spacer1 = new Spacer();

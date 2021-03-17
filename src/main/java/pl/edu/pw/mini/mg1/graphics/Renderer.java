@@ -23,7 +23,7 @@ public class Renderer {
         gl.glClear(GL.GL_COLOR_BUFFER_BIT);
         gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
 
-        for (Model model : scene.getModels()) {
+        for (Model model : scene.getModelsAndPointers()) {
             gl.glLineWidth(model instanceof Pointer ? 3 : 1);
             model.validate(gl);
 

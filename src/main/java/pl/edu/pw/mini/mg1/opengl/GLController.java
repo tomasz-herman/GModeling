@@ -7,7 +7,6 @@ import org.joml.Math;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
-import pl.edu.pw.mini.mg1.collisions.Ray;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.layout.Controller;
 import pl.edu.pw.mini.mg1.models.*;
@@ -68,9 +67,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.addModel(new Torus(10, 10, 10, 2));
         scene.addModel(new Point());
         scene.getCamera().setPosition(0, 0, 2);
-        scene.addModel(new Pointer());
 
-        modelController.set(scene.getModels().get(0));
+        modelController.set(scene.getModelsAndPointers().get(0));
         cameraController.set(scene.getCamera());
         sceneController.set(scene);
     }
@@ -154,6 +152,11 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         gljPanel.requestFocus();
         Model hit = scene.test((float)e.getX() / gljPanel.getWidth(), 1 - (float)e.getY() / gljPanel.getHeight());
         modelController.set(hit);
+        if(hit != null) {
+            if(e.isControlDown()) scene.invertSelect(hit);
+            else scene.select(hit);
+            sceneController.refresh();
+        }
     }
 
     @Override

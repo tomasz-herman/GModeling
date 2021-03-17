@@ -2,6 +2,7 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
+import pl.edu.pw.mini.mg1.collisions.Ray;
 
 public class Pointer extends Model {
     @Override
@@ -25,5 +26,10 @@ public class Pointer extends Model {
                 0, 1, 2, 3, 4, 5
         }, GL4.GL_LINES);
         mesh.load(gl);
+    }
+
+    @Override
+    public float test(Ray ray) {
+        return -1;
     }
 }
