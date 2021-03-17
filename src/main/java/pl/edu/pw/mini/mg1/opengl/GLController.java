@@ -4,26 +4,24 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Math;
-import org.joml.Matrix4f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.Ray;
-import pl.edu.pw.mini.mg1.graphics.Shader;
+import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.layout.Controller;
-import pl.edu.pw.mini.mg1.layout.SceneLayout;
 import pl.edu.pw.mini.mg1.models.*;
 
-import javax.swing.*;
+import javax.swing.AbstractAction;
+import javax.swing.JComponent;
+import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
 import java.awt.event.*;
 import java.util.function.Consumer;
 
 public class GLController implements GLEventListener, MouseListener, MouseWheelListener, MouseMotionListener {
-    private Shader shader;
-    private Torus torus;
-    private PerspectiveCamera camera;
-
     private Scene scene;
+    private Renderer renderer;
 
     private final Vector2i lastMousePosition;
     private boolean forward;
@@ -64,23 +62,17 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     public void init(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
         context = drawable.getContext();
-        gl.glClearColor(0f, 0f, 0f, 1.0f);
-        gl.glClearDepth(1.0f);
-        gl.glEnable(GL.GL_DEPTH_TEST);
-        gl.glDepthFunc(GL.GL_LEQUAL);
-        gl.glVertexAttrib3f(1, 1, 1, 1);
 
-        shader = new Shader(gl, "/default.vert", "/default.frag");
-        scene = new Scene(new PerspectiveCamera(1, 1, 1000, 60));
+        renderer = new Renderer(gl);
+        scene = new Scene(new PerspectiveCamera(1, 0.1f, 100, 60));
 
-        torus = new Torus(100, 40, 0.5f, 0.1f);
-        scene.addModel(torus);
+        scene.addModel(new Torus(100, 40, 0.5f, 0.1f));
         scene.addModel(new Torus(10, 10, 10, 2));
         scene.addModel(new Point());
         scene.getCamera().setPosition(0, 0, 2);
         scene.addModel(new Pointer());
 
-        modelController.set(torus);
+        modelController.set(scene.getModels().get(0));
         cameraController.set(scene.getCamera());
         sceneController.set(scene);
     }
@@ -89,40 +81,20 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     public void reshape(GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
         GL4 gl = drawable.getGL().getGL4();
         scene.getCamera().setAspect((float) width / height);
-        gl.glViewport(x, y, width, height);
+        renderer.reshape(gl, x, y, width, height);
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
         handleKeyInput();
-
         GL4 gl = drawable.getGL().getGL4();
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
-
-        for (Model model : scene.getModels()) {
-            model.validate(gl);
-
-            Matrix4f mvp = scene.getCamera().getViewProjectionMatrix().get(new Matrix4f());
-            mvp.mul(model.getModelMatrix());
-
-            gl.glUseProgram(shader.getProgramID());
-
-            shader.loadMatrix4f(gl, "mvp", mvp);
-
-            gl.glBindVertexArray(model.getMesh().getVao());
-            gl.glDrawElements(model.getMesh().getPrimitivesType(),
-                    model.getMesh().vertexCount(),
-                    GL4.GL_UNSIGNED_INT, 0);
-            gl.glBindVertexArray(0);
-            gl.glUseProgram(0);
-        }
+        renderer.render(gl, scene);
     }
 
     @Override
     public void dispose(GLAutoDrawable drawable) {
         GL4 gl = drawable.getGL().getGL4();
-        shader.dispose(gl);
+        renderer.dispose(gl);
         scene.dispose(gl);
     }
 
