@@ -84,6 +84,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     public void display(GLAutoDrawable drawable) {
         handleKeyInput();
         GL4 gl = drawable.getGL().getGL4();
+        scene.selectModels();
+        scene.disposeRemovedModels(gl);
         renderer.render(gl, scene);
     }
 

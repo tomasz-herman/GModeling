@@ -1,12 +1,14 @@
 package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
-import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector3f;
+import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.Ray;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -14,6 +16,7 @@ import java.util.stream.Stream;
 
 public class Scene {
     private final List<Model> models = new ArrayList<>();
+    private final List<Model> removedModels = new ArrayList<>();
     private final Pointer globalPointer = new Pointer();
     private final Pointer localPointer = new Pointer();
     private PerspectiveCamera camera;
@@ -47,7 +50,22 @@ public class Scene {
     }
 
     public void addModel(Model model) {
+        Vector3fc position = globalPointer.getPosition();
+        model.setPosition(position.x(), position.y(), position.z());
         models.add(model);
+    }
+
+    public void deleteSelected() {
+        Arrays.stream(selected)
+                .boxed()
+                .sorted(Comparator.reverseOrder())
+                .forEach(i -> removedModels.add(models.remove((int)i)));
+        selected = new int[0];
+    }
+
+    public void disposeRemovedModels(GL4 gl) {
+        removedModels.forEach(model -> model.getMesh().dispose(gl));
+        removedModels.clear();
     }
 
     public void dispose(GL4 gl) {
@@ -68,6 +86,10 @@ public class Scene {
             }
         }
         return closest;
+    }
+
+    public void selectModels() {
+        selectModels(selected);
     }
 
     public void selectModels(int[] selected) {
