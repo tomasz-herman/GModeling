@@ -77,6 +77,7 @@ public class SceneLayout implements Controller<Scene> {
     public void setPointerController(Controller<Scene> pointerController) {
         this.pointerController = pointerController;
         pointerController.set(scene);
+        pointerControllerPane.removeAll();
         pointerControllerPane.add(pointerController.getMainPane(), BorderLayout.CENTER);
     }
 

@@ -39,7 +39,6 @@ public class MainLayout {
         controller.setCameraController(cameraController);
         controller.setSceneController(sceneController);
         controller.setPointerController(pointerController);
-        sceneController.setPointerController(pointerController);
 
         controllerComboBox.addActionListener(e -> {
             switch ((String) Objects.requireNonNull(controllerComboBox.getSelectedItem())) {
