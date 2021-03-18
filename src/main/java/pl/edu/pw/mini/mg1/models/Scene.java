@@ -1,6 +1,7 @@
 package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
+import org.joml.Vector2fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
@@ -72,6 +73,10 @@ public class Scene {
         for (Model model : models) {
             model.getMesh().dispose(gl);
         }
+        globalPointer.validate(gl);
+        globalPointer.getMesh().dispose(gl);
+        localPointer.validate(gl);
+        localPointer.getMesh().dispose(gl);
     }
 
     public Model test(float x, float y) {
@@ -120,5 +125,26 @@ public class Scene {
             selected.add(index);
         }
         this.selected = selected.stream().mapToInt(i -> i).sorted().toArray();
+    }
+
+    public Pointer getPointer() {
+        return globalPointer;
+    }
+
+    public Vector3f getPointerScreenCoords() {
+        return camera.project(getPointerWorldCoords());
+    }
+
+    public Vector3f getPointerWorldCoords() {
+        return globalPointer.getPosition().get(new Vector3f());
+    }
+
+    public void setPointerScreenCoords(Vector3fc coords) {
+        Vector3fc position = camera.unproject(coords);
+        setPointerWorldCoords(position);
+    }
+
+    public void setPointerWorldCoords(Vector3fc coords) {
+        globalPointer.setPosition(coords.x(), coords.y(), coords.z());
     }
 }

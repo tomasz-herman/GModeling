@@ -47,6 +47,7 @@
                 <item value="Model"/>
                 <item value="Camera"/>
                 <item value="Scene"/>
+                <item value="Pointer"/>
               </model>
             </properties>
           </component>

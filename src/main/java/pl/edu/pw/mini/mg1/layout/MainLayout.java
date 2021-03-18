@@ -4,7 +4,6 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jogamp.opengl.awt.GLJPanel;
 import org.jdesktop.swingx.JXPanel;
-import org.jdesktop.swingx.ScrollableSizeHint;
 import pl.edu.pw.mini.mg1.opengl.GLController;
 
 import javax.swing.*;
@@ -33,17 +32,24 @@ public class MainLayout {
         ModelLayout modelController = new ModelLayout();
         CameraLayout cameraController = new CameraLayout();
         SceneLayout sceneController = new SceneLayout();
+        PointerLayout pointerController = new PointerLayout();
         loadController(modelController.getMainPane());
 
         controller.setModelController(modelController);
         controller.setCameraController(cameraController);
         controller.setSceneController(sceneController);
+        controller.setPointerController(pointerController);
+        sceneController.setPointerController(pointerController);
 
         controllerComboBox.addActionListener(e -> {
             switch ((String) Objects.requireNonNull(controllerComboBox.getSelectedItem())) {
                 case "Model" -> loadController(modelController.getMainPane());
                 case "Camera" -> loadController(cameraController.getMainPane());
-                case "Scene" -> loadController(sceneController.getMainPane());
+                case "Scene" -> {
+                    loadController(sceneController.getMainPane());
+                    sceneController.setPointerController(pointerController);
+                }
+                case "Pointer" -> loadController(pointerController.getMainPane());
             }
         });
     }
@@ -92,6 +98,7 @@ public class MainLayout {
         defaultComboBoxModel1.addElement("Model");
         defaultComboBoxModel1.addElement("Camera");
         defaultComboBoxModel1.addElement("Scene");
+        defaultComboBoxModel1.addElement("Pointer");
         controllerComboBox.setModel(defaultComboBoxModel1);
         panel2.add(controllerComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         controlsPane = new JScrollPane();

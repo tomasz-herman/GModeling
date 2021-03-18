@@ -8,6 +8,7 @@ import pl.edu.pw.mini.mg1.models.Scene;
 import pl.edu.pw.mini.mg1.models.Torus;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
@@ -19,7 +20,9 @@ public class SceneLayout implements Controller<Scene> {
     private JPanel mainPane;
     private JButton deleteButton;
     private JComboBox<String> addCombo;
+    private JPanel pointerControllerPane;
     private Scene scene;
+    private Controller<Scene> pointerController;
 
     public SceneLayout() {
         $$$setupUI$$$();
@@ -51,6 +54,9 @@ public class SceneLayout implements Controller<Scene> {
     @Override
     public void set(Scene scene) {
         this.scene = scene;
+        if (pointerController != null) {
+            pointerController.set(scene);
+        }
     }
 
     @Override
@@ -66,6 +72,12 @@ public class SceneLayout implements Controller<Scene> {
         for (int i : selected) {
             selection.addSelectionInterval(i, i);
         }
+    }
+
+    public void setPointerController(Controller<Scene> pointerController) {
+        this.pointerController = pointerController;
+        pointerController.set(scene);
+        pointerControllerPane.add(pointerController.getMainPane(), BorderLayout.CENTER);
     }
 
     private final class SceneTableModel extends AbstractTableModel {
@@ -126,13 +138,13 @@ public class SceneLayout implements Controller<Scene> {
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
         final JScrollPane scrollPane1 = new JScrollPane();
         mainPane.add(scrollPane1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(-1, 200), null, 0, false));
         table = new JTable();
         scrollPane1.setViewportView(table);
         final Spacer spacer1 = new Spacer();
-        mainPane.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainPane.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -147,6 +159,10 @@ public class SceneLayout implements Controller<Scene> {
         defaultComboBoxModel1.addElement("Torus");
         addCombo.setModel(defaultComboBoxModel1);
         panel1.add(addCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        pointerControllerPane = new JPanel();
+        pointerControllerPane.setLayout(new BorderLayout(0, 0));
+        mainPane.add(pointerControllerPane, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        pointerControllerPane.setBorder(BorderFactory.createTitledBorder(null, "pointer", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
     }
 
     /**

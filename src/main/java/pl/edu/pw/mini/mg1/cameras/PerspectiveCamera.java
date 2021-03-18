@@ -143,4 +143,8 @@ public class PerspectiveCamera {
     public Vector3f project(Vector3fc position) {
         return viewProjectionMatrix.project(position,  new int[]{0, 0, 1, 1}, new Vector3f());
     }
+
+    public Vector3f unproject(Vector3fc winCoords) {
+        return viewProjectionMatrix.unproject(winCoords,  new int[]{0, 0, 1, 1}, new Vector3f());
+    }
 }

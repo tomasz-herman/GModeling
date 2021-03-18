@@ -37,6 +37,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     private Controller<Model> modelController;
     private Controller<PerspectiveCamera> cameraController;
     private Controller<Scene> sceneController;
+    private Controller<Scene> pointerController;
     private final GLJPanel gljPanel;
 
     public GLController(GLJPanel gljPanel) {
@@ -71,6 +72,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         modelController.set(scene.getModelsAndPointers().get(0));
         cameraController.set(scene.getCamera());
         sceneController.set(scene);
+        pointerController.set(scene);
     }
 
     @Override
@@ -86,6 +88,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         GL4 gl = drawable.getGL().getGL4();
         scene.selectModels();
         scene.disposeRemovedModels(gl);
+        pointerController.refresh();
         renderer.render(gl, scene);
     }
 
@@ -216,5 +219,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
     public void setSceneController(Controller<Scene> sceneController) {
         this.sceneController = sceneController;
+    }
+
+    public void setPointerController(Controller<Scene> pointerController) {
+        this.pointerController = pointerController;
     }
 }
