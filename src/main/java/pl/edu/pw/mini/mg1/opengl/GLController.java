@@ -86,7 +86,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     public void display(GLAutoDrawable drawable) {
         handleKeyInput();
         GL4 gl = drawable.getGL().getGL4();
-        scene.selectModels();
+        scene.updateLocalPointerPosition();
         scene.disposeRemovedModels(gl);
         pointerController.refresh();
         renderer.render(gl, scene);
@@ -159,7 +159,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         modelController.set(hit);
         if(hit != null) {
             if(e.isControlDown()) scene.invertSelect(hit);
-            else scene.select(hit);
+            else scene.selectModel(hit);
             sceneController.refresh();
         }
     }
@@ -179,8 +179,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        Vector3f v = new Vector3f();
-        System.out.println(scene.getCamera().project(v));
+
     }
 
     @Override

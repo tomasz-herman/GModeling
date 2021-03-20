@@ -1,13 +1,12 @@
 package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
-import org.joml.Matrix4f;
-import org.joml.Matrix4fc;
-import org.joml.Vector3f;
-import org.joml.Vector3fc;
+import org.joml.*;
 import pl.edu.pw.mini.mg1.collisions.BoundingVolume;
 import pl.edu.pw.mini.mg1.collisions.Ray;
 import pl.edu.pw.mini.mg1.utils.GeneratorUtils;
+
+import java.lang.Math;
 
 public abstract class Model {
     protected Mesh mesh;
@@ -17,6 +16,7 @@ public abstract class Model {
     private final Vector3f scale;
 
     private final Matrix4f modelMatrix;
+    private final Matrix4f transformationMatrix;
     protected boolean reload = true;
 
     private String name;
@@ -26,17 +26,32 @@ public abstract class Model {
         rotation = new Vector3f();
         scale = new Vector3f(1);
         modelMatrix = new Matrix4f();
+        transformationMatrix = new Matrix4f();
         name = getClass().getSimpleName() + " " + GeneratorUtils.getID();
     }
 
     private void calculateModelMatrix() {
         modelMatrix.identity()
-                .translate(position)
-                .rotateXYZ(
-                        (float) Math.toRadians(rotation.x),
+                .translate(position.mulPosition(transformationMatrix, new Vector3f()))
+                .rotateZYX(
+                        (float) Math.toRadians(rotation.z),
                         (float) Math.toRadians(rotation.y),
-                        (float) Math.toRadians(rotation.z))
+                        (float) Math.toRadians(rotation.x))
                 .scale(scale);
+    }
+
+    public Matrix4f getTransformationMatrix() {
+        return transformationMatrix;
+    }
+
+    public void setTransformationMatrix(Matrix4fc transformation) {
+        this.transformationMatrix.set(transformation);
+        calculateModelMatrix();
+    }
+
+    public void applyTransformationMatrix() {
+        this.position.set(position.mulPosition(transformationMatrix));
+        calculateModelMatrix();
     }
 
     public Mesh getMesh() {

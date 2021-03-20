@@ -35,19 +35,19 @@ public class ModelLayout implements Controller<Model> {
         rotationX.addChangeListener(e -> {
             if (model != null) {
                 Vector3fc rotation = model.getRotation();
-                model.setRotation(rotationX.getValue(), rotation.y(), rotation.z());
+                model.setRotation(rotationX.getValue() / 100f, rotation.y(), rotation.z());
             }
         });
         rotationY.addChangeListener(e -> {
             if (model != null) {
                 Vector3fc rotation = model.getRotation();
-                model.setRotation(rotation.x(), rotationY.getValue(), rotation.z());
+                model.setRotation(rotation.x(), rotationY.getValue() / 100f, rotation.z());
             }
         });
         rotationZ.addChangeListener(e -> {
             if (model != null) {
                 Vector3fc rotation = model.getRotation();
-                model.setRotation(rotation.x(), rotation.y(), rotationZ.getValue());
+                model.setRotation(rotation.x(), rotation.y(), rotationZ.getValue() / 100f);
             }
         });
         scaleX.addChangeListener(e -> {
@@ -104,9 +104,9 @@ public class ModelLayout implements Controller<Model> {
             positionX.setValue(model.getPosition().x());
             positionY.setValue(model.getPosition().y());
             positionZ.setValue(model.getPosition().z());
-            rotationX.setValue((int) model.getRotation().x());
-            rotationY.setValue((int) model.getRotation().y());
-            rotationZ.setValue((int) model.getRotation().z());
+            rotationX.setValue((int) (model.getRotation().x() * 100));
+            rotationY.setValue((int) (model.getRotation().y() * 100));
+            rotationZ.setValue((int) (model.getRotation().z() * 100));
             if (model instanceof Torus) {
                 TorusLayout layout = new TorusLayout();
                 layout.set((Torus) model);
@@ -115,6 +115,7 @@ public class ModelLayout implements Controller<Model> {
                 specificFeaturesPane.add(new JPanel());
             }
         }
+        specificFeaturesPane.revalidate();
     }
 
     @Override
@@ -147,21 +148,21 @@ public class ModelLayout implements Controller<Model> {
         label1.setText("x");
         panel1.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, null, null, null, 0, false));
         rotationX = new JSlider();
-        rotationX.setMaximum(360);
+        rotationX.setMaximum(36000);
         rotationX.setValue(0);
         panel1.add(rotationX, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final JLabel label2 = new JLabel();
         label2.setText("y");
         panel1.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, null, null, null, 0, false));
         rotationY = new JSlider();
-        rotationY.setMaximum(360);
+        rotationY.setMaximum(36000);
         rotationY.setValue(0);
         panel1.add(rotationY, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final JLabel label3 = new JLabel();
         label3.setText("z");
         panel1.add(label3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, 1, null, null, null, 0, false));
         rotationZ = new JSlider();
-        rotationZ.setMaximum(360);
+        rotationZ.setMaximum(36000);
         rotationZ.setValue(0);
         panel1.add(rotationZ, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
         final JPanel panel2 = new JPanel();

@@ -17,6 +17,7 @@ public class Renderer {
         gl.glEnable(GL.GL_DEPTH_TEST);
         gl.glDepthFunc(GL.GL_LEQUAL);
         gl.glVertexAttrib3f(1, 1, 1, 1);
+        gl.glPointSize(3.0f);
     }
 
     public void render(GL4 gl, Scene scene) {

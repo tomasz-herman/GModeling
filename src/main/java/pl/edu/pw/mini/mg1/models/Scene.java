@@ -1,7 +1,7 @@
 package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
-import org.joml.Vector2fc;
+import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
@@ -18,10 +18,17 @@ import java.util.stream.Stream;
 public class Scene {
     private final List<Model> models = new ArrayList<>();
     private final List<Model> removedModels = new ArrayList<>();
+    private final List<Model> selectedModels = new ArrayList<>();
     private final Pointer globalPointer = new Pointer();
     private final Pointer localPointer = new Pointer();
     private PerspectiveCamera camera;
     private int[] selected = new int[0];
+
+    private final Vector3f translation = new Vector3f();
+    private final Vector3f rotation = new Vector3f();
+    private final Vector3f scale = new Vector3f();
+    private final Matrix4f transformation = new Matrix4f();
+    private Pointer transformationCenter = globalPointer;
 
     public Scene(PerspectiveCamera camera) {
         this.camera = camera;
@@ -61,7 +68,7 @@ public class Scene {
                 .boxed()
                 .sorted(Comparator.reverseOrder())
                 .forEach(i -> removedModels.add(models.remove((int)i)));
-        selected = new int[0];
+        selectModels(new int[0]);
     }
 
     public void disposeRemovedModels(GL4 gl) {
@@ -70,9 +77,8 @@ public class Scene {
     }
 
     public void dispose(GL4 gl) {
-        for (Model model : models) {
-            model.getMesh().dispose(gl);
-        }
+        for (Model model : models) model.getMesh().dispose(gl);
+        for (Model model : removedModels) model.getMesh().dispose(gl);
         globalPointer.validate(gl);
         globalPointer.getMesh().dispose(gl);
         localPointer.validate(gl);
@@ -93,26 +99,38 @@ public class Scene {
         return closest;
     }
 
-    public void selectModels() {
-        selectModels(selected);
+    public void updateLocalPointerPosition() {
+        if(selected == null || selected.length == 0) return;
+        Vector3f position = new Vector3f();
+        for (int i : selected) {
+            if(transformationCenter == localPointer)
+                position.add(models.get(i).getPosition());
+            else
+                position.add(models.get(i).getPosition().mulPosition(models.get(i).getTransformationMatrix(), new Vector3f()));
+        }
+        position.div(selected.length);
+        if(localPointer.getPosition().distance(position) > 0.01f)
+            localPointer.setPosition(position.x, position.y, position.z);
     }
 
     public void selectModels(int[] selected) {
         this.selected = selected;
-        Vector3f position = new Vector3f();
-        for (int i : selected) {
-            position.add(models.get(i).getPosition());
-        }
-        position.div(selected.length);
-        localPointer.setPosition(position.x, position.y, position.z);
+        for (Model model : selectedModels) model.applyTransformationMatrix();
+        translation.set(0);
+        rotation.set(0);
+        scale.set(1);
+        updateTransformationMatrix();
+        selectedModels.clear();
+        Arrays.stream(selected).mapToObj(models::get).forEach(selectedModels::add);
+        updateLocalPointerPosition();
     }
 
     public int[] getSelected() {
         return selected;
     }
 
-    public void select(Model model) {
-        selected = new int[] {models.indexOf(model)};
+    public void selectModel(Model model) {
+        selectModels(new int[] {models.indexOf(model)});
     }
 
     public void invertSelect(Model model) {
@@ -124,7 +142,7 @@ public class Scene {
         } else {
             selected.add(index);
         }
-        this.selected = selected.stream().mapToInt(i -> i).sorted().toArray();
+        selectModels(selected.stream().mapToInt(i -> i).sorted().toArray());
     }
 
     public Pointer getPointer() {
@@ -146,5 +164,58 @@ public class Scene {
 
     public void setPointerWorldCoords(Vector3fc coords) {
         globalPointer.setPosition(coords.x(), coords.y(), coords.z());
+        updateTransformationMatrix();
+    }
+
+    public void setTransformationCenter(boolean useGlobalPointer) {
+        setTransformationCenter(useGlobalPointer ? globalPointer : localPointer);
+    }
+
+    public void setTransformationCenter(Pointer pointer) {
+        selectModels(selected);
+        this.transformationCenter = pointer;
+    }
+
+    public Vector3fc getTranslation() {
+        return translation;
+    }
+
+    public Vector3fc getRotation() {
+        return rotation;
+    }
+
+    public Vector3fc getScale() {
+        return scale;
+    }
+
+    public void setTranslation(float x, float y, float z) {
+        this.translation.set(x, y, z);
+        updateTransformationMatrix();
+    }
+
+    public void setRotation(float x, float y, float z) {
+        this.rotation.set(x, y, z);
+        updateTransformationMatrix();
+    }
+
+    public void setScale(float x, float y, float z) {
+        this.scale.set(x, y, z);
+        updateTransformationMatrix();
+    }
+
+    private void updateTransformationMatrix() {
+        Vector3fc transformationCenter = this.transformationCenter.getPosition();
+        transformation.identity()
+                .translate(transformationCenter)
+                .translate(translation)
+                .rotateZYX(
+                        (float) Math.toRadians(rotation.z),
+                        (float) Math.toRadians(rotation.y),
+                        (float) Math.toRadians(rotation.x))
+                .scale(scale)
+                .translate(transformationCenter.negate(new Vector3f()));
+        for (Model model : selectedModels) {
+            model.setTransformationMatrix(transformation);
+        }
     }
 }
