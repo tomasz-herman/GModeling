@@ -24,7 +24,7 @@
               <text value="x"/>
             </properties>
           </component>
-          <component id="a313a" class="javax.swing.JSlider" binding="rotationX">
+          <component id="a313a" class="javax.swing.JSlider" binding="rotationX" custom-create="true">
             <constraints>
               <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -41,7 +41,7 @@
               <text value="y"/>
             </properties>
           </component>
-          <component id="71031" class="javax.swing.JSlider" binding="rotationY">
+          <component id="71031" class="javax.swing.JSlider" binding="rotationY" custom-create="true">
             <constraints>
               <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>
@@ -58,7 +58,7 @@
               <text value="z"/>
             </properties>
           </component>
-          <component id="777a6" class="javax.swing.JSlider" binding="rotationZ">
+          <component id="777a6" class="javax.swing.JSlider" binding="rotationZ" custom-create="true">
             <constraints>
               <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="1" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
             </constraints>

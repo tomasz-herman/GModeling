@@ -187,30 +187,30 @@
                       <text value="z"/>
                     </properties>
                   </component>
-                  <component id="4671f" class="javax.swing.JSlider" binding="xRotation">
+                  <component id="4671f" class="javax.swing.JSlider" binding="xRotation" custom-create="true">
                     <constraints>
                       <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <maximum value="360"/>
+                      <maximum value="36000"/>
                       <value value="0"/>
                     </properties>
                   </component>
-                  <component id="a8580" class="javax.swing.JSlider" binding="yRotation">
+                  <component id="a8580" class="javax.swing.JSlider" binding="yRotation" custom-create="true">
                     <constraints>
                       <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <maximum value="360"/>
+                      <maximum value="36000"/>
                       <value value="0"/>
                     </properties>
                   </component>
-                  <component id="ba03" class="javax.swing.JSlider" binding="zRotation">
+                  <component id="ba03" class="javax.swing.JSlider" binding="zRotation" custom-create="true">
                     <constraints>
                       <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
                     </constraints>
                     <properties>
-                      <maximum value="360"/>
+                      <maximum value="36000"/>
                       <value value="0"/>
                     </properties>
                   </component>

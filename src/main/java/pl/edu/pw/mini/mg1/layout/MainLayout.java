@@ -8,6 +8,8 @@ import pl.edu.pw.mini.mg1.opengl.GLController;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.Objects;
 
 public class MainLayout {
@@ -70,6 +72,64 @@ public class MainLayout {
 
     public Container getMainPane() {
         return mainPane;
+    }
+
+    public static JSlider createSlider() {
+        return new JSlider(0, 36000, 0) {
+            private SliderPopupListener popupHandler;
+
+            @Override
+            public void updateUI() {
+                removeMouseMotionListener(popupHandler);
+                removeMouseListener(popupHandler);
+                removeMouseWheelListener(popupHandler);
+                super.updateUI();
+                popupHandler = new SliderPopupListener();
+                addMouseMotionListener(popupHandler);
+                addMouseListener(popupHandler);
+                addMouseWheelListener(popupHandler);
+            }
+        };
+    }
+
+    private static class SliderPopupListener extends MouseAdapter {
+        private final JWindow toolTip = new JWindow();
+        private final JLabel label = new JLabel("", SwingConstants.CENTER);
+        private final Dimension size = new Dimension(80, 24);
+        private int prevValue = -1;
+
+        public SliderPopupListener() {
+            super();
+            label.setOpaque(false);
+            label.setBorder(BorderFactory.createLineBorder(new Color(74, 136, 199)));
+            toolTip.add(label);
+            toolTip.setSize(size);
+        }
+
+        protected void updateToolTip(MouseEvent me) {
+            JSlider slider = (JSlider) me.getComponent();
+            int intValue = slider.getValue();
+            if (prevValue != intValue) {
+                label.setText(String.format("%.2f", slider.getValue() / 100f));
+                Point pt = me.getPoint();
+                pt.y = -size.height;
+                SwingUtilities.convertPointToScreen(pt, me.getComponent());
+                pt.translate(-size.width / 2, 0);
+                toolTip.setLocation(pt);
+            }
+            prevValue = intValue;
+        }
+
+        @Override
+        public void mouseDragged(MouseEvent me) {
+            toolTip.setVisible(true);
+            updateToolTip(me);
+        }
+
+        @Override
+        public void mouseReleased(MouseEvent me) {
+            toolTip.setVisible(false);
+        }
     }
 
     /**
