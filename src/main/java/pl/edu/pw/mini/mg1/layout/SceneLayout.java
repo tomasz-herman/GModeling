@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.joml.Vector3fc;
+import pl.edu.pw.mini.mg1.models.Model;
 import pl.edu.pw.mini.mg1.models.Point;
 import pl.edu.pw.mini.mg1.models.Scene;
 import pl.edu.pw.mini.mg1.models.Torus;
@@ -35,6 +36,7 @@ public class SceneLayout implements Controller<Scene> {
     private JSpinner xTranslation;
     private Scene scene;
     private Controller<Scene> pointerController;
+    private Controller<Model> modelController;
 
     public SceneLayout() {
         $$$setupUI$$$();
@@ -45,6 +47,11 @@ public class SceneLayout implements Controller<Scene> {
             if (!e.getValueIsAdjusting()) {
                 var indices = table.getSelectionModel().getSelectedIndices();
                 scene.selectModels(indices);
+                if (indices.length == 1) {
+                    modelController.set(scene.getModels().get(indices[0]));
+                } else {
+                    modelController.set(null);
+                }
             }
         });
         addCombo.setRenderer(new PromptComboBoxRenderer("Add"));
@@ -173,6 +180,10 @@ public class SceneLayout implements Controller<Scene> {
         pointerController.set(scene);
         pointerControllerPane.removeAll();
         pointerControllerPane.add(pointerController.getMainPane(), BorderLayout.CENTER);
+    }
+
+    public void setModelController(Controller<Model> modelController) {
+        this.modelController = modelController;
     }
 
     private final class SceneTableModel extends AbstractTableModel {

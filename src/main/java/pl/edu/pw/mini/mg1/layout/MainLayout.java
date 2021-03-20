@@ -32,6 +32,7 @@ public class MainLayout {
         ModelLayout modelController = new ModelLayout();
         CameraLayout cameraController = new CameraLayout();
         SceneLayout sceneController = new SceneLayout();
+        sceneController.setModelController(modelController);
         PointerLayout pointerController = new PointerLayout();
         loadController(modelController.getMainPane());
 

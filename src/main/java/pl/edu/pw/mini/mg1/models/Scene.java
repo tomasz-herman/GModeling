@@ -109,7 +109,7 @@ public class Scene {
                 position.add(models.get(i).getPosition().mulPosition(models.get(i).getTransformationMatrix(), new Vector3f()));
         }
         position.div(selected.length);
-        if(localPointer.getPosition().distance(position) > 0.01f)
+        if(localPointer.getPosition().distance(position) > 0.009f)
             localPointer.setPosition(position.x, position.y, position.z);
     }
 

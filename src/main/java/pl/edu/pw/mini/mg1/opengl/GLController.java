@@ -69,7 +69,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.addModel(new Point());
         scene.getCamera().setPosition(0, 0, 2);
 
-        modelController.set(scene.getModelsAndPointers().get(0));
+        modelController.set(null);
         cameraController.set(scene.getCamera());
         sceneController.set(scene);
         pointerController.set(scene);
