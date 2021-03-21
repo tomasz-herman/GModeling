@@ -226,6 +226,7 @@ public class SceneLayout implements Controller<Scene> {
         @Override
         public void setValueAt(Object aValue, int rowIndex, int columnIndex) {
             scene.getModels().get(rowIndex).setName(aValue.toString());
+            if (modelController != null) modelController.refresh();
         }
     }
 

@@ -5,7 +5,6 @@ import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Math;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.layout.Controller;
@@ -138,7 +137,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     }
 
     private void addAction(JComponent component, String keyStroke, Runnable action) {
-        component.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW)
+        component.getInputMap(JComponent.WHEN_FOCUSED)
                 .put(KeyStroke.getKeyStroke(keyStroke), keyStroke);
         component.getActionMap().put(keyStroke, new AbstractAction() {
                     @Override

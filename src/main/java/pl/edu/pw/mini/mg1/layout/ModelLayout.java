@@ -10,10 +10,6 @@ import pl.edu.pw.mini.mg1.models.Torus;
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.util.Dictionary;
-import java.util.Hashtable;
 
 import static pl.edu.pw.mini.mg1.layout.MainLayout.createSlider;
 
@@ -106,7 +102,12 @@ public class ModelLayout implements Controller<Model> {
     public void refresh() {
         specificFeaturesPane.removeAll();
         if (model != null) {
-            modelName.setText(model.getName());
+            String name = model.getName();
+            if (name.length() > 16) {
+                modelName.setToolTipText(name);
+                name = name.substring(0, 15).concat("...");
+            }
+            modelName.setText(name);
             scaleX.setValue(model.getScale().x());
             scaleY.setValue(model.getScale().y());
             scaleZ.setValue(model.getScale().z());
@@ -124,7 +125,8 @@ public class ModelLayout implements Controller<Model> {
                 specificFeaturesPane.add(new JPanel());
             }
         } else {
-            modelName.setText("");
+            modelName.setText(null);
+            modelName.setToolTipText(null);
         }
         boolean enabled = model != null;
         scaleX.setEnabled(enabled);
@@ -226,7 +228,7 @@ public class ModelLayout implements Controller<Model> {
         mainPane.add(specificFeaturesPane, new GridConstraints(4, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         modelName = new JLabel();
         modelName.setText("model");
-        mainPane.add(modelName, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPane.add(modelName, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, 1, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
