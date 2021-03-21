@@ -27,9 +27,4 @@ public class Pointer extends Model {
         }, GL4.GL_LINES);
         mesh.load(gl);
     }
-
-    @Override
-    public float test(Ray ray) {
-        return -1;
-    }
 }

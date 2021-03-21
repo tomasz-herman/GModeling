@@ -130,6 +130,11 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         addAction(gljPanel, "released Z", () -> roll = false);
         addAction(gljPanel, "pressed X", () -> unroll = true);
         addAction(gljPanel, "released X", () -> unroll = false);
+
+        addAction(gljPanel, "pressed DELETE", () -> {
+            scene.deleteSelected();
+            sceneController.refresh();
+        });
     }
 
     private void addAction(JComponent component, String keyStroke, Runnable action) {

@@ -68,6 +68,7 @@ public class SceneLayout implements Controller<Scene> {
         });
         deleteButton.addActionListener(e -> {
             scene.deleteSelected();
+            table.getSelectionModel().clearSelection();
             table.revalidate();
         });
         xScale.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.01));
@@ -85,7 +86,7 @@ public class SceneLayout implements Controller<Scene> {
         yRotation.addChangeListener(e -> {
             if (scene != null) {
                 Vector3fc rotation = scene.getRotation();
-                scene.setRotation(rotation.x() / 100f, yRotation.getValue(), rotation.z());
+                scene.setRotation(rotation.x(), yRotation.getValue() / 100f, rotation.z());
             }
         });
         zRotation.addChangeListener(e -> {
@@ -175,6 +176,7 @@ public class SceneLayout implements Controller<Scene> {
             yRotation.setValue((int) scene.getRotation().y() * 100);
             zRotation.setValue((int) scene.getRotation().z() * 100);
         }
+        table.revalidate();
     }
 
     public void setPointerController(Controller<Scene> pointerController) {
