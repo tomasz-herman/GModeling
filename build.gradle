@@ -7,7 +7,7 @@ plugins {
 group 'pl.edu.pw.mini.mg1'
 version '1.0'
 
-targetCompatibility = 15
+targetCompatibility = 16
 
 repositories {
     mavenCentral()
