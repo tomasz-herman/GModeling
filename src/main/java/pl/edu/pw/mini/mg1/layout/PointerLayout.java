@@ -25,9 +25,9 @@ public class PointerLayout implements Controller<Scene> {
         xWorld.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
         yWorld.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
         zWorld.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
-        xScreen.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.001));
-        yScreen.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.001));
-        zScreen.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.001));
+        xScreen.setModel(new SpinnerNumberModel(0, -10000, 10000, 1.0));
+        yScreen.setModel(new SpinnerNumberModel(0, -10000, 10000, 1.0));
+        zScreen.setModel(new SpinnerNumberModel(0, -10000, 10000, 0.001));
         xWorld.addChangeListener(change -> {
             if (scene == null || refreshing) return;
             scene.setPointerWorldCoords(

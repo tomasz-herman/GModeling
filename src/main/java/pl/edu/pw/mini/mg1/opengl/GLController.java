@@ -5,6 +5,7 @@ import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Math;
 import org.joml.Vector2i;
+import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.layout.Controller;
@@ -15,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.*;
+import java.util.List;
 import java.util.function.Consumer;
 
 public class GLController implements GLEventListener, MouseListener, MouseWheelListener, MouseMotionListener {
@@ -63,10 +65,22 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         renderer = new Renderer(gl);
         scene = new Scene(new PerspectiveCamera(1, 0.1f, 100, 60));
 
-        scene.addModel(new Torus(100, 40, 0.5f, 0.1f));
-        scene.addModel(new Torus(10, 10, 10, 2));
-        scene.addModel(new Point());
         scene.getCamera().setPosition(0, 0, 2);
+
+        Point a = new Point();
+        Point b = new Point();
+        Point c = new Point();
+        Point d = new Point();
+
+        scene.addModel(new BezierC0(List.of(a, b, c, d), scene.getCamera()));
+        scene.setPointerWorldCoords(new Vector3f(0, 0, 0));
+        scene.addModel(a);
+        scene.setPointerWorldCoords(new Vector3f(1, 0, 0));
+        scene.addModel(b);
+        scene.setPointerWorldCoords(new Vector3f(1, 1, 0));
+        scene.addModel(c);
+        scene.setPointerWorldCoords(new Vector3f(0, 1, 0));
+        scene.addModel(d);
 
         modelController.set(null);
         cameraController.set(scene.getCamera());
@@ -77,7 +91,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     @Override
     public void reshape(GLAutoDrawable drawable, final int x, final int y, final int width, final int height) {
         GL4 gl = drawable.getGL().getGL4();
-        scene.getCamera().setAspect((float) width / height);
+        scene.getCamera().setResolution(width, height);
         renderer.reshape(gl, x, y, width, height);
     }
 

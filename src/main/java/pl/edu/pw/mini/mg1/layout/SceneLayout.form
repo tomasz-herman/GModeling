@@ -57,6 +57,7 @@
               <model>
                 <item value="Point"/>
                 <item value="Torus"/>
+                <item value="BezierC0"/>
               </model>
             </properties>
           </component>

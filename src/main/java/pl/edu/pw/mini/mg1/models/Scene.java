@@ -106,7 +106,7 @@ public class Scene {
             if(transformationCenter == localPointer)
                 position.add(models.get(i).getPosition());
             else
-                position.add(models.get(i).getPosition().mulPosition(models.get(i).getTransformationMatrix(), new Vector3f()));
+                position.add(models.get(i).getTransformedPosition());
         }
         position.div(selected.length);
         localPointer.setPosition(position.x, position.y, position.z);
@@ -126,6 +126,10 @@ public class Scene {
 
     public int[] getSelected() {
         return selected;
+    }
+
+    public List<Model> getSelectedModels() {
+        return Arrays.stream(selected).mapToObj(models::get).collect(Collectors.toList());
     }
 
     public void selectModel(Model model) {

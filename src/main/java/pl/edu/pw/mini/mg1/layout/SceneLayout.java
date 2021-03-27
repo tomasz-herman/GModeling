@@ -4,18 +4,22 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.joml.Vector3fc;
-import pl.edu.pw.mini.mg1.models.Model;
+import pl.edu.pw.mini.mg1.models.*;
 import pl.edu.pw.mini.mg1.models.Point;
-import pl.edu.pw.mini.mg1.models.Scene;
-import pl.edu.pw.mini.mg1.models.Torus;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableModel;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.Insets;
+import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 import static pl.edu.pw.mini.mg1.layout.MainLayout.createSlider;
 
@@ -62,6 +66,14 @@ public class SceneLayout implements Controller<Scene> {
             switch ((String) Objects.requireNonNull(addCombo.getSelectedItem())) {
                 case "Point" -> scene.addModel(new Point());
                 case "Torus" -> scene.addModel(new Torus());
+                case "BezierC0" -> {
+                    List<Point> points = scene.getSelectedModels().stream()
+                            .filter(p -> p instanceof Point)
+                            .map(p -> (Point) p)
+                            .collect(Collectors.toList());
+                    if (points.size() == 0) return;
+                    scene.addModel(new BezierC0(points, scene.getCamera()));
+                }
             }
             addCombo.setSelectedIndex(-1);
             table.revalidate();
@@ -275,6 +287,7 @@ public class SceneLayout implements Controller<Scene> {
         final DefaultComboBoxModel defaultComboBoxModel1 = new DefaultComboBoxModel();
         defaultComboBoxModel1.addElement("Point");
         defaultComboBoxModel1.addElement("Torus");
+        defaultComboBoxModel1.addElement("BezierC0");
         addCombo.setModel(defaultComboBoxModel1);
         panel1.add(addCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         pointerControllerPane = new JPanel();

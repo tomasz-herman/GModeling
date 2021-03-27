@@ -32,7 +32,7 @@ public abstract class Model {
 
     private void calculateModelMatrix() {
         modelMatrix.identity()
-                .translate(position.mulPosition(transformationMatrix, new Vector3f()))
+                .translate(getTransformedPosition())
                 .rotateZYX(
                         (float) Math.toRadians(rotation.z),
                         (float) Math.toRadians(rotation.y),
@@ -60,6 +60,10 @@ public abstract class Model {
 
     public Vector3fc getPosition() {
         return position;
+    }
+
+    public Vector3fc getTransformedPosition() {
+        return position.mulPosition(transformationMatrix, new Vector3f());
     }
 
     public Vector3fc getRotation() {

@@ -18,6 +18,8 @@ public class PerspectiveCamera {
     private final Matrix4f projectionMatrix;
     private final Matrix4f viewProjectionMatrix;
 
+    private final Vector2i resolution;
+
     public PerspectiveCamera(float aspect, float near, float far, float fov) {
         this.aspect = aspect;
         this.near = near;
@@ -28,6 +30,7 @@ public class PerspectiveCamera {
         this.viewMatrix = new Matrix4f();
         this.projectionMatrix = new Matrix4f();
         this.viewProjectionMatrix = new Matrix4f();
+        this.resolution = new Vector2i();
         calculateProjectionMatrix();
     }
 
@@ -83,7 +86,7 @@ public class PerspectiveCamera {
         return viewProjectionMatrix;
     }
 
-    public void setAspect(float aspect) {
+    private void setAspect(float aspect) {
         this.aspect = aspect;
         calculateProjectionMatrix();
     }
@@ -141,10 +144,19 @@ public class PerspectiveCamera {
     }
 
     public Vector3f project(Vector3fc position) {
-        return viewProjectionMatrix.project(position,  new int[]{0, 0, 1, 1}, new Vector3f());
+        return viewProjectionMatrix.project(position,  new int[]{0, 0, resolution.x, resolution.y}, new Vector3f());
     }
 
     public Vector3f unproject(Vector3fc winCoords) {
-        return viewProjectionMatrix.unproject(winCoords,  new int[]{0, 0, 1, 1}, new Vector3f());
+        return viewProjectionMatrix.unproject(winCoords,  new int[]{0, 0, resolution.x, resolution.y}, new Vector3f());
+    }
+
+    public Vector2ic getResolution() {
+        return resolution;
+    }
+
+    public void setResolution(int width, int height) {
+        this.resolution.set(width, height);
+        setAspect((float) width / height);
     }
 }
