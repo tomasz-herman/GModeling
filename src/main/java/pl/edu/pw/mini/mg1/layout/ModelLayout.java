@@ -3,6 +3,7 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.joml.Vector3fc;
+import pl.edu.pw.mini.mg1.models.BezierC0;
 import pl.edu.pw.mini.mg1.models.Model;
 import pl.edu.pw.mini.mg1.models.Point;
 import pl.edu.pw.mini.mg1.models.Torus;
@@ -123,6 +124,10 @@ public class ModelLayout implements Controller<Model> {
                 specificFeaturesPane.add(layout.getMainPane());
             } else if (model instanceof Point) {
                 specificFeaturesPane.add(new JPanel());
+            } else if (model instanceof BezierC0) {
+                BezierLayout layout = new BezierLayout();
+                layout.set((BezierC0) model);
+                specificFeaturesPane.add(layout.getMainPane());
             }
         } else {
             modelName.setText(null);

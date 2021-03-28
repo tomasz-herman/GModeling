@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -68,6 +69,12 @@ public class Scene {
                 .boxed()
                 .sorted(Comparator.reverseOrder())
                 .forEach(i -> removedModels.add(models.remove((int)i)));
+        models.stream().filter(m -> m instanceof BezierC0)
+                .map(m -> (BezierC0)m)
+                .forEach(c -> removedModels.stream()
+                        .filter(p -> p instanceof Point)
+                        .map(p -> (Point)p)
+                        .forEach(c::removePoint));
         selectModels(new int[0]);
     }
 
@@ -102,13 +109,15 @@ public class Scene {
     public void updateLocalPointerPosition() {
         if(selected == null || selected.length == 0) return;
         Vector3f position = new Vector3f();
-        for (int i : selected) {
+        AtomicInteger c = new AtomicInteger();
+        selectedModels.stream().filter(m -> !(m instanceof BezierC0)).forEach(m -> {
+            c.getAndIncrement();
             if(transformationCenter == localPointer)
-                position.add(models.get(i).getPosition());
+                position.add(m.getPosition());
             else
-                position.add(models.get(i).getTransformedPosition());
-        }
-        position.div(selected.length);
+                position.add(m.getTransformedPosition());
+        });
+        position.div(c.get());
         localPointer.setPosition(position.x, position.y, position.z);
     }
 

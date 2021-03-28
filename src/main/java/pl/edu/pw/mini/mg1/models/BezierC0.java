@@ -21,13 +21,13 @@ public class BezierC0 extends Model {
     private boolean showPolyline = true;
 
     public BezierC0(List<Point> points, PerspectiveCamera camera) {
-        this.points = points;
+        this.points = new ArrayList<>(points);
         this.camera = camera;
         recalculate();
     }
 
     public void addPoint(Point point) {
-        points.add(point);
+        if(!points.contains(point))points.add(point);
         recalculate();
     }
 
