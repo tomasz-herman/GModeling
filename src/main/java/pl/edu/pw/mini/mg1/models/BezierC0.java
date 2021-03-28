@@ -4,13 +4,10 @@ import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
-import org.joml.Vector2i;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.numerics.DeCasteljau;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.IntSummaryStatistics;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -20,6 +17,8 @@ public class BezierC0 extends Model {
     private final List<Point> points;
     private final List<BezierC0Segment> segments = new ArrayList<>();
     private final PerspectiveCamera camera;
+
+    private boolean showPolyline = true;
 
     public BezierC0(List<Point> points, PerspectiveCamera camera) {
         this.points = points;
@@ -57,6 +56,14 @@ public class BezierC0 extends Model {
     protected void load(GL4 gl) {
         Stream<Float> vertices = Stream.empty();
         for (var segment : segments) vertices = Stream.concat(vertices, segment.getPositions());
+        if(showPolyline) {
+            vertices = Stream.concat(
+                    IntStream.range(0, points.size())
+                            .mapToObj(i -> points.get(points.size() - i - 1)) // reverse order
+                            .map(Model::getTransformedPosition)
+                            .flatMap(v -> Stream.of(v.x(), v.y(), v.z())),
+                    vertices);
+        }
         List<Float> positions = vertices.collect(Collectors.toList());
         mesh = new Mesh(
                 ArrayUtils.toPrimitive(positions.toArray(new Float[0])),
@@ -74,7 +81,7 @@ public class BezierC0 extends Model {
     @Override
     public void validate(GL4 gl) {
         recalculate();
-        if(mesh != null) mesh.dispose(gl);
+        dispose(gl);
         load(gl);
     }
 
@@ -103,7 +110,16 @@ public class BezierC0 extends Model {
     public void setScale(float x, float y, float z) {
     }
 
+    public boolean isShowPolyline() {
+        return showPolyline;
+    }
+
+    public void setShowPolyline(boolean showPolyline) {
+        this.showPolyline = showPolyline;
+    }
+
     private class BezierC0Segment {
+        public static final int MAX_DIVISIONS = 10000;
         private final List<Point> points;
         private final DeCasteljau[] solvers;
 
@@ -120,11 +136,13 @@ public class BezierC0 extends Model {
             var cords = points.stream()
                     .map(p -> camera.project(p.getTransformedPosition()))
                     .collect(Collectors.toList());
-            var width = cords.stream().mapToInt(c -> (int)c.x)
+            var width = cords.stream()
+                    .mapToInt(c -> (int)c.x)
                     .summaryStatistics();
-            var height = cords.stream().mapToInt(c -> (int)c.y)
+            var height = cords.stream()
+                    .mapToInt(c -> (int)c.y)
                     .summaryStatistics();
-            int res = Math.min(Math.max(width.getMax() - width.getMin(), height.getMax() - height.getMin()), 10000);
+            int res = Math.min(Math.max(width.getMax() - width.getMin(), height.getMax() - height.getMin()), MAX_DIVISIONS);
             if (res == 0) return Stream.empty();
             return IntStream.rangeClosed(0, res)
                     .mapToObj(i -> (float) i / res)

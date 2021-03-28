@@ -71,8 +71,11 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         Point b = new Point();
         Point c = new Point();
         Point d = new Point();
+        Point e = new Point();
+        Point f = new Point();
+        Point g = new Point();
 
-        scene.addModel(new BezierC0(List.of(a, b, c, d), scene.getCamera()));
+        scene.addModel(new BezierC0(List.of(a, b, c, d, e, f, g), scene.getCamera()));
         scene.setPointerWorldCoords(new Vector3f(0, 0, 0));
         scene.addModel(a);
         scene.setPointerWorldCoords(new Vector3f(1, 0, 0));
@@ -81,6 +84,12 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.addModel(c);
         scene.setPointerWorldCoords(new Vector3f(0, 1, 0));
         scene.addModel(d);
+        scene.setPointerWorldCoords(new Vector3f(0, 2, 0));
+        scene.addModel(e);
+        scene.setPointerWorldCoords(new Vector3f(0, 1, 2));
+        scene.addModel(f);
+        scene.setPointerWorldCoords(new Vector3f(2, 1, 1));
+        scene.addModel(g);
 
         modelController.set(null);
         cameraController.set(scene.getCamera());

@@ -72,17 +72,17 @@ public class Scene {
     }
 
     public void disposeRemovedModels(GL4 gl) {
-        removedModels.forEach(model -> model.getMesh().dispose(gl));
+        removedModels.forEach(model -> model.dispose(gl));
         removedModels.clear();
     }
 
     public void dispose(GL4 gl) {
-        for (Model model : models) model.getMesh().dispose(gl);
-        for (Model model : removedModels) model.getMesh().dispose(gl);
+        for (Model model : models) model.dispose(gl);
+        for (Model model : removedModels) model.dispose(gl);
         globalPointer.validate(gl);
-        globalPointer.getMesh().dispose(gl);
+        globalPointer.dispose(gl);
         localPointer.validate(gl);
-        localPointer.getMesh().dispose(gl);
+        localPointer.dispose(gl);
     }
 
     public Model test(float x, float y) {

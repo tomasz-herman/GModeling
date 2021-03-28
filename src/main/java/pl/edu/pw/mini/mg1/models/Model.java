@@ -105,13 +105,18 @@ public abstract class Model {
 
     public void validate(GL4 gl) {
         if(reload) {
-            if(mesh != null) mesh.dispose(gl);
+            dispose(gl);
             load(gl);
         }
         reload = false;
     }
 
     protected abstract void load(GL4 gl);
+
+    public void dispose(GL4 gl) {
+        if(mesh != null) mesh.dispose(gl);
+        reload = true;
+    }
 
     public String getName() {
         return name;
