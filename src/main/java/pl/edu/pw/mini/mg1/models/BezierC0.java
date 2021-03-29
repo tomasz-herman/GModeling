@@ -36,6 +36,10 @@ public class BezierC0 extends Model {
         recalculate();
     }
 
+    public List<Point> getPoints() {
+        return points;
+    }
+
     private void recalculate() {
         segments.clear();
         List<Point> segment = new ArrayList<>();

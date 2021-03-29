@@ -4,6 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import pl.edu.pw.mini.mg1.models.BezierC0;
+import pl.edu.pw.mini.mg1.models.Model;
 
 import javax.swing.*;
 import java.awt.*;
@@ -11,6 +12,7 @@ import java.awt.*;
 public class BezierLayout implements Controller<BezierC0> {
     private JPanel mainPane;
     private JCheckBox showPolyLineCheckBox;
+    private JList<String> pointsList;
     private BezierC0 bezier;
 
     public BezierLayout() {
@@ -36,8 +38,10 @@ public class BezierLayout implements Controller<BezierC0> {
     public void refresh() {
         if (bezier == null) {
             showPolyLineCheckBox.setSelected(false);
+            pointsList.setListData(new String[]{});
         } else {
             showPolyLineCheckBox.setSelected(bezier.isShowPolyline());
+            pointsList.setListData(bezier.getPoints().stream().map(Model::getName).toArray(String[]::new));
         }
     }
 
@@ -50,12 +54,17 @@ public class BezierLayout implements Controller<BezierC0> {
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(2, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
         showPolyLineCheckBox = new JCheckBox();
         showPolyLineCheckBox.setText("show poly-line");
         mainPane.add(showPolyLineCheckBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPane.add(spacer1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainPane.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        pointsList = new JList();
+        mainPane.add(pointsList, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        final JLabel label1 = new JLabel();
+        label1.setText("Curve points:");
+        mainPane.add(label1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

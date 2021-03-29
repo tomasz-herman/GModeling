@@ -57,7 +57,7 @@ public class SceneLayout implements Controller<Scene> {
                 var indices = table.getSelectionModel().getSelectedIndices();
                 scene.selectModels(indices);
                 if (indices.length == 1) {
-                    modelController.set(scene.getModels().get(indices[0]));
+                    modelController.set(scene.getSelectedModels().stream().findFirst().orElse(null));
                 } else {
                     modelController.set(null);
                 }
@@ -65,7 +65,7 @@ public class SceneLayout implements Controller<Scene> {
         });
         deleteCombo.setRenderer(new PromptComboBoxRenderer("Delete"));
         deleteCombo.setSelectedIndex(-1);
-        deleteCombo.setPrototypeDisplayValue("XXXXXXXX");
+        deleteCombo.setPrototypeDisplayValue("XXXXXX");
         deleteCombo.addPopupMenuListener(new BoundsPopupMenuListener(true, false));
         deleteCombo.addActionListener(e -> {
             switch ((String) Objects.requireNonNull(deleteCombo.getSelectedItem())) {
@@ -95,7 +95,7 @@ public class SceneLayout implements Controller<Scene> {
         });
         addCombo.setRenderer(new PromptComboBoxRenderer("Add"));
         addCombo.setSelectedIndex(-1);
-        addCombo.setPrototypeDisplayValue("XXXXXXXX");
+        addCombo.setPrototypeDisplayValue("XXXXXX");
         addCombo.addPopupMenuListener(new BoundsPopupMenuListener(true, false));
         addCombo.addActionListener(e -> {
             switch ((String) Objects.requireNonNull(addCombo.getSelectedItem())) {
@@ -113,7 +113,7 @@ public class SceneLayout implements Controller<Scene> {
                             .filter(p -> p instanceof Point)
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
-                    if (points.size() == 0) return;
+                    if (points.size() == 0) break;
                     scene.addModel(new BezierC0(points, scene.getCamera()));
                 }
                 case "Points to curve" -> {
