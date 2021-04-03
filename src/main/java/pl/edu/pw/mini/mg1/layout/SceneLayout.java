@@ -114,7 +114,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModel(new BezierC0(points, scene.getCamera()));
+                    scene.addModel(new BezierC0(points));
                 }
                 case "Points to curve" -> {
                     List<Model> selected = scene.getSelectedModels();

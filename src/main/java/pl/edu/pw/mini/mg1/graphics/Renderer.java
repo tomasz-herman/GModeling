@@ -76,5 +76,6 @@ public class Renderer {
 
     public void dispose(GL4 gl) {
         shader.dispose(gl);
+        bezierShader.dispose(gl);
     }
 }

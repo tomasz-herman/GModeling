@@ -13,13 +13,19 @@ import java.util.List;
 import java.util.stream.Stream;
 
 public class BezierC0 extends Model {
-    private final List<Point> points;
-    private final PropertyChangeListener pcl = e -> reload = true;
+    private final List<Point> points = new ArrayList<>();
+    private final PolyLine polyLine = new PolyLine(points);
+    private final PropertyChangeListener pcl = e -> {
+        polyLine.reload = true;
+        reload = true;
+    };
 
     private boolean showPolyline = true;
 
-    public BezierC0(List<Point> points, PerspectiveCamera camera) {
-        this.points = new ArrayList<>(points);
+    public BezierC0(List<Point> points) {
+        this.points.addAll(points);
+        points.forEach(p -> p.addPropertyChangeListener(pcl));
+        polyLine.reload = true;
     }
 
     public void addPoint(Point point) {
@@ -27,12 +33,14 @@ public class BezierC0 extends Model {
             points.add(point);
             point.addPropertyChangeListener(pcl);
         }
+        polyLine.reload = true;
         reload = true;
     }
 
     public void removePoint(Point point) {
         points.remove(point);
         point.removePropertyChangeListener(pcl);
+        polyLine.reload = true;
         reload = true;
     }
 
@@ -43,8 +51,8 @@ public class BezierC0 extends Model {
     @Override
     protected void load(GL4 gl) {
         float[] positions = ArrayUtils.toPrimitive(points.stream()
-                .flatMap(point ->
-                        Stream.of(point.getTransformedPosition().x(), point.getTransformedPosition().y(), point.getTransformedPosition().z()))
+                .map(Model::getTransformedPosition)
+                .flatMap(pos -> Stream.of(pos.x(), pos.y(), pos.z()))
                 .toArray(Float[]::new));
         List<Integer> indices = new ArrayList<>();
         for (int i = 0; i < points.size(); i += 3) {
@@ -63,6 +71,7 @@ public class BezierC0 extends Model {
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         renderer.renderBezier(gl, camera, this);
+        if(showPolyline) polyLine.render(gl, camera, renderer);
     }
 
     @Override
@@ -101,5 +110,17 @@ public class BezierC0 extends Model {
 
     public void setShowPolyline(boolean showPolyline) {
         this.showPolyline = showPolyline;
+    }
+
+    @Override
+    public void dispose(GL4 gl) {
+        super.dispose(gl);
+        polyLine.dispose(gl);
+    }
+
+    @Override
+    public void validate(GL4 gl) {
+        super.validate(gl);
+        polyLine.validate(gl);
     }
 }
