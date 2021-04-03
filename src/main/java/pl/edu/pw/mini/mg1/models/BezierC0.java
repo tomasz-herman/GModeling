@@ -24,8 +24,6 @@ public class BezierC0 extends Model {
 
     public BezierC0(List<Point> points) {
         this.points.addAll(points);
-        points.forEach(p -> p.addPropertyChangeListener(pcl));
-        polyLine.reload = true;
     }
 
     public void addPoint(Point point) {
@@ -50,6 +48,7 @@ public class BezierC0 extends Model {
 
     @Override
     protected void load(GL4 gl) {
+        points.forEach(p -> p.addPropertyChangeListener(pcl));
         float[] positions = ArrayUtils.toPrimitive(points.stream()
                 .map(Model::getTransformedPosition)
                 .flatMap(pos -> Stream.of(pos.x(), pos.y(), pos.z()))
@@ -89,20 +88,16 @@ public class BezierC0 extends Model {
     }
 
     @Override
-    public void applyTransformationMatrix() {
-    }
+    public void applyTransformationMatrix() { }
 
     @Override
-    public void setPosition(float x, float y, float z) {
-    }
+    public void setPosition(float x, float y, float z) { }
 
     @Override
-    public void setRotation(float x, float y, float z) {
-    }
+    public void setRotation(float x, float y, float z) { }
 
     @Override
-    public void setScale(float x, float y, float z) {
-    }
+    public void setScale(float x, float y, float z) { }
 
     public boolean isShowPolyline() {
         return showPolyline;
@@ -115,6 +110,7 @@ public class BezierC0 extends Model {
     @Override
     public void dispose(GL4 gl) {
         super.dispose(gl);
+        points.forEach(p -> p.removePropertyChangeListener(pcl));
         polyLine.dispose(gl);
     }
 
