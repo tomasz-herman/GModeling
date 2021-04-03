@@ -60,6 +60,7 @@ public class Renderer {
         gl.glUseProgram(bezierShader.getProgramID());
 
         bezierShader.loadMatrix4f(gl, "mvp", mvp);
+        bezierShader.loadInteger(gl, "resolution", Math.max(camera.getResolution().x(), camera.getResolution().y()));
 
         gl.glBindVertexArray(model.getMesh().getVao());
         gl.glDrawElements(model.getMesh().getPrimitivesType(),

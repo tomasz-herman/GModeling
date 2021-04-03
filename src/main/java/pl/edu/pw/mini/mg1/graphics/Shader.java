@@ -38,6 +38,11 @@ public class Shader {
         shaderList.forEach(gl::glDeleteShader);
     }
 
+    public void loadInteger(GL4 gl, String name, int value) {
+        int location = gl.glGetUniformLocation(programID, name);
+        gl.glUniform1i(location, value);
+    }
+
     public void loadFloat(GL4 gl, String name, float value) {
         int location = gl.glGetUniformLocation(programID, name);
         gl.glUniform1f(location, value);
