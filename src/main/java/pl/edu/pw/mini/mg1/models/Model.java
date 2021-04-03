@@ -2,8 +2,10 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.joml.*;
+import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.BoundingVolume;
 import pl.edu.pw.mini.mg1.collisions.Ray;
+import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.utils.GeneratorUtils;
 
 import java.lang.Math;
@@ -28,7 +30,14 @@ public abstract class Model {
         modelMatrix = new Matrix4f();
         transformationMatrix = new Matrix4f();
         name = getClass().getSimpleName() + " " + GeneratorUtils.getID();
+        setupBoundingVolume();
     }
+
+    public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
+        renderer.render(gl, camera, this);
+    }
+
+    protected abstract void setupBoundingVolume();
 
     private void calculateModelMatrix() {
         modelMatrix.identity()

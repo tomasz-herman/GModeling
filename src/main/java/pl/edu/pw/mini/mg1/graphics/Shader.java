@@ -26,6 +26,18 @@ public class Shader {
         shaderList.forEach(gl::glDeleteShader);
     }
 
+    public Shader(GL4 gl, String vertexShaderPath, String fragmentShaderPath, String geometryShaderPath) {
+        List<Integer> shaderList = new ArrayList<>();
+
+        shaderList.add(createShader(gl, GL4.GL_VERTEX_SHADER, IOUtils.readResource(vertexShaderPath)));
+        shaderList.add(createShader(gl, GL4.GL_FRAGMENT_SHADER, IOUtils.readResource(fragmentShaderPath)));
+        shaderList.add(createShader(gl, GL4.GL_GEOMETRY_SHADER, IOUtils.readResource(geometryShaderPath)));
+
+        programID = createProgram(gl, shaderList);
+
+        shaderList.forEach(gl::glDeleteShader);
+    }
+
     public void loadFloat(GL4 gl, String name, float value) {
         int location = gl.glGetUniformLocation(programID, name);
         gl.glUniform1f(location, value);

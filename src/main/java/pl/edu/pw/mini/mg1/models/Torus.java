@@ -19,6 +19,11 @@ public class Torus extends Model {
     }
 
     @Override
+    protected void setupBoundingVolume() {
+        this.boundingVolume = new BoundingSphere(outerRadius + innerRadius);
+    }
+
+    @Override
     protected void load(GL4 gl) {
         generateGeometry();
         mesh.load(gl);
@@ -29,7 +34,7 @@ public class Torus extends Model {
         this.innerSegments = innerSegments;
         this.outerRadius = outerRadius;
         this.innerRadius = innerRadius;
-        this.boundingVolume = new BoundingSphere(outerRadius + innerRadius);
+        setupBoundingVolume();
     }
 
     private void generateGeometry() {
@@ -95,7 +100,7 @@ public class Torus extends Model {
 
     public void setOuterRadius(float outerRadius) {
         this.outerRadius = outerRadius;
-        this.boundingVolume = new BoundingSphere(outerRadius + innerRadius);
+        setupBoundingVolume();
         reload = true;
     }
 
@@ -105,7 +110,7 @@ public class Torus extends Model {
 
     public void setInnerRadius(float innerRadius) {
         this.innerRadius = innerRadius;
-        this.boundingVolume = new BoundingSphere(outerRadius + innerRadius);
+        setupBoundingVolume();
         reload = true;
     }
 }

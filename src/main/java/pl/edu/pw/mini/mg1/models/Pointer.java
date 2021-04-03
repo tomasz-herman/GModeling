@@ -5,8 +5,12 @@ import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
 
 public class Pointer extends Model {
     @Override
-    protected void load(GL4 gl) {
+    protected void setupBoundingVolume() {
         this.boundingVolume = new BoundingSphere(0.1f);
+    }
+
+    @Override
+    protected void load(GL4 gl) {
         this.mesh = new Mesh(new float[] {
                 0, 0, 0,
                 0.1f, 0, 0,
