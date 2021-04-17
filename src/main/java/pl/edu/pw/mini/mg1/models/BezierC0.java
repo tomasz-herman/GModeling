@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class BezierC0 extends Model {
+public class BezierC0 extends Model implements Curve {
     private final List<Point> points = new ArrayList<>();
     private final PolyLine polyLine = new PolyLine(points);
     private final PropertyChangeListener pcl = e -> {
@@ -23,9 +23,10 @@ public class BezierC0 extends Model {
     private boolean showPolyline = true;
 
     public BezierC0(List<Point> points) {
-        this.points.addAll(points);
+        points.forEach(this::addPoint);
     }
 
+    @Override
     public void addPoint(Point point) {
         if (!points.contains(point)) {
             points.add(point);
@@ -35,6 +36,7 @@ public class BezierC0 extends Model {
         reload = true;
     }
 
+    @Override
     public void removePoint(Point point) {
         points.remove(point);
         point.removePropertyChangeListener(pcl);

@@ -3,10 +3,8 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import org.joml.Vector3fc;
-import pl.edu.pw.mini.mg1.models.BezierC0;
-import pl.edu.pw.mini.mg1.models.Model;
+import pl.edu.pw.mini.mg1.models.*;
 import pl.edu.pw.mini.mg1.models.Point;
-import pl.edu.pw.mini.mg1.models.Torus;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -127,6 +125,10 @@ public class ModelLayout implements Controller<Model> {
             } else if (model instanceof BezierC0) {
                 BezierLayout layout = new BezierLayout();
                 layout.set((BezierC0) model);
+                specificFeaturesPane.add(layout.getMainPane());
+            } else if (model instanceof BSpline) {
+                BSplineController layout = new BSplineController();
+                layout.set((BSpline) model);
                 specificFeaturesPane.add(layout.getMainPane());
             }
         } else {

@@ -2,7 +2,6 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.joml.Matrix4fc;
-import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
 
@@ -42,9 +41,17 @@ public class Point extends Model {
     }
 
     @Override
+    public void move(float dx, float dy, float dz) {
+        Vector3fc oldPosition = getTransformedPosition();
+        super.move(dx, dy, dz);
+        changeSupport.firePropertyChange("position", oldPosition, getTransformedPosition());
+    }
+
+    @Override
     public void setTransformationMatrix(Matrix4fc transformation) {
         Vector3fc oldPosition = getTransformedPosition();
         super.setTransformationMatrix(transformation);
         changeSupport.firePropertyChange("position", oldPosition, getTransformedPosition());
     }
+
 }

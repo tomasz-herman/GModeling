@@ -75,7 +75,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         Point f = new Point();
         Point g = new Point();
 
-        scene.addModel(new BezierC0(List.of(a, b, c, d, e, f, g)));
+        scene.addModel(new BSpline(List.of(a, b, c, d, e, f, g)));
         scene.setPointerWorldCoords(new Vector3f(0, 0, 0));
         scene.addModel(a);
         scene.setPointerWorldCoords(new Vector3f(1, 0, 0));
@@ -187,8 +187,10 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         if(hit != null) {
             if(e.isControlDown()) scene.invertSelect(hit);
             else scene.selectModel(hit);
-            sceneController.refresh();
+        } else {
+            scene.selectModels(new int[] {});
         }
+        sceneController.refresh();
     }
 
     @Override
