@@ -69,8 +69,8 @@ public class Scene {
                 .boxed()
                 .sorted(Comparator.reverseOrder())
                 .forEach(i -> removedModels.add(models.remove((int)i)));
-        models.stream().filter(m -> m instanceof BezierC0)
-                .map(m -> (BezierC0)m)
+        models.stream().filter(m -> m instanceof Curve)
+                .map(m -> (Curve)m)
                 .forEach(c -> removedModels.stream()
                         .filter(p -> p instanceof Point)
                         .map(p -> (Point)p)
@@ -110,7 +110,7 @@ public class Scene {
         if(selected == null || selected.length == 0) return;
         Vector3f position = new Vector3f();
         AtomicInteger c = new AtomicInteger();
-        selectedModels.stream().filter(m -> !(m instanceof BezierC0)).forEach(m -> {
+        selectedModels.stream().filter(m -> !(m instanceof Curve)).forEach(m -> {
             c.getAndIncrement();
             if(transformationCenter == localPointer)
                 position.add(m.getPosition());
