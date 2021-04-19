@@ -99,14 +99,14 @@ public class BSpline extends Model implements Curve {
             PropertyChangeListener p2Change = evt -> {
                 Vector3fc oldValue = (Vector3fc) evt.getOldValue();
                 Vector3fc newValue = (Vector3fc) evt.getNewValue();
-                Vector3fc delta = newValue.sub(oldValue, new Vector3f());
+                Vector3fc delta = newValue.sub(oldValue, new Vector3f()).mul(3.0f / 2.0f);
                 p2.move(delta.x(), delta.y(), delta.z());
             };
 
             PropertyChangeListener p3Change = evt -> {
                 Vector3fc oldValue = (Vector3fc) evt.getOldValue();
                 Vector3fc newValue = (Vector3fc) evt.getNewValue();
-                Vector3fc delta = newValue.sub(oldValue, new Vector3f());
+                Vector3fc delta = newValue.sub(oldValue, new Vector3f()).mul(3.0f / 2.0f);
                 p3.move(delta.x(), delta.y(), delta.z());
             };
 
