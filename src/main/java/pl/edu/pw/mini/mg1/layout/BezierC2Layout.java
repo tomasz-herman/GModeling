@@ -4,7 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.joml.Vector3fc;
-import pl.edu.pw.mini.mg1.models.BSpline;
+import pl.edu.pw.mini.mg1.models.BezierC2;
 import pl.edu.pw.mini.mg1.models.Model;
 import pl.edu.pw.mini.mg1.models.Point;
 
@@ -14,7 +14,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
 
-public class BSplineController implements Controller<BSpline> {
+public class BezierC2Layout implements Controller<BezierC2> {
     private JCheckBox showBSplinePolylineCheckBox;
     private JCheckBox showBezierPolylineCheckBox;
     private JList<String> bsplinePointsList;
@@ -23,27 +23,27 @@ public class BSplineController implements Controller<BSpline> {
     private JSpinner yPosition;
     private JSpinner zPosition;
     private JSpinner xPosition;
-    private BSpline bSpline;
+    private BezierC2 bezierC2;
     private int idx = -1;
 
-    public BSplineController() {
+    public BezierC2Layout() {
         $$$setupUI$$$();
         showBSplinePolylineCheckBox.addActionListener(e -> {
-            if (bSpline == null) return;
-            bSpline.setShowPolyline(showBSplinePolylineCheckBox.isSelected());
+            if (bezierC2 == null) return;
+            bezierC2.setShowPolyline(showBSplinePolylineCheckBox.isSelected());
         });
         showBezierPolylineCheckBox.addActionListener(e -> {
-            if (bSpline == null) return;
-            bSpline.setShowBezierPolyline(showBezierPolylineCheckBox.isSelected());
+            if (bezierC2 == null) return;
+            bezierC2.setShowBezierPolyline(showBezierPolylineCheckBox.isSelected());
         });
         bezierPointsList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                if (bSpline == null) return;
+                if (bezierC2 == null) return;
                 var indices = bezierPointsList.getSelectionModel().getSelectedIndices();
                 if (indices.length == 0) return;
                 idx = indices[0];
-                bSpline.setSelectedVirtualPoint(idx);
-                Point p = bSpline.getBezierPoints().get(idx);
+                bezierC2.setSelectedVirtualPoint(idx);
+                Point p = bezierC2.getBezierPoints().get(idx);
                 xPosition.setValue(p.getPosition().x());
                 yPosition.setValue(p.getPosition().y());
                 zPosition.setValue(p.getPosition().z());
@@ -54,30 +54,30 @@ public class BSplineController implements Controller<BSpline> {
         zPosition.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
         xPosition.addChangeListener(e -> {
             if (idx != -1) {
-                if (bSpline == null) return;
-                Vector3fc position = bSpline.getBezierPoints().get(idx).getPosition();
-                bSpline.getBezierPoints().get(idx).setPosition(((Number) xPosition.getValue()).floatValue(), position.y(), position.z());
+                if (bezierC2 == null) return;
+                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
+                bezierC2.getBezierPoints().get(idx).setPosition(((Number) xPosition.getValue()).floatValue(), position.y(), position.z());
             }
         });
         yPosition.addChangeListener(e -> {
             if (idx != -1) {
-                if (bSpline == null) return;
-                Vector3fc position = bSpline.getBezierPoints().get(idx).getPosition();
-                bSpline.getBezierPoints().get(idx).setPosition(position.x(), ((Number) yPosition.getValue()).floatValue(), position.z());
+                if (bezierC2 == null) return;
+                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
+                bezierC2.getBezierPoints().get(idx).setPosition(position.x(), ((Number) yPosition.getValue()).floatValue(), position.z());
             }
         });
         zPosition.addChangeListener(e -> {
             if (idx != -1) {
-                if (bSpline == null) return;
-                Vector3fc position = bSpline.getBezierPoints().get(idx).getPosition();
-                bSpline.getBezierPoints().get(idx).setPosition(position.x(), position.y(), ((Number) zPosition.getValue()).floatValue());
+                if (bezierC2 == null) return;
+                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
+                bezierC2.getBezierPoints().get(idx).setPosition(position.x(), position.y(), ((Number) zPosition.getValue()).floatValue());
             }
         });
     }
 
     @Override
-    public void set(BSpline bSpline) {
-        this.bSpline = bSpline;
+    public void set(BezierC2 bezierC2) {
+        this.bezierC2 = bezierC2;
         refresh();
     }
 
@@ -88,16 +88,16 @@ public class BSplineController implements Controller<BSpline> {
 
     @Override
     public void refresh() {
-        if (bSpline == null) {
+        if (bezierC2 == null) {
             showBSplinePolylineCheckBox.setSelected(false);
             showBezierPolylineCheckBox.setSelected(false);
             bsplinePointsList.setListData(new String[]{});
             bezierPointsList.setListData(new String[]{});
         } else {
-            showBSplinePolylineCheckBox.setSelected(bSpline.isShowPolyline());
-            showBezierPolylineCheckBox.setSelected(bSpline.isShowBezierPolyline());
-            bsplinePointsList.setListData(bSpline.getPoints().stream().map(Model::getName).toArray(String[]::new));
-            bezierPointsList.setListData(bSpline.getBezierPoints().stream().map(Model::getName).toArray(String[]::new));
+            showBSplinePolylineCheckBox.setSelected(bezierC2.isShowPolyline());
+            showBezierPolylineCheckBox.setSelected(bezierC2.isShowBezierPolyline());
+            bsplinePointsList.setListData(bezierC2.getPoints().stream().map(Model::getName).toArray(String[]::new));
+            bezierPointsList.setListData(bezierC2.getBezierPoints().stream().map(Model::getName).toArray(String[]::new));
         }
     }
 

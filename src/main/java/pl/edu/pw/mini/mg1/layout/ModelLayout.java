@@ -126,9 +126,9 @@ public class ModelLayout implements Controller<Model> {
                 BezierLayout layout = new BezierLayout();
                 layout.set((BezierC0) model);
                 specificFeaturesPane.add(layout.getMainPane());
-            } else if (model instanceof BSpline) {
-                BSplineController layout = new BSplineController();
-                layout.set((BSpline) model);
+            } else if (model instanceof BezierC2) {
+                BezierC2Layout layout = new BezierC2Layout();
+                layout.set((BezierC2) model);
                 specificFeaturesPane.add(layout.getMainPane());
             }
         } else {

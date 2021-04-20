@@ -50,7 +50,7 @@
                 <item value="Point"/>
                 <item value="Torus"/>
                 <item value="BezierC0"/>
-                <item value="BSpline"/>
+                <item value="BezierC2"/>
                 <item value="Points to curve"/>
               </model>
             </properties>

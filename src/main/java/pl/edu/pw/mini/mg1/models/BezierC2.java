@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class BSpline extends Model implements Curve {
+public class BezierC2 extends Model implements Curve {
     private final List<Point> points = new ArrayList<>();
     private final List<Point> bezierPoints = new ArrayList<>();
     private final List<Point> invalidBezierPoints = new ArrayList<>();
@@ -30,7 +30,7 @@ public class BSpline extends Model implements Curve {
     private boolean showPolyline = false;
     private boolean showBezierPolyline = true;
 
-    public BSpline(List<Point> points) {
+    public BezierC2(List<Point> points) {
         points.forEach(this::addPoint);
     }
 
