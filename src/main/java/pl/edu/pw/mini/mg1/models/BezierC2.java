@@ -51,6 +51,12 @@ public class BezierC2 extends Model implements Curve {
     }
 
     @Override
+    public void removeAllPoints() {
+        List<Point> copy = new ArrayList<>(points);
+        copy.forEach(this::removePoint);
+    }
+
+    @Override
     public List<Point> getPoints() {
         return points;
     }

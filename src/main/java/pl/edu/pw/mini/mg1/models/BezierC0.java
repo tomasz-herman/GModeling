@@ -44,6 +44,12 @@ public class BezierC0 extends Model implements Curve {
         reload = true;
     }
 
+    @Override
+    public void removeAllPoints() {
+        List<Point> copy = new ArrayList<>(points);
+        copy.forEach(this::removePoint);
+    }
+
     public List<Point> getPoints() {
         return points;
     }
