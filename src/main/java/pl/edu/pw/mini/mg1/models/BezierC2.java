@@ -29,6 +29,7 @@ public class BezierC2 extends Model implements Curve {
 
     private boolean showPolyline = false;
     private boolean showBezierPolyline = true;
+    private boolean showBezierPoints = true;
 
     public BezierC2(List<Point> points) {
         points.forEach(this::addPoint);
@@ -157,11 +158,13 @@ public class BezierC2 extends Model implements Curve {
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         renderer.renderBezier(gl, camera, this);
-        for (int i = 0; i < bezierPoints.size(); i++) {
-            Point p = bezierPoints.get(i);
-            if(i == selectedVirtualPoint) gl.glVertexAttrib3f(1, 1, 0.25f, 0);
-            p.render(gl, camera, renderer);
-            if(i == selectedVirtualPoint) gl.glVertexAttrib3f(1, 1, 1, 1);
+        if(showBezierPoints) {
+            for (int i = 0; i < bezierPoints.size(); i++) {
+                Point p = bezierPoints.get(i);
+                if(i == selectedVirtualPoint) gl.glVertexAttrib3f(1, 1, 0.25f, 0);
+                p.render(gl, camera, renderer);
+                if(i == selectedVirtualPoint) gl.glVertexAttrib3f(1, 1, 1, 1);
+            }
         }
         if(showPolyline) polyLine.render(gl, camera, renderer);
         if(showBezierPolyline) bezierPolyLine.render(gl, camera, renderer);
@@ -234,5 +237,13 @@ public class BezierC2 extends Model implements Curve {
 
     public void setSelectedVirtualPoint(int selectedVirtualPoint) {
         this.selectedVirtualPoint = selectedVirtualPoint;
+    }
+
+    public boolean isShowBezierPoints() {
+        return showBezierPoints;
+    }
+
+    public void setShowBezierPoints(boolean showBezierPoints) {
+        this.showBezierPoints = showBezierPoints;
     }
 }

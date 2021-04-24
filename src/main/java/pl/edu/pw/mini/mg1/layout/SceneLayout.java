@@ -124,6 +124,22 @@ public class SceneLayout implements Controller<Scene> {
                     if (points.size() == 0) break;
                     scene.addModel(new BezierC2(points));
                 }
+                case "Interpolation BezierC2" -> {
+                    List<Point> points = scene.getSelectedModels().stream()
+                            .filter(p -> p instanceof Point)
+                            .map(p -> (Point) p)
+                            .collect(Collectors.toList());
+                    if (points.size() == 0) break;
+                    scene.addModel(new InterpolationBezierC2(points));
+                }
+                case "Chord Interpolation BezierC2" -> {
+                    List<Point> points = scene.getSelectedModels().stream()
+                            .filter(p -> p instanceof Point)
+                            .map(p -> (Point) p)
+                            .collect(Collectors.toList());
+                    if (points.size() == 0) break;
+                    scene.addModel(new ChordInterpolationBezierC2(points));
+                }
                 case "Points to curve" -> {
                     List<Model> selected = scene.getSelectedModels();
                     List<Curve> curves = selected.stream()
@@ -646,6 +662,8 @@ public class SceneLayout implements Controller<Scene> {
         defaultComboBoxModel1.addElement("Torus");
         defaultComboBoxModel1.addElement("BezierC0");
         defaultComboBoxModel1.addElement("BezierC2");
+        defaultComboBoxModel1.addElement("Interpolation BezierC2");
+        defaultComboBoxModel1.addElement("Chord Interpolation BezierC2");
         defaultComboBoxModel1.addElement("Points to curve");
         addCombo.setModel(defaultComboBoxModel1);
         panel1.add(addCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));

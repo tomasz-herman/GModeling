@@ -106,7 +106,7 @@ public class ChordInterpolationBezierC2 extends Model implements Curve {
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         if(bezierC0 != null) {
-            bezierC0.setShowPolyline(false);
+            bezierC0.setShowPolyline(showPolyline);
             bezierC0.render(gl, camera, renderer);
         }
     }

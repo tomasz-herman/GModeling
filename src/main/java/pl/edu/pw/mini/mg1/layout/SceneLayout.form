@@ -51,6 +51,8 @@
                 <item value="Torus"/>
                 <item value="BezierC0"/>
                 <item value="BezierC2"/>
+                <item value="Interpolation BezierC2"/>
+                <item value="Chord Interpolation BezierC2"/>
                 <item value="Points to curve"/>
               </model>
             </properties>

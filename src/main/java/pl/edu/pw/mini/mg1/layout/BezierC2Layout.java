@@ -23,6 +23,7 @@ public class BezierC2Layout implements Controller<BezierC2> {
     private JSpinner yPosition;
     private JSpinner zPosition;
     private JSpinner xPosition;
+    private JCheckBox showBezierPointsCheckBox;
     private BezierC2 bezierC2;
     private int idx = -1;
 
@@ -35,6 +36,10 @@ public class BezierC2Layout implements Controller<BezierC2> {
         showBezierPolylineCheckBox.addActionListener(e -> {
             if (bezierC2 == null) return;
             bezierC2.setShowBezierPolyline(showBezierPolylineCheckBox.isSelected());
+        });
+        showBezierPointsCheckBox.addActionListener(e -> {
+            if (bezierC2 == null) return;
+            bezierC2.setShowBezierPoints(showBezierPointsCheckBox.isSelected());
         });
         bezierPointsList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
@@ -91,11 +96,13 @@ public class BezierC2Layout implements Controller<BezierC2> {
         if (bezierC2 == null) {
             showBSplinePolylineCheckBox.setSelected(false);
             showBezierPolylineCheckBox.setSelected(false);
+            showBezierPointsCheckBox.setSelected(false);
             bsplinePointsList.setListData(new String[]{});
             bezierPointsList.setListData(new String[]{});
         } else {
             showBSplinePolylineCheckBox.setSelected(bezierC2.isShowPolyline());
             showBezierPolylineCheckBox.setSelected(bezierC2.isShowBezierPolyline());
+            showBezierPointsCheckBox.setSelected(bezierC2.isShowBezierPoints());
             bsplinePointsList.setListData(bezierC2.getPoints().stream().map(Model::getName).toArray(String[]::new));
             bezierPointsList.setListData(bezierC2.getBezierPoints().stream().map(Model::getName).toArray(String[]::new));
         }
@@ -110,28 +117,28 @@ public class BezierC2Layout implements Controller<BezierC2> {
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(8, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(9, 1, new Insets(0, 0, 0, 0), -1, -1));
         showBSplinePolylineCheckBox = new JCheckBox();
         showBSplinePolylineCheckBox.setText("show b-spline polyline");
         mainPane.add(showBSplinePolylineCheckBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPane.add(spacer1, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainPane.add(spacer1, new GridConstraints(8, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         showBezierPolylineCheckBox = new JCheckBox();
         showBezierPolylineCheckBox.setText("show bezier polyline");
         mainPane.add(showBezierPolylineCheckBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
         label1.setText("BSpline points:");
-        mainPane.add(label1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPane.add(label1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         bsplinePointsList = new JList();
-        mainPane.add(bsplinePointsList, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        mainPane.add(bsplinePointsList, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         final JLabel label2 = new JLabel();
         label2.setText("Bezier points:");
-        mainPane.add(label2, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPane.add(label2, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         bezierPointsList = new JList();
-        mainPane.add(bezierPointsList, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
+        mainPane.add(bezierPointsList, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_WANT_GROW, null, new Dimension(150, 50), null, 0, false));
         final JPanel panel1 = new JPanel();
         panel1.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
-        mainPane.add(panel1, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
+        mainPane.add(panel1, new GridConstraints(7, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel1.setBorder(BorderFactory.createTitledBorder(null, "Bezier point position", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         final JLabel label3 = new JLabel();
         label3.setText("x");
@@ -148,6 +155,9 @@ public class BezierC2Layout implements Controller<BezierC2> {
         panel1.add(zPosition, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         xPosition = new JSpinner();
         panel1.add(xPosition, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        showBezierPointsCheckBox = new JCheckBox();
+        showBezierPointsCheckBox.setText("show bezier points");
+        mainPane.add(showBezierPointsCheckBox, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

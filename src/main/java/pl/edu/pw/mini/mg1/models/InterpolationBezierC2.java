@@ -114,6 +114,7 @@ public class InterpolationBezierC2 extends Model implements Curve {
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         if(bezierC2 != null) {
             bezierC2.setShowPolyline(false);
+            bezierC2.setShowBezierPoints(false);
             bezierC2.setShowBezierPolyline(showPolyline);
             bezierC2.render(gl, camera, renderer);
         }
