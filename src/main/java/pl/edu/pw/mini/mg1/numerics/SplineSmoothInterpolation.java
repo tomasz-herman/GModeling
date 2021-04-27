@@ -18,27 +18,36 @@ public class SplineSmoothInterpolation {
     private float[] b;
     private float[] e;
     private float[] cx, cy, cz;
-    private Vector3f[] A;
+    private final Vector3f[] A;
 
     public SplineSmoothInterpolation(Vector3f[] points) {
-        this.A = points;
-        this.n = points.length;
+        List<Vector3f> pps = new ArrayList<>();
+        for (int i = 0; i < points.length; i++) {
+            Vector3f p1 = points[i];
+            pps.add(p1);
+            for (int j = i + 1; j < points.length; j++, i++) {
+                Vector3f p2 = points[j];
+                if(p1.distanceSquared(p2) > 0.00001f) break;
+            }
+        }
+        this.A = pps.toArray(new Vector3f[0]);
+        this.n = A.length;
         if(n < 3) return;
         d = new float[n - 1];
         for (int i = 0; i < n - 1; i++) {
-            d[i] = points[i].distance(points[i + 1]);
+            d[i] = A[i].distance(A[i + 1]);
         }
         cx = new float[n - 2];
         for (int i = 1; i < n - 1; i++) {
-            cx[i - 1] = 3 * ((points[i + 1].x - points[i].x) / d[i] - (points[i].x - points[i - 1].x) / d[i - 1]) / (d[i - 1] + d[i]);
+            cx[i - 1] = 3 * ((A[i + 1].x - A[i].x) / d[i] - (A[i].x - A[i - 1].x) / d[i - 1]) / (d[i - 1] + d[i]);
         }
         cy = new float[n - 2];
         for (int i = 1; i < n - 1; i++) {
-            cy[i - 1] = 3 * ((points[i + 1].y - points[i].y) / d[i] - (points[i].y - points[i - 1].y) / d[i - 1]) / (d[i - 1] + d[i]);
+            cy[i - 1] = 3 * ((A[i + 1].y - A[i].y) / d[i] - (A[i].y - A[i - 1].y) / d[i - 1]) / (d[i - 1] + d[i]);
         }
         cz = new float[n - 2];
         for (int i = 1; i < n - 1; i++) {
-            cz[i - 1] = 3 * ((points[i + 1].z - points[i].z) / d[i] - (points[i].z - points[i - 1].z) / d[i - 1]) / (d[i - 1] + d[i]);
+            cz[i - 1] = 3 * ((A[i + 1].z - A[i].z) / d[i] - (A[i].z - A[i - 1].z) / d[i - 1]) / (d[i - 1] + d[i]);
         }
         e = new float[n - 2];
         for (int i = 0; i < n - 2; i++) {
