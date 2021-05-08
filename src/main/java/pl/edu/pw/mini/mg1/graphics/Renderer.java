@@ -3,14 +3,22 @@ package pl.edu.pw.mini.mg1.graphics;
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL4;
 import org.joml.Matrix4f;
+import org.joml.Matrix4fc;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.models.Model;
 import pl.edu.pw.mini.mg1.models.Pointer;
 import pl.edu.pw.mini.mg1.models.Scene;
 
+import java.util.function.BiConsumer;
+import java.util.function.Function;
+
 public class Renderer {
     private final Shader shader;
     private final Shader bezierShader;
+
+    private Function<PerspectiveCamera, Matrix4fc> viewProjectionFunction = PerspectiveCamera::getViewProjectionMatrix;
+    private BiConsumer<GL4, Scene> renderFunction = this::renderStereo;
+    private boolean grayscale = true;
 
     public Renderer(GL4 gl) {
         shader = new Shader(gl, "/default.vert", "/default.frag");
@@ -24,19 +32,42 @@ public class Renderer {
     }
 
     public void render(GL4 gl, Scene scene) {
-        gl.glClear(GL.GL_COLOR_BUFFER_BIT);
-        gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
-
+        clearColorAndDepth(gl);
+        setGrayScale(gl, grayscale);
+        viewProjectionFunction = PerspectiveCamera::getViewProjectionMatrix;
         for (Model model : scene.getModelsAndPointers()) {
             model.validate(gl);
             model.render(gl, scene.getCamera(), this);
         }
     }
 
+    public void clearColorAndDepth(GL4 gl) {
+        gl.glClear(GL.GL_COLOR_BUFFER_BIT | GL.GL_DEPTH_BUFFER_BIT);
+    }
+
+    public void renderStereo(GL4 gl, Scene scene) {
+        clearColorAndDepth(gl);
+        setGrayScale(gl, grayscale);
+        gl.glColorMask(true, false, false, true);
+        viewProjectionFunction = (camera -> camera.getStereoViewProjectionMatrix(-1));
+        for (Model model : scene.getModelsAndPointers()) {
+            model.validate(gl);
+            model.render(gl, scene.getCamera(), this);
+        }
+        gl.glClear(GL.GL_DEPTH_BUFFER_BIT);
+        gl.glColorMask(false, true, true, true);
+        viewProjectionFunction = (camera -> camera.getStereoViewProjectionMatrix(1));
+        for (Model model : scene.getModelsAndPointers()) {
+            model.validate(gl);
+            model.render(gl, scene.getCamera(), this);
+        }
+        gl.glColorMask(true, true, true, true);
+    }
+
     public void render(GL4 gl, PerspectiveCamera camera, Model model) {
         gl.glLineWidth(model instanceof Pointer ? 3 : 1);
 
-        Matrix4f mvp = camera.getViewProjectionMatrix().get(new Matrix4f());
+        Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
         mvp.mul(model.getModelMatrix());
 
         gl.glUseProgram(shader.getProgramID());
@@ -54,7 +85,7 @@ public class Renderer {
     public void renderBezier(GL4 gl, PerspectiveCamera camera, Model model) {
         gl.glLineWidth(1);
 
-        Matrix4f mvp = camera.getViewProjectionMatrix().get(new Matrix4f());
+        Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
         mvp.mul(model.getModelMatrix());
 
         gl.glUseProgram(bezierShader.getProgramID());
@@ -70,6 +101,12 @@ public class Renderer {
         gl.glUseProgram(0);
     }
 
+    private void setGrayScale(GL4 gl, boolean grayScale) {
+        gl.glUseProgram(shader.getProgramID());
+        shader.loadInteger(gl, "grayscale", grayScale ? 1 : 0);
+        gl.glUseProgram(0);
+    }
+
     public void reshape(GL gl, int x, int y, int width, int height) {
         gl.glViewport(x, y, width, height);
     }
@@ -77,5 +114,21 @@ public class Renderer {
     public void dispose(GL4 gl) {
         shader.dispose(gl);
         bezierShader.dispose(gl);
+    }
+
+    public BiConsumer<GL4, Scene> getRenderFunction() {
+        return renderFunction;
+    }
+
+    public void setRenderFunction(BiConsumer<GL4, Scene> renderFunction) {
+        this.renderFunction = renderFunction;
+    }
+
+    public boolean isGrayscale() {
+        return grayscale;
+    }
+
+    public void setGrayscale(boolean grayscale) {
+        this.grayscale = grayscale;
     }
 }

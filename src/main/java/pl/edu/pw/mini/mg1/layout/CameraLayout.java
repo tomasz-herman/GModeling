@@ -13,6 +13,8 @@ public class CameraLayout implements Controller<PerspectiveCamera> {
     private JSpinner near;
     private JSpinner far;
     private JSpinner fov;
+    private JSpinner focus;
+    private JSpinner eyeDist;
     private PerspectiveCamera camera;
 
     public CameraLayout() {
@@ -21,6 +23,8 @@ public class CameraLayout implements Controller<PerspectiveCamera> {
         near.setModel(new SpinnerNumberModel(5, 0.01, 10, 0.01));
         far.setModel(new SpinnerNumberModel(1000, 10, 10000, 10));
         fov.setModel(new SpinnerNumberModel(60, 1, 179, 1));
+        eyeDist.setModel(new SpinnerNumberModel(5, -10, 10, 0.01));
+        focus.setModel(new SpinnerNumberModel(5, 0.01, 1000, 0.1));
 
         near.addChangeListener(e -> {
             if (camera != null) {
@@ -35,6 +39,16 @@ public class CameraLayout implements Controller<PerspectiveCamera> {
         fov.addChangeListener(e -> {
             if (camera != null) {
                 camera.setFov(((Number) fov.getValue()).floatValue());
+            }
+        });
+        eyeDist.addChangeListener(e -> {
+            if (camera != null) {
+                camera.setEyeSeparation(((Number) eyeDist.getValue()).floatValue());
+            }
+        });
+        focus.addChangeListener(e -> {
+            if (camera != null) {
+                camera.setFocalLength(((Number) focus.getValue()).floatValue());
             }
         });
     }
@@ -55,6 +69,8 @@ public class CameraLayout implements Controller<PerspectiveCamera> {
             near.setValue(camera.getNear());
             far.setValue(camera.getFar());
             fov.setValue(camera.getFov());
+            focus.setValue(camera.getFocalLength());
+            eyeDist.setValue(camera.getEyeSeparation());
         }
     }
 
@@ -67,12 +83,12 @@ public class CameraLayout implements Controller<PerspectiveCamera> {
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(4, 2, new Insets(5, 5, 5, 5), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(6, 2, new Insets(5, 5, 5, 5), -1, -1));
         final JLabel label1 = new JLabel();
         label1.setText("Near");
         mainPane.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPane.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainPane.add(spacer1, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final JLabel label2 = new JLabel();
         label2.setText("Far");
         mainPane.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -85,6 +101,16 @@ public class CameraLayout implements Controller<PerspectiveCamera> {
         mainPane.add(far, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         fov = new JSpinner();
         mainPane.add(fov, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label4 = new JLabel();
+        label4.setText("Focus");
+        mainPane.add(label4, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        focus = new JSpinner();
+        mainPane.add(focus, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        eyeDist = new JSpinner();
+        mainPane.add(eyeDist, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label5 = new JLabel();
+        label5.setText("Eye dist");
+        mainPane.add(label5, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

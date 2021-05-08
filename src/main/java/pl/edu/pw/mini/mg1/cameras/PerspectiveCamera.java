@@ -3,7 +3,7 @@ package pl.edu.pw.mini.mg1.cameras;
 import org.joml.*;
 import pl.edu.pw.mini.mg1.collisions.Ray;
 
-import java.lang.Math;
+import static org.joml.Math.*;
 
 public class PerspectiveCamera {
     private float aspect;
@@ -19,6 +19,9 @@ public class PerspectiveCamera {
     private final Matrix4f viewProjectionMatrix;
 
     private final Vector2i resolution;
+
+    private float focalLength = 1.0f;
+    private float eyeSeparation = 0.05f;
 
     public PerspectiveCamera(float aspect, float near, float far, float fov) {
         this.aspect = aspect;
@@ -36,18 +39,37 @@ public class PerspectiveCamera {
 
     private void calculateViewMatrix() {
         viewMatrix.identity()
-                .rotateZ((float) Math.toRadians(rotation.z))
-                .rotateX((float) Math.toRadians(rotation.x))
-                .rotateY((float) Math.toRadians(rotation.y))
+                .rotateZ(toRadians(rotation.z))
+                .rotateX(toRadians(rotation.x))
+                .rotateY(toRadians(rotation.y))
                 .translate(-position.x, -position.y, -position.z);
         viewProjectionMatrix.set(projectionMatrix)
                 .mul(viewMatrix);
     }
 
     private void calculateProjectionMatrix() {
-        projectionMatrix.setPerspective((float) Math.toRadians(fov), aspect, near, far);
+        projectionMatrix.setPerspective(toRadians(fov), aspect, near, far);
         viewProjectionMatrix.set(projectionMatrix)
                 .mul(viewMatrix);
+    }
+
+    private Matrix4f getStereoViewMatrix(int eye) {
+        Vector3f right = getRight();
+        Vector3f front = getFront();
+        Vector3f up = getUp();
+        Vector3f pos = position.add(right.mul(eyeSeparation * 0.5f * eye, new Vector3f()), new Vector3f());
+        return new Matrix4f().lookAtLH(pos, pos.add(front, new Vector3f()), up);
+    }
+
+    private Matrix4f getStereoPerspectiveMatrix(int eye) {
+        float eyeOff = eye * (eyeSeparation * 0.5f) * (near / focalLength);
+        float top = near * tan(toRadians(fov) * 0.5f);
+        float right = aspect * top;
+        return new Matrix4f().frustum(-right - eyeOff, right - eyeOff, -top, top, near, far);
+    }
+
+    public Matrix4fc getStereoViewProjectionMatrix(int eye) {
+        return getStereoPerspectiveMatrix(eye).mul(getStereoViewMatrix(eye));
     }
 
     public float getAspect() {
@@ -86,6 +108,18 @@ public class PerspectiveCamera {
         return viewProjectionMatrix;
     }
 
+    public Vector3f getRight() {
+        return viewMatrix.getRow(0, new Vector3f());
+    }
+
+    public Vector3f getUp() {
+        return viewMatrix.getRow(1, new Vector3f());
+    }
+
+    public Vector3f getFront() {
+        return viewMatrix.getRow(2, new Vector3f());
+    }
+
     private void setAspect(float aspect) {
         this.aspect = aspect;
         calculateProjectionMatrix();
@@ -118,12 +152,12 @@ public class PerspectiveCamera {
 
     public void move(float dx, float dy, float dz) {
         if ( dz != 0 ) {
-            position.x -= (float)Math.sin(Math.toRadians(rotation.y)) * dz;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y)) * dz;
+            position.x -= sin(toRadians(rotation.y)) * dz;
+            position.z += cos(toRadians(rotation.y)) * dz;
         }
         if ( dx != 0) {
-            position.x -= (float)Math.sin(Math.toRadians(rotation.y - 90.0f)) * dx;
-            position.z += (float)Math.cos(Math.toRadians(rotation.y - 90.0f)) * dx;
+            position.x -= sin(toRadians(rotation.y - 90.0f)) * dx;
+            position.z += cos(toRadians(rotation.y - 90.0f)) * dx;
         }
         position.y += dy;
         calculateViewMatrix();
@@ -158,5 +192,21 @@ public class PerspectiveCamera {
     public void setResolution(int width, int height) {
         this.resolution.set(width, height);
         setAspect((float) width / height);
+    }
+
+    public float getFocalLength() {
+        return focalLength;
+    }
+
+    public void setFocalLength(float focalLength) {
+        this.focalLength = focalLength;
+    }
+
+    public float getEyeSeparation() {
+        return eyeSeparation;
+    }
+
+    public void setEyeSeparation(float eyeSeparation) {
+        this.eyeSeparation = eyeSeparation;
     }
 }

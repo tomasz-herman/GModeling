@@ -36,12 +36,14 @@ public class MainLayout {
         SceneLayout sceneController = new SceneLayout();
         sceneController.setModelController(modelController);
         PointerLayout pointerController = new PointerLayout();
+        RendererController rendererController = new RendererController();
         loadController(modelController.getMainPane());
 
         controller.setModelController(modelController);
         controller.setCameraController(cameraController);
         controller.setSceneController(sceneController);
         controller.setPointerController(pointerController);
+        controller.setRendererController(rendererController);
 
         controllerComboBox.addActionListener(e -> {
             switch ((String) Objects.requireNonNull(controllerComboBox.getSelectedItem())) {
@@ -52,6 +54,7 @@ public class MainLayout {
                     sceneController.setPointerController(pointerController);
                 }
                 case "Pointer" -> loadController(pointerController.getMainPane());
+                case "Renderer" -> loadController(rendererController.getMainPane());
             }
         });
     }
@@ -159,6 +162,7 @@ public class MainLayout {
         defaultComboBoxModel1.addElement("Camera");
         defaultComboBoxModel1.addElement("Scene");
         defaultComboBoxModel1.addElement("Pointer");
+        defaultComboBoxModel1.addElement("Renderer");
         controllerComboBox.setModel(defaultComboBoxModel1);
         panel2.add(controllerComboBox, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         controlsPane = new JScrollPane();
