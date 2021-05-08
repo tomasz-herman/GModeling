@@ -76,21 +76,36 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         Point f = new Point();
         Point g = new Point();
 
-        scene.addModel(new ChordInterpolationBezierC2(List.of(a, b, c, d, e, f, g)));
-        scene.setPointerWorldCoords(new Vector3f(0, 0, 0));
+        var bezier = new ChordInterpolationBezierC2(List.of(a, b, c, d, e, f, g));
+        bezier.setShowPolyline(false);
+
+        scene.addModel(bezier);
+        scene.setPointerWorldCoords(new Vector3f(5, 0, 5));
         scene.addModel(a);
-        scene.setPointerWorldCoords(new Vector3f(1, 0, 0));
+        scene.setPointerWorldCoords(new Vector3f(6, 0, 5));
         scene.addModel(b);
-        scene.setPointerWorldCoords(new Vector3f(1, 1, 0));
+        scene.setPointerWorldCoords(new Vector3f(6, 1, 5));
         scene.addModel(c);
-        scene.setPointerWorldCoords(new Vector3f(0, 1, 0));
+        scene.setPointerWorldCoords(new Vector3f(5, 1, 5));
         scene.addModel(d);
-        scene.setPointerWorldCoords(new Vector3f(0, 2, 0));
+        scene.setPointerWorldCoords(new Vector3f(5, 2, 5));
         scene.addModel(e);
-        scene.setPointerWorldCoords(new Vector3f(0, 1, 2));
+        scene.setPointerWorldCoords(new Vector3f(0, 1, 11));
         scene.addModel(f);
-        scene.setPointerWorldCoords(new Vector3f(2, 1, 1));
+        scene.setPointerWorldCoords(new Vector3f(7, 1, 6));
         scene.addModel(g);
+
+        for (int i = 0; i < 20; i++) {
+            scene.setPointerWorldCoords(new Vector3f(0, 10 - i, 0));
+            scene.addModel(new Point());
+            scene.setPointerWorldCoords(new Vector3f(10 - i, 0, 0));
+            scene.addModel(new Point());
+            scene.setPointerWorldCoords(new Vector3f(0, 0, 10 - i));
+            scene.addModel(new Point());
+        }
+
+        scene.setPointerWorldCoords(new Vector3f(0, 0, 10));
+        scene.addModel(new Torus(350, 350, 1, 0.25f));
 
         modelController.set(null);
         cameraController.set(scene.getCamera());
