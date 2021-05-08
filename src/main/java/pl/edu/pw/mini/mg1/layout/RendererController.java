@@ -14,11 +14,15 @@ public class RendererController implements Controller<Renderer> {
     private JRadioButton stereoRadioButton;
     private JRadioButton monoRadioButton;
     private JCheckBox grayscaleCheckBox;
+    private JRadioButton stereoAlternativeRadioButton;
     private Renderer renderer;
 
     public RendererController() {
         stereoRadioButton.addActionListener(e -> {
             if (renderer != null) renderer.setRenderFunction(renderer::renderStereo);
+        });
+        stereoAlternativeRadioButton.addActionListener(e -> {
+            if (renderer != null) renderer.setRenderFunction(renderer::renderStereoWithExtraSteps);
         });
         monoRadioButton.addActionListener(e -> {
             if (renderer != null) renderer.setRenderFunction(renderer::render);
@@ -41,8 +45,9 @@ public class RendererController implements Controller<Renderer> {
 
     @Override
     public void refresh() {
-        stereoRadioButton.setSelected(true);
-        monoRadioButton.setSelected(false);
+        stereoRadioButton.setSelected(false);
+        stereoAlternativeRadioButton.setSelected(false);
+        monoRadioButton.setSelected(true);
         grayscaleCheckBox.setSelected(true);
     }
 
@@ -62,22 +67,26 @@ public class RendererController implements Controller<Renderer> {
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
         stereoRadioButton = new JRadioButton();
         stereoRadioButton.setText("Stereo");
         mainPane.add(stereoRadioButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPane.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainPane.add(spacer1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         monoRadioButton = new JRadioButton();
         monoRadioButton.setText("Mono");
-        mainPane.add(monoRadioButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPane.add(monoRadioButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         grayscaleCheckBox = new JCheckBox();
         grayscaleCheckBox.setText("Grayscale");
-        mainPane.add(grayscaleCheckBox, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPane.add(grayscaleCheckBox, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        stereoAlternativeRadioButton = new JRadioButton();
+        stereoAlternativeRadioButton.setText("Stereo Alternative");
+        mainPane.add(stereoAlternativeRadioButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         ButtonGroup buttonGroup;
         buttonGroup = new ButtonGroup();
         buttonGroup.add(monoRadioButton);
         buttonGroup.add(stereoRadioButton);
+        buttonGroup.add(stereoAlternativeRadioButton);
     }
 
     /**
