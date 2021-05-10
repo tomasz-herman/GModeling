@@ -38,6 +38,19 @@ public class Shader {
         shaderList.forEach(gl::glDeleteShader);
     }
 
+    public Shader(GL4 gl, String vertexShaderPath, String fragmentShaderPath, String tesselationControlShader, String tesselationEvaluationShader) {
+        List<Integer> shaderList = new ArrayList<>();
+
+        shaderList.add(createShader(gl, GL4.GL_VERTEX_SHADER, IOUtils.readResource(vertexShaderPath)));
+        shaderList.add(createShader(gl, GL4.GL_FRAGMENT_SHADER, IOUtils.readResource(fragmentShaderPath)));
+        shaderList.add(createShader(gl, GL4.GL_TESS_CONTROL_SHADER, IOUtils.readResource(tesselationControlShader)));
+        shaderList.add(createShader(gl, GL4.GL_TESS_EVALUATION_SHADER, IOUtils.readResource(tesselationEvaluationShader)));
+
+        programID = createProgram(gl, shaderList);
+
+        shaderList.forEach(gl::glDeleteShader);
+    }
+
     public void loadInteger(GL4 gl, String name, int value) {
         int location = gl.glGetUniformLocation(programID, name);
         gl.glUniform1i(location, value);
@@ -114,6 +127,8 @@ public class Shader {
                 case GL4.GL_VERTEX_SHADER -> "vertex";
                 case GL4.GL_GEOMETRY_SHADER -> "geometry";
                 case GL4.GL_FRAGMENT_SHADER -> "fragment";
+                case GL4.GL_TESS_CONTROL_SHADER -> "control";
+                case GL4.GL_TESS_EVALUATION_SHADER -> "evaluation";
                 default -> "";
             };
             System.err.println("Compiler failure in " + strShaderType + " shader: " + strInfoLog);

@@ -6,6 +6,7 @@ import com.jogamp.opengl.util.GLBuffers;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
+import pl.edu.pw.mini.mg1.models.BezierPatchC0;
 import pl.edu.pw.mini.mg1.models.Model;
 import pl.edu.pw.mini.mg1.models.Pointer;
 import pl.edu.pw.mini.mg1.models.Scene;
@@ -19,6 +20,7 @@ public class Renderer {
     private final Shader shader;
     private final Shader bezierShader;
     private final Shader stereoShader;
+    private final Shader patchShader;
 
     private Function<PerspectiveCamera, Matrix4fc> viewProjectionFunction = PerspectiveCamera::getViewProjectionMatrix;
     private BiConsumer<GL4, Scene> renderFunction = this::render;
@@ -43,6 +45,7 @@ public class Renderer {
         shader = new Shader(gl, "/default.vert", "/default.frag");
         bezierShader = new Shader(gl, "/bezier.vert", "/bezier.frag", "/bezier.geom");
         stereoShader = new Shader(gl, "/stereo.vert", "/stereo.frag");
+        patchShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/patch.tese");
         gl.glClearColor(0f, 0f, 0f, 1.0f);
         gl.glClearDepth(1.0f);
         gl.glEnable(GL.GL_DEPTH_TEST);
@@ -255,5 +258,21 @@ public class Renderer {
         gl.glBindBuffer(GL4.GL_ARRAY_BUFFER, vbo.get(0));
         gl.glBufferData(GL4.GL_ARRAY_BUFFER, (long) quad.length * Float.BYTES, GLBuffers.newDirectFloatBuffer(quad), GL4.GL_STATIC_DRAW);
         quadVBO = vbo.get(0);
+    }
+
+    public void renderPatch(GL4 gl, PerspectiveCamera camera, BezierPatchC0 patch) {
+        Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
+
+        gl.glUseProgram(patchShader.getProgramID());
+
+        patchShader.loadMatrix4f(gl, "mvp", mvp);
+
+        gl.glBindVertexArray(patch.getMesh().getVao());
+        gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
+        gl.glDrawElements(patch.getMesh().getPrimitivesType(),
+                16,
+                GL4.GL_UNSIGNED_INT, 0);
+        gl.glBindVertexArray(0);
+        gl.glUseProgram(0);
     }
 }

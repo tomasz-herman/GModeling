@@ -75,6 +75,11 @@ public class Mesh {
         return vao.get(0);
     }
 
+    public int getVbo(int i) {
+        return vbos.get(i).get(0);
+    }
+
+
     public int vertexCount() {
         return indices.length;
     }
