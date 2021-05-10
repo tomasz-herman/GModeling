@@ -45,7 +45,7 @@ public class Renderer {
         shader = new Shader(gl, "/default.vert", "/default.frag");
         bezierShader = new Shader(gl, "/bezier.vert", "/bezier.frag", "/bezier.geom");
         stereoShader = new Shader(gl, "/stereo.vert", "/stereo.frag");
-        patchShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/patch.tese");
+        patchShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/patch.tese", "/patch.geom");
         gl.glClearColor(0f, 0f, 0f, 1.0f);
         gl.glClearDepth(1.0f);
         gl.glEnable(GL.GL_DEPTH_TEST);
