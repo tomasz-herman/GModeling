@@ -138,6 +138,10 @@ public class ModelLayout implements Controller<Model> {
                 ChordInterpolationBezierC2Layout layout = new ChordInterpolationBezierC2Layout();
                 layout.set((ChordInterpolationBezierC2) model);
                 specificFeaturesPane.add(layout.getMainPane());
+            } else if (model instanceof BezierPatchC0) {
+                BezierC0PatchController layout = new BezierC0PatchController();
+                layout.set((BezierPatchC0) model);
+                specificFeaturesPane.add(layout.getMainPane());
             }
         } else {
             modelName.setText(null);

@@ -24,9 +24,8 @@ public class BezierPatchC0 extends Model {
     private final List<Point> points = new ArrayList<>();
     private int divisions = 3;
 
-    private boolean showBezierMesh = true;
-
     private PolyMesh polyMesh;
+    private boolean showBezierMesh = false;
 
     public static BezierPatchC0 flat(float w, float h, int x, int y) {
         BezierPatchC0 patch = new BezierPatchC0();
