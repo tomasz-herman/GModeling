@@ -107,7 +107,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.setPointerWorldCoords(new Vector3f(0, 0, 10));
         scene.addModel(new Torus(350, 350, 1, 0.25f));
 
-        scene.addModel(new BezierPatchC0());
+        scene.addModel(BezierPatchC0.example());
+        scene.addModel(BezierPatchC0.flat(2, 2, 2, 2));
 
         modelController.set(null);
         cameraController.set(scene.getCamera());

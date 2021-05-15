@@ -266,11 +266,12 @@ public class Renderer {
         gl.glUseProgram(patchShader.getProgramID());
 
         patchShader.loadMatrix4f(gl, "mvp", mvp);
+        patchShader.loadInteger(gl, "divisions", patch.getDivisions());
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
         gl.glDrawElements(patch.getMesh().getPrimitivesType(),
-                16,
+                patch.getMesh().vertexCount(),
                 GL4.GL_UNSIGNED_INT, 0);
         gl.glBindVertexArray(0);
         gl.glUseProgram(0);

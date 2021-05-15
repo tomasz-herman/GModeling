@@ -11,6 +11,12 @@ import java.beans.PropertyChangeSupport;
 public class Point extends Model {
     private final PropertyChangeSupport changeSupport = new PropertyChangeSupport(this);
 
+    public Point() { }
+
+    public Point(float x, float y, float z) {
+        setPosition(x, y, z);
+    }
+
     @Override
     protected void setupBoundingVolume() {
         this.boundingVolume = new BoundingSphere(0.05f);
