@@ -20,74 +20,54 @@ public class BezierPatchC0 extends Model {
 
     private final PropertyChangeListener pcl = e -> reload = true;
 
+    private Point[][] surface;
     private final List<Point> points = new ArrayList<>();
     private int divisions = 3;
 
-    public static BezierPatchC0 example() {
-        BezierPatchC0 patch = new BezierPatchC0();
-        patch.points.addAll(List.of(
-                new Point(0.0f, 2.0f, 0.0f),
-                new Point(1.0f, 1.0f, 0.0f),
-                new Point(2.0f, 1.0f, 0.0f),
-                new Point(3.0f, 2.0f, 0.0f),
+    private boolean showBezierMesh = true;
 
-                new Point(0.0f, 1.0f, 1.0f),
-                new Point(1.0f, -2.0f, 1.0f),
-                new Point(2.0f, 1.0f, 1.0f),
-                new Point(3.0f, 0.0f, 1.0f),
-
-                new Point(0.0f, 0.0f, 2.0f),
-                new Point(1.0f, 1.0f, 2.0f),
-                new Point(2.0f, 0.0f, 2.0f),
-                new Point(3.0f, -1.0f, 2.0f),
-
-                new Point(0.0f, 0.0f, 3.0f),
-                new Point(1.0f, 1.0f, 3.0f),
-                new Point(2.0f, -1.0f, 3.0f),
-                new Point(3.0f, -1.0f, 3.0f)
-        ));
-        return patch;
-    }
+    private PolyMesh polyMesh;
 
     public static BezierPatchC0 flat(float w, float h, int x, int y) {
         BezierPatchC0 patch = new BezierPatchC0();
         int xp = 4 + (x - 1) * 3;
         int yp = 4 + (y - 1) * 3;
-        Point[][] surface = new Point[xp][yp];
+        patch.surface = new Point[xp][yp];
         float wx = w / (x * 3);
         float hy = h / (y * 3);
         for (int i = 0; i < xp; i++) {
             for (int j = 0; j < yp; j++) {
                 Point point = new Point(wx * i, 0, hy * j);
                 point.addPropertyChangeListener(patch.pcl);
-                surface[i][j] = point;
+                patch.surface[i][j] = point;
             }
         }
         for (int i = 0; i < xp - 1; i+=3) {
             for (int j = 0; j < yp - 1; j+=3) {
                 patch.points.addAll(List.of(
-                        surface[i][j],
-                        surface[i + 1][j],
-                        surface[i + 2][j],
-                        surface[i + 3][j],
+                        patch.surface[i][j],
+                        patch.surface[i + 1][j],
+                        patch.surface[i + 2][j],
+                        patch.surface[i + 3][j],
 
-                        surface[i][j + 1],
-                        surface[i + 1][j + 1],
-                        surface[i + 2][j + 1],
-                        surface[i + 3][j + 1],
+                        patch.surface[i][j + 1],
+                        patch.surface[i + 1][j + 1],
+                        patch.surface[i + 2][j + 1],
+                        patch.surface[i + 3][j + 1],
 
-                        surface[i][j + 2],
-                        surface[i + 1][j + 2],
-                        surface[i + 2][j + 2],
-                        surface[i + 3][j + 2],
+                        patch.surface[i][j + 2],
+                        patch.surface[i + 1][j + 2],
+                        patch.surface[i + 2][j + 2],
+                        patch.surface[i + 3][j + 2],
 
-                        surface[i][j + 3],
-                        surface[i + 1][j + 3],
-                        surface[i + 2][j + 3],
-                        surface[i + 3][j + 3]
+                        patch.surface[i][j + 3],
+                        patch.surface[i + 1][j + 3],
+                        patch.surface[i + 2][j + 3],
+                        patch.surface[i + 3][j + 3]
                 ));
             }
         }
+        patch.polyMesh = new PolyMesh(patch.surface);
         return patch;
     }
 
@@ -95,7 +75,7 @@ public class BezierPatchC0 extends Model {
         BezierPatchC0 patch = new BezierPatchC0();
         int xp = x * 3;
         int yp = 4 + (y - 1) * 3;
-        Point[][] surface = new Point[xp][yp];
+        patch.surface = new Point[xp][yp];
         float wx = 2 * PI / (x * 3);
         float hy = h / (y * 3);
         Function<Float, Float> fx = phi -> r * cos(phi);
@@ -104,35 +84,36 @@ public class BezierPatchC0 extends Model {
             for (int j = 0; j < yp; j++) {
                 Point point = new Point(fx.apply(wx * i), hy * j, fz.apply(wx * i));
                 point.addPropertyChangeListener(patch.pcl);
-                surface[i][j] = point;
+                patch.surface[i][j] = point;
             }
         }
         Function<Integer, Integer> mod = i -> i % xp;
         for (int i = 0; i < xp; i+=3) {
             for (int j = 0; j < yp - 1; j+=3) {
                 patch.points.addAll(List.of(
-                        surface[mod.apply(i)][j],
-                        surface[mod.apply(i + 1)][j],
-                        surface[mod.apply(i + 2)][j],
-                        surface[mod.apply(i + 3)][j],
+                        patch.surface[mod.apply(i)][j],
+                        patch.surface[mod.apply(i + 1)][j],
+                        patch.surface[mod.apply(i + 2)][j],
+                        patch.surface[mod.apply(i + 3)][j],
 
-                        surface[mod.apply(i)][j + 1],
-                        surface[mod.apply(i + 1)][j + 1],
-                        surface[mod.apply(i + 2)][j + 1],
-                        surface[mod.apply(i + 3)][j + 1],
+                        patch.surface[mod.apply(i)][j + 1],
+                        patch.surface[mod.apply(i + 1)][j + 1],
+                        patch.surface[mod.apply(i + 2)][j + 1],
+                        patch.surface[mod.apply(i + 3)][j + 1],
 
-                        surface[mod.apply(i)][j + 2],
-                        surface[mod.apply(i + 1)][j + 2],
-                        surface[mod.apply(i + 2)][j + 2],
-                        surface[mod.apply(i + 3)][j + 2],
+                        patch.surface[mod.apply(i)][j + 2],
+                        patch.surface[mod.apply(i + 1)][j + 2],
+                        patch.surface[mod.apply(i + 2)][j + 2],
+                        patch.surface[mod.apply(i + 3)][j + 2],
 
-                        surface[mod.apply(i)][j + 3],
-                        surface[mod.apply(i + 1)][j + 3],
-                        surface[mod.apply(i + 2)][j + 3],
-                        surface[mod.apply(i + 3)][j + 3]
+                        patch.surface[mod.apply(i)][j + 3],
+                        patch.surface[mod.apply(i + 1)][j + 3],
+                        patch.surface[mod.apply(i + 2)][j + 3],
+                        patch.surface[mod.apply(i + 3)][j + 3]
                 ));
             }
         }
+        patch.polyMesh = new PolyMesh(patch.surface);
         return patch;
     }
 
@@ -158,6 +139,7 @@ public class BezierPatchC0 extends Model {
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         renderer.renderPatch(gl, camera, this);
+        if(showBezierMesh) polyMesh.render(gl, camera, renderer);
     }
 
     public int getDivisions() {
@@ -170,5 +152,25 @@ public class BezierPatchC0 extends Model {
 
     public Stream<Point> getPoints() {
         return points.stream();
+    }
+
+    public boolean isShowBezierMesh() {
+        return showBezierMesh;
+    }
+
+    public void setShowBezierMesh(boolean showBezierMesh) {
+        this.showBezierMesh = showBezierMesh;
+    }
+
+    @Override
+    public void validate(GL4 gl) {
+        super.validate(gl);
+        polyMesh.validate(gl);
+    }
+
+    @Override
+    public void dispose(GL4 gl) {
+        super.dispose(gl);
+        polyMesh.dispose(gl);
     }
 }
