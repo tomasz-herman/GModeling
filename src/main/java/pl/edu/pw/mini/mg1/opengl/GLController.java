@@ -79,37 +79,37 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         var bezier = new ChordInterpolationBezierC2(List.of(a, b, c, d, e, f, g));
         bezier.setShowPolyline(false);
 
-        scene.addModel(bezier);
+        scene.addModelAtPointer(bezier);
         scene.setPointerWorldCoords(new Vector3f(5, 0, 5));
-        scene.addModel(a);
+        scene.addModelAtPointer(a);
         scene.setPointerWorldCoords(new Vector3f(6, 0, 5));
-        scene.addModel(b);
+        scene.addModelAtPointer(b);
         scene.setPointerWorldCoords(new Vector3f(6, 1, 5));
-        scene.addModel(c);
+        scene.addModelAtPointer(c);
         scene.setPointerWorldCoords(new Vector3f(5, 1, 5));
-        scene.addModel(d);
+        scene.addModelAtPointer(d);
         scene.setPointerWorldCoords(new Vector3f(5, 2, 5));
-        scene.addModel(e);
+        scene.addModelAtPointer(e);
         scene.setPointerWorldCoords(new Vector3f(0, 1, 11));
-        scene.addModel(f);
+        scene.addModelAtPointer(f);
         scene.setPointerWorldCoords(new Vector3f(7, 1, 6));
-        scene.addModel(g);
+        scene.addModelAtPointer(g);
 
         for (int i = 0; i < 20; i++) {
             scene.setPointerWorldCoords(new Vector3f(0, 10 - i, 0));
-            scene.addModel(new Point());
+            scene.addModelAtPointer(new Point());
             scene.setPointerWorldCoords(new Vector3f(10 - i, 0, 0));
-            scene.addModel(new Point());
+            scene.addModelAtPointer(new Point());
             scene.setPointerWorldCoords(new Vector3f(0, 0, 10 - i));
-            scene.addModel(new Point());
+            scene.addModelAtPointer(new Point());
         }
 
         scene.setPointerWorldCoords(new Vector3f(0, 0, 10));
-        scene.addModel(new Torus(350, 350, 1, 0.25f));
+        scene.addModelAtPointer(new Torus(350, 350, 1, 0.25f));
 
-        scene.addModel(BezierPatchC0.example());
-        scene.addModel(BezierPatchC0.flat(2, 2, 2, 2));
-        scene.addModel(BezierPatchC0.cylinder(1, 2, 10, 2));
+        scene.addModelAtPointer(BezierPatchC0.example());
+        scene.addModelAtPointer(BezierPatchC0.flat(2, 2, 2, 2));
+        scene.addModelAtPointer(BezierPatchC0.cylinder(1, 2, 10, 2));
 
         modelController.set(null);
         cameraController.set(scene.getCamera());

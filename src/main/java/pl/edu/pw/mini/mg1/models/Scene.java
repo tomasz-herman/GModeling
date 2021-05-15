@@ -58,10 +58,21 @@ public class Scene {
         return models;
     }
 
-    public void addModel(Model model) {
+    public void addModelAtPointer(Model model) {
         Vector3fc position = globalPointer.getPosition();
         model.setPosition(position.x(), position.y(), position.z());
         models.add(model);
+    }
+
+    public void addModel(Model model) {
+        models.add(model);
+    }
+
+    public void removeModel(Model model) {
+        if(models.contains(model)) {
+            models.remove(model);
+            removedModels.add(model);
+        }
     }
 
     public void deleteSelected() {
@@ -123,7 +134,7 @@ public class Scene {
 
     public void selectModels(int[] selected) {
         this.selected = selected;
-        for (Model model : selectedModels) model.applyTransformationMatrix();
+        selectedModels.stream().distinct().forEach(Model::applyTransformationMatrix);
         translation.set(0);
         rotation.set(0);
         scale.set(1);

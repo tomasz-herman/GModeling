@@ -54,6 +54,7 @@
                 <item value="Interpolation BezierC2"/>
                 <item value="Chord Interpolation BezierC2"/>
                 <item value="Points to curve"/>
+                <item value="BezierC0 Patch"/>
               </model>
             </properties>
           </component>

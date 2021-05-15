@@ -105,16 +105,16 @@ public class SceneLayout implements Controller<Scene> {
                             .filter(c -> c instanceof Curve)
                             .map(c -> (Curve) c)
                             .forEach(c -> c.addPoint(p));
-                    scene.addModel(p);
+                    scene.addModelAtPointer(p);
                 }
-                case "Torus" -> scene.addModel(new Torus());
+                case "Torus" -> scene.addModelAtPointer(new Torus());
                 case "BezierC0" -> {
                     List<Point> points = scene.getSelectedModels().stream()
                             .filter(p -> p instanceof Point)
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModel(new BezierC0(points));
+                    scene.addModelAtPointer(new BezierC0(points));
                 }
                 case "BezierC2" -> {
                     List<Point> points = scene.getSelectedModels().stream()
@@ -122,7 +122,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModel(new BezierC2(points));
+                    scene.addModelAtPointer(new BezierC2(points));
                 }
                 case "Interpolation BezierC2" -> {
                     List<Point> points = scene.getSelectedModels().stream()
@@ -130,7 +130,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModel(new InterpolationBezierC2(points));
+                    scene.addModelAtPointer(new InterpolationBezierC2(points));
                 }
                 case "Chord Interpolation BezierC2" -> {
                     List<Point> points = scene.getSelectedModels().stream()
@@ -138,7 +138,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModel(new ChordInterpolationBezierC2(points));
+                    scene.addModelAtPointer(new ChordInterpolationBezierC2(points));
                 }
                 case "Points to curve" -> {
                     List<Model> selected = scene.getSelectedModels();
@@ -156,6 +156,7 @@ public class SceneLayout implements Controller<Scene> {
                         }
                     }
                 }
+                case "BezierC0 Patch" -> new PatchWizard(scene::addModel, scene::removeModel, scene::getPointer);
             }
             addCombo.setSelectedIndex(-1);
             table.revalidate();
@@ -665,6 +666,7 @@ public class SceneLayout implements Controller<Scene> {
         defaultComboBoxModel1.addElement("Interpolation BezierC2");
         defaultComboBoxModel1.addElement("Chord Interpolation BezierC2");
         defaultComboBoxModel1.addElement("Points to curve");
+        defaultComboBoxModel1.addElement("BezierC0 Patch");
         addCombo.setModel(defaultComboBoxModel1);
         panel1.add(addCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteCombo = new JComboBox();

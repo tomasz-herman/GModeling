@@ -5,6 +5,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Function;
@@ -16,6 +17,8 @@ import static org.joml.Math.cos;
 import static org.joml.Math.sin;
 
 public class BezierPatchC0 extends Model {
+
+    private final PropertyChangeListener pcl = e -> reload = true;
 
     private final List<Point> points = new ArrayList<>();
     private int divisions = 3;
@@ -41,7 +44,7 @@ public class BezierPatchC0 extends Model {
                 new Point(0.0f, 0.0f, 3.0f),
                 new Point(1.0f, 1.0f, 3.0f),
                 new Point(2.0f, -1.0f, 3.0f),
-                new Point(7.0f, -1.0f, 3.0f)
+                new Point(3.0f, -1.0f, 3.0f)
         ));
         return patch;
     }
@@ -55,7 +58,9 @@ public class BezierPatchC0 extends Model {
         float hy = h / (y * 3);
         for (int i = 0; i < xp; i++) {
             for (int j = 0; j < yp; j++) {
-                surface[i][j] = new Point(wx * i, 0, hy * j);
+                Point point = new Point(wx * i, 0, hy * j);
+                point.addPropertyChangeListener(patch.pcl);
+                surface[i][j] = point;
             }
         }
         for (int i = 0; i < xp - 1; i+=3) {
@@ -97,7 +102,9 @@ public class BezierPatchC0 extends Model {
         Function<Float, Float> fz = phi -> r * sin(phi);
         for (int i = 0; i < xp; i++) {
             for (int j = 0; j < yp; j++) {
-                surface[i][j] = new Point(fx.apply(wx * i), hy * j, fz.apply(wx * i));
+                Point point = new Point(fx.apply(wx * i), hy * j, fz.apply(wx * i));
+                point.addPropertyChangeListener(patch.pcl);
+                surface[i][j] = point;
             }
         }
         Function<Integer, Integer> mod = i -> i % xp;
@@ -159,5 +166,9 @@ public class BezierPatchC0 extends Model {
 
     public void setDivisions(int divisions) {
         this.divisions = divisions;
+    }
+
+    public Stream<Point> getPoints() {
+        return points.stream();
     }
 }
