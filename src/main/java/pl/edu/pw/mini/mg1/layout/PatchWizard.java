@@ -4,6 +4,7 @@ import com.hermant.swing.WindowBuilder;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.models.BezierPatchC0;
 import pl.edu.pw.mini.mg1.models.Model;
 import pl.edu.pw.mini.mg1.models.Pointer;
@@ -44,13 +45,15 @@ public class PatchWizard {
     private final Consumer<Model> addModel;
     private final Consumer<Model> removeModel;
     private final Supplier<Pointer> getPointer;
+    private final Runnable refresh;
 
-    public PatchWizard(Consumer<Model> addModel, Consumer<Model> removeModel, Supplier<Pointer> getPointer) {
+    public PatchWizard(Consumer<Model> addModel, Consumer<Model> removeModel, Supplier<Pointer> getPointer, Runnable refresh) {
         $$$setupUI$$$();
 
         this.addModel = addModel;
         this.removeModel = removeModel;
         this.getPointer = getPointer;
+        this.refresh = refresh;
         JDialog dialog = new WindowBuilder()
                 .setContentPane(mainPane)
                 .setNothingOnClose()
@@ -61,6 +64,7 @@ public class PatchWizard {
             public void windowClosing(WindowEvent e) {
                 if (patch != null && removeModel != null) removeModel.accept(patch);
                 dialog.dispose();
+                refresh.run();
             }
         });
         xSpinner.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.1));
@@ -99,6 +103,7 @@ public class PatchWizard {
 
         addPatchButton.addActionListener(e -> {
             patch.getPoints().forEach(addModel);
+            refresh.run();
             dialog.dispose();
         });
 
@@ -108,6 +113,9 @@ public class PatchWizard {
     private void replacePatch() {
         if (patch != null) removeModel.accept(patch);
         addModel.accept(patch = patchSupplier.get());
+        Vector3f pointer = getPointer.get().getPosition().get(new Vector3f());
+        patch.getPoints().distinct().forEach(point -> point.move(pointer.x, pointer.y, pointer.z));
+        refresh.run();
     }
 
     /**

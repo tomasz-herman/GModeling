@@ -261,6 +261,8 @@ public class Renderer {
     }
 
     public void renderPatch(GL4 gl, PerspectiveCamera camera, BezierPatchC0 patch) {
+        gl.glLineWidth(1);
+
         Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
 
         gl.glUseProgram(patchShader.getProgramID());

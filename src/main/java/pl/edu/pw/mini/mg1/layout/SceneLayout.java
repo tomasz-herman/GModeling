@@ -156,7 +156,7 @@ public class SceneLayout implements Controller<Scene> {
                         }
                     }
                 }
-                case "BezierC0 Patch" -> new PatchWizard(scene::addModel, scene::removeModel, scene::getPointer);
+                case "BezierC0 Patch" -> new PatchWizard(scene::addModel, scene::removeModel, scene::getPointer, this::refresh);
             }
             addCombo.setSelectedIndex(-1);
             table.revalidate();
