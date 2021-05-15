@@ -7,8 +7,13 @@ import pl.edu.pw.mini.mg1.graphics.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
+
+import static com.jogamp.opengl.math.FloatUtil.PI;
+import static org.joml.Math.cos;
+import static org.joml.Math.sin;
 
 public class BezierPatchC0 extends Model {
 
@@ -75,6 +80,49 @@ public class BezierPatchC0 extends Model {
                         surface[i + 1][j + 3],
                         surface[i + 2][j + 3],
                         surface[i + 3][j + 3]
+                ));
+            }
+        }
+        return patch;
+    }
+
+    public static BezierPatchC0 cylinder(float r, float h, int x, int y) {
+        BezierPatchC0 patch = new BezierPatchC0();
+        int xp = x * 3;
+        int yp = 4 + (y - 1) * 3;
+        Point[][] surface = new Point[xp][yp];
+        float wx = 2 * PI / (x * 3);
+        float hy = h / (y * 3);
+        Function<Float, Float> fx = phi -> r * cos(phi);
+        Function<Float, Float> fz = phi -> r * sin(phi);
+        for (int i = 0; i < xp; i++) {
+            for (int j = 0; j < yp; j++) {
+                surface[i][j] = new Point(fx.apply(wx * i), hy * j, fz.apply(wx * i));
+            }
+        }
+        Function<Integer, Integer> mod = i -> i % xp;
+        for (int i = 0; i < xp; i+=3) {
+            for (int j = 0; j < yp - 1; j+=3) {
+                patch.points.addAll(List.of(
+                        surface[mod.apply(i)][j],
+                        surface[mod.apply(i + 1)][j],
+                        surface[mod.apply(i + 2)][j],
+                        surface[mod.apply(i + 3)][j],
+
+                        surface[mod.apply(i)][j + 1],
+                        surface[mod.apply(i + 1)][j + 1],
+                        surface[mod.apply(i + 2)][j + 1],
+                        surface[mod.apply(i + 3)][j + 1],
+
+                        surface[mod.apply(i)][j + 2],
+                        surface[mod.apply(i + 1)][j + 2],
+                        surface[mod.apply(i + 2)][j + 2],
+                        surface[mod.apply(i + 3)][j + 2],
+
+                        surface[mod.apply(i)][j + 3],
+                        surface[mod.apply(i + 1)][j + 3],
+                        surface[mod.apply(i + 2)][j + 3],
+                        surface[mod.apply(i + 3)][j + 3]
                 ));
             }
         }
