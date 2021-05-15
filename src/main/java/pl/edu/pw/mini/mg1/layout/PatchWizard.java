@@ -57,7 +57,7 @@ public class PatchWizard {
         JDialog dialog = new WindowBuilder()
                 .setContentPane(mainPane)
                 .setNothingOnClose()
-                .setSize(720, 540)
+                .setSize(180, 300)
                 .buildDialog();
         dialog.addWindowListener(new WindowAdapter() {
             @Override

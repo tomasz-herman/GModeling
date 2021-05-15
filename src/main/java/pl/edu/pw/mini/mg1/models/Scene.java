@@ -7,10 +7,7 @@ import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.Ray;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -76,9 +73,15 @@ public class Scene {
     }
 
     public void deleteSelected() {
+        Set<Model> nonRemovable = models.stream().filter(m -> m instanceof BezierPatchC0)
+                .map(m -> (BezierPatchC0)m)
+                .flatMap(BezierPatchC0::getPoints)
+                .collect(Collectors.toSet());
+
         Arrays.stream(selected)
                 .boxed()
                 .sorted(Comparator.reverseOrder())
+                .filter(i -> !nonRemovable.contains(models.get(i)))
                 .forEach(i -> removedModels.add(models.remove((int)i)));
         models.stream().filter(m -> m instanceof Curve)
                 .map(m -> (Curve)m)
