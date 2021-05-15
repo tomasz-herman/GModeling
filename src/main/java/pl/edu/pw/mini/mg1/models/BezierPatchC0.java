@@ -74,7 +74,7 @@ public class BezierPatchC0 extends Model {
         BezierPatchC0 patch = new BezierPatchC0();
         int xp = x * 3;
         int yp = 4 + (y - 1) * 3;
-        patch.surface = new Point[xp][yp];
+        patch.surface = new Point[xp + 1][yp];
         float wx = 2 * PI / (x * 3);
         float hy = h / (y * 3);
         Function<Float, Float> fx = phi -> r * cos(phi);
@@ -112,6 +112,7 @@ public class BezierPatchC0 extends Model {
                 ));
             }
         }
+        System.arraycopy(patch.surface[0], 0, patch.surface[xp], 0, yp);
         patch.polyMesh = new PolyMesh(patch.surface);
         return patch;
     }

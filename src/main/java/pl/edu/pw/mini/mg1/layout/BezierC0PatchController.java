@@ -22,7 +22,7 @@ public class BezierC0PatchController implements Controller<BezierPatchC0> {
             patch.setShowBezierMesh(showBezierMeshCheckBox.isSelected());
         });
 
-        divisionsSpinner.setModel(new SpinnerNumberModel(2, 1, 100, 1));
+        divisionsSpinner.setModel(new SpinnerNumberModel(2, 2, 100, 1));
 
         divisionsSpinner.addChangeListener(change -> {
             if (patch == null) return;
