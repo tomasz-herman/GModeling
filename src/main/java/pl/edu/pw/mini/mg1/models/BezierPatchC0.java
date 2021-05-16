@@ -24,7 +24,7 @@ public class BezierPatchC0 extends Model {
 
     private Point[][] surface;
     private final List<Point> points = new ArrayList<>();
-    private int divisions = 30;
+    private int divisions = 3;
 
     private PolyMesh polyMesh;
     private boolean showBezierMesh = false;
@@ -89,7 +89,7 @@ public class BezierPatchC0 extends Model {
         } : phi -> {
             Vector2f fxz1 = new Vector2f(fx.apply(phi - wx), fz.apply(phi - wx)).negate();
             Vector2f fxz11 = new Vector2f(-fxz1.y, fxz1.x);
-            return fxz1.fma(3, fxz11);
+            return fxz1.fma(3, fxz11).mul(1.42f);
         };
         Function<Float, Vector2f> fxz3 = x > 1 ? phi -> {
             Vector2f fxz4 = new Vector2f(fx.apply(phi + wx), fz.apply(phi + wx));
@@ -98,7 +98,7 @@ public class BezierPatchC0 extends Model {
         } : phi -> {
             Vector2f fxz4 = new Vector2f(fx.apply(phi + wx), fz.apply(phi + wx)).negate();
             Vector2f fxz44 = new Vector2f(fxz4.y, -fxz4.x);
-            return fxz4.fma(3, fxz44);
+            return fxz4.fma(3, fxz44).mul(1.42f);
         };
         for (int i = 0; i < xp; i+=3) {
             for (int j = 0; j < yp; j++) {
