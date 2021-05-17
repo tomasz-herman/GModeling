@@ -1,7 +1,5 @@
 #version 410 core
 
-uniform mat4 mvp;
-
 layout(quads, equal_spacing, ccw) in;
 
 void main() {
@@ -43,7 +41,7 @@ void main() {
     float dbv3 =  3. * v *      v;
 
     // finally, we get to compute something:
-    gl_Position = mvp *
+    gl_Position =
                 ( bu0 * ( bv0*p00 + bv1*p01 + bv2*p02 + bv3*p03 )
                 + bu1 * ( bv0*p10 + bv1*p11 + bv2*p12 + bv3*p13 )
                 + bu2 * ( bv0*p20 + bv1*p21 + bv2*p22 + bv3*p23 )
