@@ -3,6 +3,7 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.jogamp.opengl.awt.GLJPanel;
+import com.jogamp.opengl.math.Matrix4;
 import org.jdesktop.swingx.JXPanel;
 import pl.edu.pw.mini.mg1.opengl.GLController;
 
@@ -96,7 +97,7 @@ public class MainLayout {
     }
 
     private static class SliderPopupListener extends MouseAdapter {
-        private final JWindow toolTip = new JWindow();
+        private final JDialog toolTip = new JDialog();
         private final JLabel label = new JLabel("", SwingConstants.CENTER);
         private final Dimension size = new Dimension(80, 24);
         private int prevValue = -1;
@@ -105,6 +106,7 @@ public class MainLayout {
             super();
             label.setOpaque(false);
             label.setBorder(BorderFactory.createLineBorder(new Color(74, 136, 199)));
+            toolTip.setUndecorated(true);
             toolTip.add(label);
             toolTip.setSize(size);
         }
