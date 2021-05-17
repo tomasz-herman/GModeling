@@ -6,10 +6,7 @@ import com.jogamp.opengl.util.GLBuffers;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
-import pl.edu.pw.mini.mg1.models.BezierPatchC0;
-import pl.edu.pw.mini.mg1.models.Model;
-import pl.edu.pw.mini.mg1.models.Pointer;
-import pl.edu.pw.mini.mg1.models.Scene;
+import pl.edu.pw.mini.mg1.models.*;
 
 import java.nio.IntBuffer;
 import java.util.function.BiConsumer;
@@ -21,6 +18,7 @@ public class Renderer {
     private final Shader bezierShader;
     private final Shader stereoShader;
     private final Shader patchShader;
+    private final Shader patchSplineShader;
 
     private Function<PerspectiveCamera, Matrix4fc> viewProjectionFunction = PerspectiveCamera::getViewProjectionMatrix;
     private BiConsumer<GL4, Scene> renderFunction = this::render;
@@ -46,6 +44,7 @@ public class Renderer {
         bezierShader = new Shader(gl, "/bezier.vert", "/bezier.frag", "/bezier.geom");
         stereoShader = new Shader(gl, "/stereo.vert", "/stereo.frag");
         patchShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/patch.tese", "/patch.geom");
+        patchSplineShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/bspline.tese", "/patch.geom");
         gl.glClearColor(0f, 0f, 0f, 1.0f);
         gl.glClearDepth(1.0f);
         gl.glEnable(GL.GL_DEPTH_TEST);
@@ -269,6 +268,25 @@ public class Renderer {
 
         patchShader.loadMatrix4f(gl, "mvp", mvp);
         patchShader.loadInteger(gl, "divisions", patch.getDivisions());
+
+        gl.glBindVertexArray(patch.getMesh().getVao());
+        gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
+        gl.glDrawElements(patch.getMesh().getPrimitivesType(),
+                patch.getMesh().vertexCount(),
+                GL4.GL_UNSIGNED_INT, 0);
+        gl.glBindVertexArray(0);
+        gl.glUseProgram(0);
+    }
+
+    public void renderSplinePatch(GL4 gl, PerspectiveCamera camera, BezierPatchC2 patch) {
+        gl.glLineWidth(1);
+
+        Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
+
+        gl.glUseProgram(patchSplineShader.getProgramID());
+
+        patchSplineShader.loadMatrix4f(gl, "mvp", mvp);
+        patchSplineShader.loadInteger(gl, "divisions", 20);
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
