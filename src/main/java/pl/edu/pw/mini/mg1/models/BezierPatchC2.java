@@ -35,7 +35,27 @@ public class BezierPatchC2 extends Model {
                 new Point(0.0f, 0.0f, 3.0f),
                 new Point(1.0f, 1.0f, 3.0f),
                 new Point(2.0f, -1.0f, 3.0f),
-                new Point(3.0f, -1.0f, 3.0f)
+                new Point(3.0f, -1.0f, 3.0f),
+
+                new Point(0.0f, 1.0f, 1.0f),
+                new Point(1.0f, -2.0f, 1.0f),
+                new Point(2.0f, 1.0f, 1.0f),
+                new Point(3.0f, 0.0f, 1.0f),
+
+                new Point(0.0f, 0.0f, 2.0f),
+                new Point(1.0f, 1.0f, 2.0f),
+                new Point(2.0f, 0.0f, 2.0f),
+                new Point(3.0f, -1.0f, 2.0f),
+
+                new Point(0.0f, 0.0f, 3.0f),
+                new Point(1.0f, 1.0f, 3.0f),
+                new Point(2.0f, -1.0f, 3.0f),
+                new Point(3.0f, -1.0f, 3.0f),
+
+                new Point(0.0f, 1.0f, 4.0f),
+                new Point(1.0f, -2.0f, 4.0f),
+                new Point(2.0f, 1.0f, 4.0f),
+                new Point(3.0f, 1.0f, 4.0f)
         ));
         return patch;
     }
