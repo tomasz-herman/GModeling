@@ -22,28 +22,47 @@ void main() {
     float u = gl_TessCoord.x;
     float v = gl_TessCoord.y;
 
-    // the basis functions:
-    float bu0 = (1.-u) * (1.-u) * (1.-u);
-    float bu1 = 3. * u * (1.-u) * (1.-u);
-    float bu2 = 3. * u * u * (1.-u);
-    float bu3 = u * u * u;
-    float dbu0 = -3. * (1.-u) * (1.-u);
-    float dbu1 =  3. * (1.-u) * (1.-3.*u);
-    float dbu2 =  3. * u *      (2.-3.*u);
-    float dbu3 =  3. * u *      u;
-    float bv0 = (1.-v) * (1.-v) * (1.-v);
-    float bv1 = 3. * v * (1.-v) * (1.-v);
-    float bv2 = 3. * v * v * (1.-v);
-    float bv3 = v * v * v;
-    float dbv0 = -3. * (1.-v) * (1.-v);
-    float dbv1 =  3. * (1.-v) * (1.-3.*v);
-    float dbv2 =  3. * v *      (2.-3.*v);
-    float dbv3 =  3. * v *      v;
+    vec4 b00 = 1.0 / 6.0 * p00 + 2.0 / 3.0 * p01 + 1.0 / 6.0 * p02;
+    vec4 b01 = 2.0 / 3.0 * p01 + 1.0 / 3.0 * p02;
+    vec4 b02 = 1.0 / 3.0 * p01 + 2.0 / 3.0 * p02;
+    vec4 b03 = 1.0 / 6.0 * p01 + 2.0 / 3.0 * p02 + 1.0 / 6.0 * p03;
 
-    // finally, we get to compute something:
-    gl_Position =
-    ( bu0 * ( bv0*p00 + bv1*p01 + bv2*p02 + bv3*p03 )
-    + bu1 * ( bv0*p10 + bv1*p11 + bv2*p12 + bv3*p13 )
-    + bu2 * ( bv0*p20 + bv1*p21 + bv2*p22 + bv3*p23 )
-    + bu3 * ( bv0*p30 + bv1*p31 + bv2*p32 + bv3*p33 ));
+    vec4 b10 = 1.0 / 6.0 * p10 + 2.0 / 3.0 * p11 + 1.0 / 6.0 * p12;
+    vec4 b11 = 2.0 / 3.0 * p11 + 1.0 / 3.0 * p12;
+    vec4 b12 = 1.0 / 3.0 * p11 + 2.0 / 3.0 * p12;
+    vec4 b13 = 1.0 / 6.0 * p11 + 2.0 / 3.0 * p12 + 1.0 / 6.0 * p13;
+
+    vec4 b20 = 1.0 / 6.0 * p20 + 2.0 / 3.0 * p21 + 1.0 / 6.0 * p22;
+    vec4 b21 = 2.0 / 3.0 * p21 + 1.0 / 3.0 * p22;
+    vec4 b22 = 1.0 / 3.0 * p21 + 2.0 / 3.0 * p22;
+    vec4 b23 = 1.0 / 6.0 * p21 + 2.0 / 3.0 * p22 + 1.0 / 6.0 * p23;
+
+    vec4 b30 = 1.0 / 6.0 * p30 + 2.0 / 3.0 * p31 + 1.0 / 6.0 * p32;
+    vec4 b31 = 2.0 / 3.0 * p31 + 1.0 / 3.0 * p32;
+    vec4 b32 = 1.0 / 3.0 * p31 + 2.0 / 3.0 * p32;
+    vec4 b33 = 1.0 / 6.0 * p31 + 2.0 / 3.0 * p32 + 1.0 / 6.0 * p33;
+
+    float omu = 1.0 - u;
+    float omu2 = omu * omu;
+    float omu3 = omu * omu;
+    float u2 = u * u;
+    float u3 = u * u2;
+
+    vec4 d0 = omu3 * b00 + 3.0 * u * omu2 * b01 + 3.0 * u2 * omu * b02 + u3 * b03;
+    vec4 d1 = omu3 * b10 + 3.0 * u * omu2 * b11 + 3.0 * u2 * omu * b12 + u3 * b13;
+    vec4 d2 = omu3 * b20 + 3.0 * u * omu2 * b21 + 3.0 * u2 * omu * b22 + u3 * b23;
+    vec4 d3 = omu3 * b30 + 3.0 * u * omu2 * b31 + 3.0 * u2 * omu * b32 + u3 * b33;
+
+    vec4 b0 = 1.0 / 6.0 * d0 + 2.0 / 3.0 * d1 + 1.0 / 6.0 * d2;
+    vec4 b1 = 2.0 / 3.0 * d1 + 1.0 / 3.0 * d2;
+    vec4 b2 = 1.0 / 3.0 * d1 + 2.0 / 3.0 * d2;
+    vec4 b3 = 1.0 / 6.0 * d1 + 2.0 / 3.0 * d2 + 1.0 / 6.0 * d3;
+
+    float omv = 1.0 - v;
+    float omv2 = omv * omv;
+    float omv3 = omv * omv;
+    float v2 = v * v;
+    float v3 = v * v2;
+
+    gl_Position = omv3 * b0 + 3.0 * v * omv2 * b1 + 3.0 * v2 * omv * b2 + v3 * b3;
 }
