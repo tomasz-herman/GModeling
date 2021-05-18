@@ -27,6 +27,8 @@ public class PatchWizard {
     private JLabel xLabel;
     private JLabel yLabel;
     private JButton addPatchButton;
+    private JSpinner dSpinner;
+    private JCheckBox bCheckbox;
 
     private final Supplier<BezierPatchC0> flatSupplier = () -> BezierPatchC0.flat(
             ((Number) xSpinner.getValue()).floatValue(),
@@ -57,7 +59,7 @@ public class PatchWizard {
         JDialog dialog = new WindowBuilder()
                 .setContentPane(mainPane)
                 .setNothingOnClose()
-                .setSize(180, 300)
+                .setSize(180, 400)
                 .buildDialog();
         dialog.addWindowListener(new WindowAdapter() {
             @Override
@@ -71,11 +73,14 @@ public class PatchWizard {
         ySpinner.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.1));
         iSpinner.setModel(new SpinnerNumberModel(2, 1, 10, 1));
         jSpinner.setModel(new SpinnerNumberModel(2, 1, 10, 1));
+        dSpinner.setModel(new SpinnerNumberModel(3, 2, 64, 1));
 
         xSpinner.addChangeListener(e -> replacePatch());
         ySpinner.addChangeListener(e -> replacePatch());
         iSpinner.addChangeListener(e -> replacePatch());
         jSpinner.addChangeListener(e -> replacePatch());
+        dSpinner.addChangeListener(e -> patch.setDivisions(((Number) dSpinner.getValue()).intValue()));
+        bCheckbox.addActionListener(e -> patch.setShowBezierMesh(bCheckbox.isSelected()));
 
         patchTypeCombo.addActionListener(e -> {
             switch ((String) Objects.requireNonNull(patchTypeCombo.getSelectedItem())) {
@@ -115,6 +120,8 @@ public class PatchWizard {
         addModel.accept(patch = patchSupplier.get());
         Vector3f pointer = getPointer.get().getPosition().get(new Vector3f());
         patch.getPoints().distinct().forEach(point -> point.move(pointer.x, pointer.y, pointer.z));
+        patch.setDivisions(((Number) dSpinner.getValue()).intValue());
+        patch.setShowBezierMesh(bCheckbox.isSelected());
         refresh.run();
     }
 
@@ -135,13 +142,13 @@ public class PatchWizard {
         patchTypeCombo.setModel(defaultComboBoxModel1);
         mainPane.add(patchTypeCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel1 = new JPanel();
-        panel1.setLayout(new GridLayoutManager(6, 2, new Insets(0, 0, 0, 0), -1, -1));
+        panel1.setLayout(new GridLayoutManager(8, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         xLabel = new JLabel();
         xLabel.setText("x");
         panel1.add(xLabel, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        panel1.add(spacer1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        panel1.add(spacer1, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         yLabel = new JLabel();
         yLabel.setText("y");
         panel1.add(yLabel, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -161,7 +168,18 @@ public class PatchWizard {
         panel1.add(jSpinner, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         addPatchButton = new JButton();
         addPatchButton.setText("Add Patch");
-        panel1.add(addPatchButton, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        panel1.add(addPatchButton, new GridConstraints(7, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label3 = new JLabel();
+        label3.setText("d");
+        panel1.add(label3, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        dSpinner = new JSpinner();
+        panel1.add(dSpinner, new GridConstraints(4, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label4 = new JLabel();
+        label4.setText("b");
+        panel1.add(label4, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        bCheckbox = new JCheckBox();
+        bCheckbox.setText("");
+        panel1.add(bCheckbox, new GridConstraints(5, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
