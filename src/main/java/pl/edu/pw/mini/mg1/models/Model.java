@@ -2,6 +2,7 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.joml.*;
+import org.w3c.dom.Node;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.BoundingVolume;
 import pl.edu.pw.mini.mg1.collisions.Ray;
@@ -9,6 +10,8 @@ import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.utils.GeneratorUtils;
 
 import java.lang.Math;
+import java.util.Collections;
+import java.util.Map;
 
 public abstract class Model {
     protected Mesh mesh;
@@ -145,5 +148,17 @@ public abstract class Model {
         if(distance < 0) return -1;
         Vector3f hit = transformedRay.at(distance).mulPosition(modelMatrix);
         return hit.distance(ray.getOrigin());
+    }
+
+    public String serialize() {
+        return "";
+    }
+
+    public Model deserialize(Node node) {
+        return deserialize(node, Collections.emptyMap());
+    }
+
+    public Model deserialize(Node node, Map<String, Point> points) {
+        return this;
     }
 }

@@ -2,6 +2,7 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.joml.Vector3f;
+import org.w3c.dom.Node;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.numerics.SplineSmoothInterpolation;
@@ -9,6 +10,8 @@ import pl.edu.pw.mini.mg1.numerics.SplineSmoothInterpolation;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class ChordInterpolationBezierC2 extends Model implements Curve {
     private final List<Point> points = new ArrayList<>();
@@ -117,5 +120,29 @@ public class ChordInterpolationBezierC2 extends Model implements Curve {
 
     public void setShowPolyline(boolean showPolyline) {
         this.showPolyline = showPolyline;
+    }
+
+    @Override
+    public String serialize() {
+        return """
+                  <BezierInter Name="%s" ShowBernsteinPoints="%d" ShowBernsteinPolygon="%d" ShowDeBoorPolygon="%d">
+                    <Points>
+                %s
+                    </Points>
+                  </BezierInter>
+                """.formatted(
+                getName(),
+                0,
+                0,
+                0,
+                points.stream()
+                        .map(p -> "      <PointRef Name=\"%s\"/>".formatted(p.getName()))
+                        .collect(Collectors.joining("\n"))
+        );
+    }
+
+    @Override
+    public Model deserialize(Node node, Map<String, Point> points) {
+        return this;
     }
 }

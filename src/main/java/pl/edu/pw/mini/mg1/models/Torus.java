@@ -2,10 +2,12 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
+import org.w3c.dom.Node;
 import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Torus extends Model {
     private int outerSegments;
@@ -112,5 +114,35 @@ public class Torus extends Model {
         this.innerRadius = innerRadius;
         setupBoundingVolume();
         reload = true;
+    }
+
+    @Override
+    public String serialize() {
+        return
+                """
+                      <Torus Name="%s" MajorRadius="%f" MinorRadius="%f" VerticalSlices="%d" HorizontalSlices="%d">
+                        <Position X="%f" Y="%f" Z="%f"/>
+                        <Rotation X="%f" Y="%f" Z="%f"/>
+                        <Scale X="%f" Y="%f" Z="%f"/>
+                      </Torus>
+                """.formatted(getName(),
+                getOuterRadius(),
+                getInnerRadius(),
+                getOuterSegments(),
+                getInnerSegments(),
+                getPosition().x(),
+                getPosition().y(),
+                getPosition().z(),
+                getRotation().x(),
+                getRotation().y(),
+                getRotation().z(),
+                getScale().x(),
+                getScale().y(),
+                getScale().z());
+    }
+
+    @Override
+    public Model deserialize(Node node, Map<String, Point> points) {
+        return this;
     }
 }

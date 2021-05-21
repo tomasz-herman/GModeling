@@ -20,6 +20,7 @@ import java.util.List;
 import java.util.function.Consumer;
 
 public class GLController implements GLEventListener, MouseListener, MouseWheelListener, MouseMotionListener {
+    public float cameraSpeed = 0.01f;
     private Scene scene;
     private Renderer renderer;
 
@@ -111,6 +112,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.addModelAtPointer(BezierPatchC0.cylinder(1, 2, 10, 2));
         scene.addModelAtPointer(BezierPatchC2.example());
 
+        scene.serialize("scene.xml");
+
         modelController.set(null);
         cameraController.set(scene.getCamera());
         sceneController.set(scene);
@@ -143,12 +146,12 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     }
 
     private void handleKeyInput() {
-        if(forward) scene.getCamera().move(0, 0, -0.01f);
-        if(backward) scene.getCamera().move(0, 0, 0.01f);
-        if(left) scene.getCamera().move(-0.01f, 0, 0);
-        if(right) scene.getCamera().move(0.01f, 0, 0);
-        if(up) scene.getCamera().move(0, 0.01f, 0);
-        if(down) scene.getCamera().move(0, -0.01f, 0);
+        if(forward) scene.getCamera().move(0, 0, -cameraSpeed);
+        if(backward) scene.getCamera().move(0, 0, cameraSpeed);
+        if(left) scene.getCamera().move(-cameraSpeed, 0, 0);
+        if(right) scene.getCamera().move(cameraSpeed, 0, 0);
+        if(up) scene.getCamera().move(0, cameraSpeed, 0);
+        if(down) scene.getCamera().move(0, -cameraSpeed, 0);
         if(roll) scene.getCamera().rotate(0, 0, -0.5f);
         if(unroll) scene.getCamera().rotate(0, 0, 0.5f);
     }
@@ -173,6 +176,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         addAction(gljPanel, "released Z", () -> roll = false);
         addAction(gljPanel, "pressed X", () -> unroll = true);
         addAction(gljPanel, "released X", () -> unroll = false);
+
+        addAction(gljPanel, "pressed PERIOD", () -> cameraSpeed += 0.01f);
+        addAction(gljPanel, "pressed COMMA", () -> cameraSpeed -= 0.01f);
 
         addAction(gljPanel, "pressed DELETE", () -> {
             scene.deleteSelected();

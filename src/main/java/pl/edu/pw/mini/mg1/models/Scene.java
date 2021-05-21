@@ -4,11 +4,24 @@ import com.jogamp.opengl.GL4;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.Ray;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -242,6 +255,68 @@ public class Scene {
                 .translate(transformationCenter.negate(new Vector3f()));
         for (Model model : selectedModels) {
             model.setTransformationMatrix(transformation);
+        }
+    }
+
+    public void serialize(String filename) {
+        try (PrintWriter writer = new PrintWriter(filename)) {
+            writer.println(
+                    """
+                    <?xml version="1.0" encoding="utf-8"?>
+                    <Scene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                    \txsi:schemaLocation="http://mini.pw.edu.pl/mg1 ./format_draft3.xsd"
+                    \txmlns="http://mini.pw.edu.pl/mg1">
+                    """
+            );
+
+            for (Model model : models) {
+                if(model.serialize() == null) {
+                    System.out.println(model);
+                }
+                writer.println(model.serialize());
+            }
+
+            writer.println(
+                    """
+                    </Scene>
+                    """
+            );
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void deserialize(String filename) {
+        removedModels.addAll(models);
+        models.clear();
+        try {
+            DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document document = builder.parse(new File(filename));
+            document.getDocumentElement().normalize();
+
+            NodeList pointsList = document.getElementsByTagName("Point");
+
+            NodeList bezierC0List = document.getElementsByTagName("BezierC0");
+            NodeList bezierC2List = document.getElementsByTagName("BezierC2");
+            NodeList bezierInterList = document.getElementsByTagName("BezierInter");
+            NodeList torusList = document.getElementsByTagName("Torus");
+            NodeList patchC0List = document.getElementsByTagName("PatchC0");
+
+            for (int i = 0; i < pointsList.getLength(); i++) {
+                models.add(new Point().deserialize(pointsList.item(i)));
+            }
+
+            Map<String, Point> points = models.stream()
+                    .map(p -> (Point)p)
+                    .collect(Collectors.toMap(Point::getName, Function.identity()));
+
+            for (int i = 0; i < patchC0List.getLength(); i++) {
+                models.add(new BezierPatchC0().deserialize(patchC0List.item(i), points));
+            }
+
+        } catch (ParserConfigurationException | IOException | SAXException | NumberFormatException e) {
+            e.printStackTrace();
         }
     }
 }

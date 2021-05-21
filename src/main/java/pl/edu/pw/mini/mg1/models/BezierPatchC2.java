@@ -2,11 +2,13 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
+import org.w3c.dom.Node;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -82,5 +84,15 @@ public class BezierPatchC2 extends Model {
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         renderer.renderSplinePatch(gl, camera, this);
+    }
+
+    @Override
+    public String serialize() {
+        return "";
+    }
+
+    @Override
+    public Model deserialize(Node node, Map<String, Point> points) {
+        return this;
     }
 }

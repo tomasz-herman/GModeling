@@ -4,12 +4,15 @@ import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
+import org.w3c.dom.Node;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BezierC0 extends Model implements Curve {
@@ -126,5 +129,29 @@ public class BezierC0 extends Model implements Curve {
     public void validate(GL4 gl) {
         super.validate(gl);
         polyLine.validate(gl);
+    }
+
+    @Override
+    public String serialize() {
+        return """
+                  <BezierC0 Name="%s" ShowBernsteinPoints="%d" ShowBernsteinPolygon="%d" ShowDeBoorPolygon="%d">
+                    <Points>
+                %s
+                    </Points>
+                  </BezierC0>
+                """.formatted(
+                getName(),
+                0,
+                0,
+                0,
+                points.stream()
+                        .map(p -> "      <PointRef Name=\"%s\"/>".formatted(p.getName()))
+                        .collect(Collectors.joining("\n"))
+        );
+    }
+
+    @Override
+    public Model deserialize(Node node, Map<String, Point> points) {
+        return this;
     }
 }

@@ -6,12 +6,15 @@ import org.joml.Matrix4f;
 import org.joml.Matrix4fc;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.w3c.dom.Node;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class BezierC2 extends Model implements Curve {
@@ -245,5 +248,29 @@ public class BezierC2 extends Model implements Curve {
 
     public void setShowBezierPoints(boolean showBezierPoints) {
         this.showBezierPoints = showBezierPoints;
+    }
+
+    @Override
+    public String serialize() {
+        return """
+                  <BezierC2 Name="%s" ShowBernsteinPoints="%d" ShowBernsteinPolygon="%d" ShowDeBoorPolygon="%d">
+                    <Points>
+                %s
+                    </Points>
+                  </BezierC2>
+                """.formatted(
+                getName(),
+                0,
+                0,
+                0,
+                points.stream()
+                        .map(p -> "      <PointRef Name=\"%s\"/>".formatted(p.getName()))
+                        .collect(Collectors.joining("\n"))
+        );
+    }
+
+    @Override
+    public Model deserialize(Node node, Map<String, Point> points) {
+        return this;
     }
 }

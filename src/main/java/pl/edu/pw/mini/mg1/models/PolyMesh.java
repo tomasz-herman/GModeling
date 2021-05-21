@@ -3,9 +3,11 @@ package pl.edu.pw.mini.mg1.models;
 import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector3f;
+import org.w3c.dom.Node;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class PolyMesh extends Model {
     private final Point[][] points;

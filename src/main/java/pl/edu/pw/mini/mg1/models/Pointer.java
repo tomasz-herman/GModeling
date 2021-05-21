@@ -1,7 +1,10 @@
 package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
+import org.w3c.dom.Node;
 import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
+
+import java.util.Map;
 
 public class Pointer extends Model {
     @Override
