@@ -2,7 +2,9 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
 
 import java.util.ArrayList;
@@ -141,8 +143,44 @@ public class Torus extends Model {
                 getScale().z());
     }
 
+    /**
+     *   <Torus Name="Torus_001" MajorRadius="10.10" MinorRadius="9.9" VerticalSlices="5" HorizontalSlices="8">
+     *     <Position X="10.123" Y="13.37" Z="123.456"/>
+     *     <Rotation X="0" Y="6.567" Z="0"/>
+     *     <Scale X="1" Y="1" Z="1"/>
+     *   </Torus>
+     */
     @Override
     public Model deserialize(Node node, Map<String, Point> points) {
+        if(node.getNodeType() == Node.ELEMENT_NODE) {
+            Element torusElement = (Element) node;
+            setName(torusElement.getAttribute("Name"));
+            setInnerRadius(Float.parseFloat(torusElement.getAttribute("MinorRadius")));
+            setOuterRadius(Float.parseFloat(torusElement.getAttribute("MajorRadius")));
+            setInnerSegments(Integer.parseInt(torusElement.getAttribute("VerticalSlices")));
+            setOuterSegments(Integer.parseInt(torusElement.getAttribute("HorizontalSlices")));
+
+            Element positionElement = (Element) torusElement
+                    .getElementsByTagName("Position").item(0);
+            float x = Float.parseFloat(positionElement.getAttribute("X"));
+            float y = Float.parseFloat(positionElement.getAttribute("Y"));
+            float z = Float.parseFloat(positionElement.getAttribute("Z"));
+            setPosition(x, y, z);
+
+            Element scaleElement = (Element) torusElement
+                    .getElementsByTagName("Scale").item(0);
+            x = Float.parseFloat(scaleElement.getAttribute("X"));
+            y = Float.parseFloat(scaleElement.getAttribute("Y"));
+            z = Float.parseFloat(scaleElement.getAttribute("Z"));
+            setScale(x, y, z);
+
+            Element rotationElement = (Element) torusElement
+                    .getElementsByTagName("Rotation").item(0);
+            x = Float.parseFloat(rotationElement.getAttribute("X"));
+            y = Float.parseFloat(rotationElement.getAttribute("Y"));
+            z = Float.parseFloat(rotationElement.getAttribute("Z"));
+            setRotation(x, y, z);
+        }
         return this;
     }
 }

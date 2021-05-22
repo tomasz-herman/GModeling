@@ -270,9 +270,6 @@ public class Scene {
             );
 
             for (Model model : models) {
-                if(model.serialize() == null) {
-                    System.out.println(model);
-                }
                 writer.println(model.serialize());
             }
 
@@ -302,6 +299,7 @@ public class Scene {
             NodeList bezierInterList = document.getElementsByTagName("BezierInter");
             NodeList torusList = document.getElementsByTagName("Torus");
             NodeList patchC0List = document.getElementsByTagName("PatchC0");
+            NodeList patchC2List = document.getElementsByTagName("PatchC2");
 
             for (int i = 0; i < pointsList.getLength(); i++) {
                 models.add(new Point().deserialize(pointsList.item(i)));
@@ -313,6 +311,26 @@ public class Scene {
 
             for (int i = 0; i < patchC0List.getLength(); i++) {
                 models.add(new BezierPatchC0().deserialize(patchC0List.item(i), points));
+            }
+
+            for (int i = 0; i < patchC2List.getLength(); i++) {
+                models.add(new BezierPatchC2().deserialize(patchC2List.item(i), points));
+            }
+
+            for (int i = 0; i < bezierC0List.getLength(); i++) {
+                models.add(new BezierC0(new ArrayList<>()).deserialize(bezierC0List.item(i), points));
+            }
+
+            for (int i = 0; i < bezierC2List.getLength(); i++) {
+                models.add(new BezierC2(new ArrayList<>()).deserialize(bezierC2List.item(i), points));
+            }
+
+            for (int i = 0; i < bezierInterList.getLength(); i++) {
+                models.add(new InterpolationBezierC2(new ArrayList<>()).deserialize(bezierInterList.item(i), points));
+            }
+
+            for (int i = 0; i < torusList.getLength(); i++) {
+                models.add(new Torus().deserialize(torusList.item(i), points));
             }
 
         } catch (ParserConfigurationException | IOException | SAXException | NumberFormatException e) {

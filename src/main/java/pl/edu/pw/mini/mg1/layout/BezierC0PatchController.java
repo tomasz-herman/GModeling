@@ -11,7 +11,8 @@ import java.awt.*;
 public class BezierC0PatchController implements Controller<BezierPatchC0> {
     private JPanel mainPane;
     private JCheckBox showBezierMeshCheckBox;
-    private JSpinner divisionsSpinner;
+    private JSpinner divisionsUSpinner;
+    private JSpinner divisionsVSpinner;
     private BezierPatchC0 patch;
 
 
@@ -22,11 +23,17 @@ public class BezierC0PatchController implements Controller<BezierPatchC0> {
             patch.setShowBezierMesh(showBezierMeshCheckBox.isSelected());
         });
 
-        divisionsSpinner.setModel(new SpinnerNumberModel(2, 2, 100, 1));
+        divisionsUSpinner.setModel(new SpinnerNumberModel(2, 2, 100, 1));
+        divisionsVSpinner.setModel(new SpinnerNumberModel(2, 2, 100, 1));
 
-        divisionsSpinner.addChangeListener(change -> {
+        divisionsUSpinner.addChangeListener(change -> {
             if (patch == null) return;
-            patch.setDivisions(((Number) divisionsSpinner.getValue()).intValue());
+            patch.setDivisionsU(((Number) divisionsUSpinner.getValue()).intValue());
+        });
+
+        divisionsVSpinner.addChangeListener(change -> {
+            if (patch == null) return;
+            patch.setDivisionsV(((Number) divisionsVSpinner.getValue()).intValue());
         });
 
     }
@@ -45,7 +52,8 @@ public class BezierC0PatchController implements Controller<BezierPatchC0> {
     @Override
     public void refresh() {
         if (patch == null) return;
-        divisionsSpinner.setValue(patch.getDivisions());
+        divisionsUSpinner.setValue(patch.getDivisionsU());
+        divisionsVSpinner.setValue(patch.getDivisionsV());
         showBezierMeshCheckBox.setSelected(patch.isShowBezierMesh());
     }
 
@@ -65,17 +73,22 @@ public class BezierC0PatchController implements Controller<BezierPatchC0> {
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
         showBezierMeshCheckBox = new JCheckBox();
         showBezierMeshCheckBox.setText("show bezier mesh");
         mainPane.add(showBezierMeshCheckBox, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPane.add(spacer1, new GridConstraints(2, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainPane.add(spacer1, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         final JLabel label1 = new JLabel();
-        label1.setText("divisions");
+        label1.setText("divisionsU");
         mainPane.add(label1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        divisionsSpinner = new JSpinner();
-        mainPane.add(divisionsSpinner, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        divisionsUSpinner = new JSpinner();
+        mainPane.add(divisionsUSpinner, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        final JLabel label2 = new JLabel();
+        label2.setText("divisionsV");
+        mainPane.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        divisionsVSpinner = new JSpinner();
+        mainPane.add(divisionsVSpinner, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
@@ -84,4 +97,5 @@ public class BezierC0PatchController implements Controller<BezierPatchC0> {
     public JComponent $$$getRootComponent$$$() {
         return mainPane;
     }
+
 }

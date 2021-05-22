@@ -29,7 +29,8 @@ public class BezierPatchC0 extends Model {
 
     private Point[][] surface;
     private final List<Point> points = new ArrayList<>();
-    private int divisions = 3;
+    private int divisionsU = 3;
+    private int divisionsV = 3;
 
     private PolyMesh polyMesh;
     private boolean showBezierMesh = false;
@@ -178,12 +179,20 @@ public class BezierPatchC0 extends Model {
         if (showBezierMesh) polyMesh.render(gl, camera, renderer);
     }
 
-    public int getDivisions() {
-        return divisions;
+    public int getDivisionsU() {
+        return divisionsU;
     }
 
-    public void setDivisions(int divisions) {
-        this.divisions = divisions;
+    public void setDivisionsU(int divisionsU) {
+        this.divisionsU = divisionsU;
+    }
+
+    public int getDivisionsV() {
+        return divisionsV;
+    }
+
+    public void setDivisionsV(int divisionsV) {
+        this.divisionsV = divisionsV;
     }
 
     public Stream<Point> getPoints() {
@@ -219,7 +228,7 @@ public class BezierPatchC0 extends Model {
                     </Points>
                   </PatchC0>
                 """.formatted(
-                getName(), 0, 0, 0,
+                getName(), 0, divisionsU, divisionsV,
                 IntStream.range(0, surface.length).boxed().flatMap(
                         i -> IntStream.range(0, surface[i].length)
                                 .mapToObj(j -> "      <PointRef Name=\"%s\" Row=\"%d\" Column=\"%d\"/>".formatted(surface[i][j].getName(), i, j))
@@ -232,13 +241,13 @@ public class BezierPatchC0 extends Model {
         if(node.getNodeType() == Node.ELEMENT_NODE) {
             Element patchC0Element = (Element) node;
             setName(patchC0Element.getAttribute("Name"));
+            setDivisionsU(Integer.parseInt(patchC0Element.getAttribute("RowSlices")));
+            setDivisionsV(Integer.parseInt(patchC0Element.getAttribute("ColumnSlices")));
             String wrap = patchC0Element.getAttribute("WrapDirection");
 
             NodeList pointsRefs = ((Element)patchC0Element
                     .getElementsByTagName("Points").item(0))
                     .getElementsByTagName("PointRef");
-
-            System.out.println(pointsRefs.getLength());
 
             int rows = 0;
             int cols = 0;

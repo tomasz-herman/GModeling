@@ -267,7 +267,8 @@ public class Renderer {
         gl.glUseProgram(patchShader.getProgramID());
 
         patchShader.loadMatrix4f(gl, "mvp", mvp);
-        patchShader.loadInteger(gl, "divisions", patch.getDivisions());
+        patchShader.loadInteger(gl, "divisionsU", patch.getDivisionsU());
+        patchShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
@@ -286,7 +287,8 @@ public class Renderer {
         gl.glUseProgram(patchSplineShader.getProgramID());
 
         patchSplineShader.loadMatrix4f(gl, "mvp", mvp);
-        patchSplineShader.loadInteger(gl, "divisions", 20);
+        patchShader.loadInteger(gl, "divisionsU", patch.getDivisionsU());
+        patchShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
