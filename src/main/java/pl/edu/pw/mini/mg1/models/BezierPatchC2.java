@@ -62,6 +62,54 @@ public class BezierPatchC2 extends Patch {
         return patch;
     }
 
+    public static BezierPatchC2 flat(float w, float h, int x, int y) {
+        BezierPatchC2 patch = new BezierPatchC2();
+        int xp = 3 + x;
+        int yp = 3 + y;
+
+        float rx = w / x;
+        float ry = h / y;
+
+        patch.surface = new Point[xp][yp];
+        patch.polyMesh = new PolyMesh(patch.surface);
+
+        for (int i = 0; i < xp; i++) {
+            for (int j = 0; j < yp; j++) {
+                Point point = new Point(rx * (i - 1), 0, ry * (j - 1));
+                point.addPropertyChangeListener(patch.pcl);
+                patch.surface[i][j] = point;
+            }
+        }
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                patch.points.addAll(List.of(
+                        patch.surface[i][j],
+                        patch.surface[i + 1][j],
+                        patch.surface[i + 2][j],
+                        patch.surface[i + 3][j],
+
+                        patch.surface[i][j + 1],
+                        patch.surface[i + 1][j + 1],
+                        patch.surface[i + 2][j + 1],
+                        patch.surface[i + 3][j + 1],
+
+                        patch.surface[i][j + 2],
+                        patch.surface[i + 1][j + 2],
+                        patch.surface[i + 2][j + 2],
+                        patch.surface[i + 3][j + 2],
+
+                        patch.surface[i][j + 3],
+                        patch.surface[i + 1][j + 3],
+                        patch.surface[i + 2][j + 3],
+                        patch.surface[i + 3][j + 3]
+                ));
+            }
+        }
+
+        return patch;
+    }
+
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         super.render(gl, camera, renderer);

@@ -157,6 +157,7 @@ public class SceneLayout implements Controller<Scene> {
                     }
                 }
                 case "BezierC0 Patch" -> new PatchWizard(scene::addModel, scene::removeModel, scene::getPointer, this::refresh);
+                case "BezierC2 Patch" -> new PatchWizard(scene::addModel, scene::removeModel, scene::getPointer, this::refresh, BezierPatchC2::flat, BezierPatchC2::flat);
             }
             addCombo.setSelectedIndex(-1);
             table.revalidate();
@@ -525,8 +526,8 @@ public class SceneLayout implements Controller<Scene> {
             //  c) ensure width is not less than the scroll pane width
 
             int popupWidth = list.getPreferredSize().width
-                    + 5  // make sure horizontal scrollbar doesn't appear
-                    + getScrollBarWidth(popup, scrollPane);
+                             + 5  // make sure horizontal scrollbar doesn't appear
+                             + getScrollBarWidth(popup, scrollPane);
 
             if (maximumWidth != -1) {
                 popupWidth = Math.min(popupWidth, maximumWidth);
@@ -667,6 +668,7 @@ public class SceneLayout implements Controller<Scene> {
         defaultComboBoxModel1.addElement("Chord Interpolation BezierC2");
         defaultComboBoxModel1.addElement("Points to curve");
         defaultComboBoxModel1.addElement("BezierC0 Patch");
+        defaultComboBoxModel1.addElement("BezierC2 Patch");
         addCombo.setModel(defaultComboBoxModel1);
         panel1.add(addCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteCombo = new JComboBox();
