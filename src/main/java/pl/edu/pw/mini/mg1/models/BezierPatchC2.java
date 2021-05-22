@@ -1,6 +1,9 @@
 package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
+import org.joml.Math;
+import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
@@ -9,8 +12,13 @@ import pl.edu.pw.mini.mg1.graphics.Renderer;
 
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+
+import static com.jogamp.opengl.math.FloatUtil.PI;
+import static org.joml.Math.cos;
+import static org.joml.Math.sin;
 
 public class BezierPatchC2 extends Patch {
 
@@ -110,6 +118,109 @@ public class BezierPatchC2 extends Patch {
         return patch;
     }
 
+    public static BezierPatchC2 cylinder(float r, float h, int x, int y) {
+        BezierPatchC2 patch = new BezierPatchC2();
+        if (x < 3) x = 3;
+        int xp = x;
+        int yp = 3 + y;
+
+        float rx = 2 * PI / xp;
+        float ry = h / y;
+
+        patch.surface = new Point[xp + 3][yp];
+        patch.polyMesh = new PolyMesh(patch.surface);
+
+        Function<Float, Float> fx = Math::cos;
+        Function<Float, Float> fz = Math::sin;
+
+        for (int i = 0; i < xp; i++) {
+            for (int j = 0; j < yp; j++) {
+                Point point = new Point(fx.apply(rx * i), ry * (j - 1), fz.apply(rx * i));
+                point.addPropertyChangeListener(patch.pcl);
+                patch.surface[i][j] = point;
+            }
+        }
+
+        System.arraycopy(patch.surface[2], 0, patch.surface[xp + 2], 0, yp);
+        System.arraycopy(patch.surface[1], 0, patch.surface[xp + 1], 0, yp);
+        System.arraycopy(patch.surface[0], 0, patch.surface[xp], 0, yp);
+
+        float R = new Vector2f(
+                1.0f / 6.0f * patch.surface[0][1].getPosition().x()
+                + 2.0f / 3.0f * patch.surface[1][1].getPosition().x()
+                + 1.0f / 6.0f * patch.surface[2][1].getPosition().x(),
+                1.0f / 6.0f * patch.surface[0][1].getPosition().z()
+                + 2.0f / 3.0f * patch.surface[1][1].getPosition().z()
+                + 1.0f / 6.0f * patch.surface[2][1].getPosition().z())
+                .add(
+                        1.0f / 6.0f * patch.surface[0][1].getPosition().x()
+                        + 2.0f / 3.0f * patch.surface[1][1].getPosition().x()
+                        + 1.0f / 6.0f * patch.surface[2][1].getPosition().x()
+                        - 1.0f / 4.0f * patch.surface[0][1].getPosition().x()
+                        + 1.0f / 4.0f * patch.surface[2][1].getPosition().x()
+                        + 1.0f / 8.0f * patch.surface[0][1].getPosition().x()
+                        - 1.0f / 4.0f * patch.surface[1][1].getPosition().x()
+                        + 1.0f / 8.0f * patch.surface[2][1].getPosition().x()
+                        - 1.0f / 24.0f * patch.surface[0][1].getPosition().x()
+                        + 1.0f / 8.0f * patch.surface[1][1].getPosition().x()
+                        - 1.0f / 8.0f * patch.surface[2][1].getPosition().x()
+                        + 1.0f / 24.0f * patch.surface[3][1].getPosition().x()
+                        ,
+                        1.0f / 6.0f * patch.surface[0][1].getPosition().z()
+                        + 2.0f / 3.0f * patch.surface[1][1].getPosition().z()
+                        + 1.0f / 6.0f * patch.surface[2][1].getPosition().z()
+                        - 1.0f / 4.0f * patch.surface[0][1].getPosition().z()
+                        + 1.0f / 4.0f * patch.surface[2][1].getPosition().z()
+                        + 1.0f / 8.0f * patch.surface[0][1].getPosition().z()
+                        - 1.0f / 4.0f * patch.surface[1][1].getPosition().z()
+                        + 1.0f / 8.0f * patch.surface[2][1].getPosition().z()
+                        - 1.0f / 24.0f * patch.surface[0][1].getPosition().z()
+                        + 1.0f / 8.0f * patch.surface[1][1].getPosition().z()
+                        - 1.0f / 8.0f * patch.surface[2][1].getPosition().z()
+                        + 1.0f / 24.0f * patch.surface[3][1].getPosition().z()
+                )
+                .div(2)
+                .length();
+
+
+        for (int i = 0; i < xp; i++) {
+            for (int j = 0; j < yp; j++) {
+                Vector3f p = new Vector3f(patch.surface[i][j].getPosition());
+                patch.surface[i][j].setPosition(p.x * r / R, p.y, p.z * r / R);
+            }
+        }
+
+
+
+        for (int i = 0; i < x; i++) {
+            for (int j = 0; j < y; j++) {
+                patch.points.addAll(List.of(
+                        patch.surface[i][j],
+                        patch.surface[i + 1][j],
+                        patch.surface[i + 2][j],
+                        patch.surface[i + 3][j],
+
+                        patch.surface[i][j + 1],
+                        patch.surface[i + 1][j + 1],
+                        patch.surface[i + 2][j + 1],
+                        patch.surface[i + 3][j + 1],
+
+                        patch.surface[i][j + 2],
+                        patch.surface[i + 1][j + 2],
+                        patch.surface[i + 2][j + 2],
+                        patch.surface[i + 3][j + 2],
+
+                        patch.surface[i][j + 3],
+                        patch.surface[i + 1][j + 3],
+                        patch.surface[i + 2][j + 3],
+                        patch.surface[i + 3][j + 3]
+                ));
+            }
+        }
+
+        return patch;
+    }
+
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         super.render(gl, camera, renderer);
@@ -135,12 +246,12 @@ public class BezierPatchC2 extends Patch {
 
     @Override
     public Model deserialize(Node node, Map<String, Point> points) {
-        if(node.getNodeType() == Node.ELEMENT_NODE) {
+        if (node.getNodeType() == Node.ELEMENT_NODE) {
             Element patchC2Element = (Element) node;
             setName(patchC2Element.getAttribute("Name"));
             String wrap = patchC2Element.getAttribute("WrapDirection");
 
-            NodeList pointsRefs = ((Element)patchC2Element
+            NodeList pointsRefs = ((Element) patchC2Element
                     .getElementsByTagName("Points").item(0))
                     .getElementsByTagName("PointRef");
 
@@ -150,13 +261,13 @@ public class BezierPatchC2 extends Patch {
                 Element pointRefElement = (Element) pointsRefs.item(i);
                 int row = Integer.parseInt(pointRefElement.getAttribute("Row")) + 1;
                 int col = Integer.parseInt(pointRefElement.getAttribute("Column")) + 1;
-                if(row > rows) rows = row;
-                if(col > cols) cols = col;
+                if (row > rows) rows = row;
+                if (col > cols) cols = col;
             }
 
             switch (wrap) {
-                case "Row" -> rows+=3;
-                case "Column" -> cols+=3;
+                case "Row" -> rows += 3;
+                case "Column" -> cols += 3;
             }
 
             surface = new Point[rows][cols];
@@ -189,8 +300,8 @@ public class BezierPatchC2 extends Patch {
                 }
             }
 
-            for (int i = 0; i < rows - 3; i ++) {
-                for (int j = 0; j < cols - 3; j ++) {
+            for (int i = 0; i < rows - 3; i++) {
+                for (int j = 0; j < cols - 3; j++) {
                     this.points.addAll(List.of(
                             surface[i][j],
                             surface[i + 1][j],
