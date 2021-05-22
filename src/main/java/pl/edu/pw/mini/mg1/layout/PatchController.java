@@ -3,20 +3,20 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import pl.edu.pw.mini.mg1.models.BezierPatchC0;
+import pl.edu.pw.mini.mg1.models.Patch;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class BezierC0PatchController implements Controller<BezierPatchC0> {
+public class PatchController implements Controller<Patch> {
     private JPanel mainPane;
     private JCheckBox showBezierMeshCheckBox;
     private JSpinner divisionsUSpinner;
     private JSpinner divisionsVSpinner;
-    private BezierPatchC0 patch;
+    private Patch patch;
 
 
-    public BezierC0PatchController() {
+    public PatchController() {
 
         showBezierMeshCheckBox.addActionListener(e -> {
             if (patch == null) return;
@@ -39,7 +39,7 @@ public class BezierC0PatchController implements Controller<BezierPatchC0> {
     }
 
     @Override
-    public void set(BezierPatchC0 patch) {
+    public void set(Patch patch) {
         this.patch = patch;
         refresh();
     }

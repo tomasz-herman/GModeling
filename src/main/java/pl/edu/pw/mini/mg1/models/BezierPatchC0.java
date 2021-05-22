@@ -23,17 +23,7 @@ import static com.jogamp.opengl.math.FloatUtil.tan;
 import static org.joml.Math.cos;
 import static org.joml.Math.sin;
 
-public class BezierPatchC0 extends Model {
-
-    private final PropertyChangeListener pcl = e -> reload = true;
-
-    private Point[][] surface;
-    private final List<Point> points = new ArrayList<>();
-    private int divisionsU = 3;
-    private int divisionsV = 3;
-
-    private PolyMesh polyMesh;
-    private boolean showBezierMesh = false;
+public class BezierPatchC0 extends Patch {
 
     public static BezierPatchC0 flat(float w, float h, int x, int y) {
         BezierPatchC0 patch = new BezierPatchC0();
@@ -175,48 +165,8 @@ public class BezierPatchC0 extends Model {
 
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
+        super.render(gl, camera, renderer);
         renderer.renderPatch(gl, camera, this);
-        if (showBezierMesh) polyMesh.render(gl, camera, renderer);
-    }
-
-    public int getDivisionsU() {
-        return divisionsU;
-    }
-
-    public void setDivisionsU(int divisionsU) {
-        this.divisionsU = divisionsU;
-    }
-
-    public int getDivisionsV() {
-        return divisionsV;
-    }
-
-    public void setDivisionsV(int divisionsV) {
-        this.divisionsV = divisionsV;
-    }
-
-    public Stream<Point> getPoints() {
-        return points.stream();
-    }
-
-    public boolean isShowBezierMesh() {
-        return showBezierMesh;
-    }
-
-    public void setShowBezierMesh(boolean showBezierMesh) {
-        this.showBezierMesh = showBezierMesh;
-    }
-
-    @Override
-    public void validate(GL4 gl) {
-        super.validate(gl);
-        polyMesh.validate(gl);
-    }
-
-    @Override
-    public void dispose(GL4 gl) {
-        super.dispose(gl);
-        polyMesh.dispose(gl);
     }
 
     @Override

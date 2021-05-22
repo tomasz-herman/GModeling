@@ -1,36 +1,23 @@
 package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
-import org.apache.commons.lang3.ArrayUtils;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
-import java.beans.PropertyChangeListener;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
-public class BezierPatchC2 extends Model {
-
-    private final PropertyChangeListener pcl = e -> reload = true;
-
-    private Point[][] surface;
-    private final List<Point> points = new ArrayList<>();
-    private int divisionsU = 3;
-    private int divisionsV = 3;
-
-    private PolyMesh polyMesh;
-    private boolean showBezierMesh = false;
+public class BezierPatchC2 extends Patch {
 
     public static BezierPatchC2 example() {
         BezierPatchC2 patch = new BezierPatchC2();
         patch.surface = new Point[0][0];
+        patch.polyMesh = new PolyMesh(patch.surface);
         patch.points.addAll(List.of(
                 new Point(0.0f, 2.0f, 0.0f),
                 new Point(1.0f, 1.0f, 0.0f),
@@ -76,55 +63,9 @@ public class BezierPatchC2 extends Model {
     }
 
     @Override
-    protected void setupBoundingVolume() {
-        this.boundingVolume = null;
-    }
-
-    @Override
-    protected void load(GL4 gl) {
-        Float[] positions = points.stream()
-                .map(Point::getTransformedPosition)
-                .flatMap(v -> Stream.of(v.x(), v.y(), v.z()))
-                .toArray(Float[]::new);
-        int[] indices = IntStream.range(0, positions.length).toArray();
-        this.mesh = new Mesh(
-                ArrayUtils.toPrimitive(positions),
-                indices,
-                GL4.GL_PATCHES);
-        mesh.load(gl);
-    }
-
-    @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
+        super.render(gl, camera, renderer);
         renderer.renderSplinePatch(gl, camera, this);
-    }
-
-    public int getDivisionsU() {
-        return divisionsU;
-    }
-
-    public void setDivisionsU(int divisionsU) {
-        this.divisionsU = divisionsU;
-    }
-
-    public int getDivisionsV() {
-        return divisionsV;
-    }
-
-    public void setDivisionsV(int divisionsV) {
-        this.divisionsV = divisionsV;
-    }
-
-    public boolean isShowBezierMesh() {
-        return showBezierMesh;
-    }
-
-    public void setShowBezierMesh(boolean showBezierMesh) {
-        this.showBezierMesh = showBezierMesh;
-    }
-
-    public Stream<Point> getPoints() {
-        return points.stream();
     }
 
     @Override

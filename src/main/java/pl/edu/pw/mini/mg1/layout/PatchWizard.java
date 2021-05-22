@@ -7,6 +7,7 @@ import com.intellij.uiDesigner.core.Spacer;
 import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.models.BezierPatchC0;
 import pl.edu.pw.mini.mg1.models.Model;
+import pl.edu.pw.mini.mg1.models.Patch;
 import pl.edu.pw.mini.mg1.models.Pointer;
 
 import javax.swing.*;
@@ -31,27 +32,26 @@ public class PatchWizard {
     private JCheckBox bCheckbox;
     private JSpinner vSpinner;
 
-    private final Supplier<BezierPatchC0> flatSupplier = () -> BezierPatchC0.flat(
-            ((Number) xSpinner.getValue()).floatValue(),
-            ((Number) ySpinner.getValue()).floatValue(),
-            ((Number) iSpinner.getValue()).intValue(),
-            ((Number) jSpinner.getValue()).intValue());
-    private final Supplier<BezierPatchC0> cylinderSupplier = () -> BezierPatchC0.cylinder(
-            ((Number) xSpinner.getValue()).floatValue(),
-            ((Number) ySpinner.getValue()).floatValue(),
-            ((Number) iSpinner.getValue()).intValue(),
-            ((Number) jSpinner.getValue()).intValue());
+    private PatchCreator flatSupplier;
+    private PatchCreator cylinderSupplier;
 
-    private Supplier<BezierPatchC0> patchSupplier = flatSupplier;
-    private BezierPatchC0 patch;
+    @FunctionalInterface
+    public interface PatchCreator {
+        Patch construct(float x, float y, int i, int j);
+    }
+
+    private PatchCreator patchSupplier;
+    private Patch patch;
 
     private final Consumer<Model> addModel;
     private final Consumer<Model> removeModel;
     private final Supplier<Pointer> getPointer;
     private final Runnable refresh;
 
-    public PatchWizard(Consumer<Model> addModel, Consumer<Model> removeModel, Supplier<Pointer> getPointer, Runnable refresh) {
+    public PatchWizard(Consumer<Model> addModel, Consumer<Model> removeModel, Supplier<Pointer> getPointer, Runnable refresh, PatchCreator flatSupplier, PatchCreator cylinderSupplier) {
         $$$setupUI$$$();
+        this.patchSupplier = this.flatSupplier = flatSupplier;
+        this.cylinderSupplier = cylinderSupplier;
 
         this.addModel = addModel;
         this.removeModel = removeModel;
@@ -118,9 +118,17 @@ public class PatchWizard {
         replacePatch();
     }
 
+    public PatchWizard(Consumer<Model> addModel, Consumer<Model> removeModel, Supplier<Pointer> getPointer, Runnable refresh) {
+        this(addModel, removeModel, getPointer, refresh, BezierPatchC0::flat, BezierPatchC0::cylinder);
+    }
+
     private void replacePatch() {
         if (patch != null) removeModel.accept(patch);
-        addModel.accept(patch = patchSupplier.get());
+        addModel.accept(patch = patchSupplier.construct(
+                ((Number) xSpinner.getValue()).floatValue(),
+                ((Number) ySpinner.getValue()).floatValue(),
+                ((Number) iSpinner.getValue()).intValue(),
+                ((Number) jSpinner.getValue()).intValue()));
         Vector3f pointer = getPointer.get().getPosition().get(new Vector3f());
         patch.getPoints().distinct().forEach(point -> point.move(pointer.x, pointer.y, pointer.z));
         patch.setDivisionsU(((Number) uSpinner.getValue()).intValue());
