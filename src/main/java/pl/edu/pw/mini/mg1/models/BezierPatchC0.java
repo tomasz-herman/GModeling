@@ -236,9 +236,6 @@ public class BezierPatchC0 extends Patch {
                     ));
                 }
             }
-
-            System.out.println(this.points.size());
-
             polyMesh = new PolyMesh(surface);
         }
         return this;

@@ -279,6 +279,7 @@ public class Scene {
     }
 
     public void deserialize(String filename) {
+        if(!new File(filename).exists()) return;
         removedModels.addAll(models);
         models.clear();
         try {

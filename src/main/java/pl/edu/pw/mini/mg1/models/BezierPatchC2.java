@@ -234,9 +234,9 @@ public class BezierPatchC2 extends Patch {
                     <Points>
                 %s
                     </Points>
-                  </PatchC0>
+                  </PatchC2>
                 """.formatted(
-                getName(), (surface[0].length - 1) / 3, (surface.length - 1) / 3, divisionsU, divisionsV,
+                getName(), surface[0].length - 3, surface.length - 3, divisionsU, divisionsV,
                 IntStream.range(0, surface.length).boxed().flatMap(
                         i -> IntStream.range(0, surface[i].length)
                                 .mapToObj(j -> "      <PointRef Name=\"%s\"/>".formatted(surface[i][j].getName()))
