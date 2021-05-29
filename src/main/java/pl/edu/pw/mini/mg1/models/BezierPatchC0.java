@@ -9,6 +9,7 @@ import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -170,16 +171,16 @@ public class BezierPatchC0 extends Patch {
     @Override
     public String serialize() {
         return """
-                  <PatchC0 Name="%s" ShowControlPolygon="%d" WrapDirection="None" RowSlices="%d" ColumnSlices="%d">
+                  <PatchC0 Name="%s" N="%d" M="%d" NSlices="%d" MSlices="%d">
                     <Points>
                 %s
                     </Points>
                   </PatchC0>
                 """.formatted(
-                getName(), 0, divisionsU, divisionsV,
+                getName(), (surface[0].length - 1) / 3, (surface.length - 1) / 3, divisionsU, divisionsV,
                 IntStream.range(0, surface.length).boxed().flatMap(
                         i -> IntStream.range(0, surface[i].length)
-                                .mapToObj(j -> "      <PointRef Name=\"%s\" Row=\"%d\" Column=\"%d\"/>".formatted(surface[i][j].getName(), i, j))
+                                .mapToObj(j -> "      <PointRef Name=\"%s\"/>".formatted(surface[i][j].getName()))
                 ).collect(Collectors.joining("\n"))
         );
     }
@@ -189,74 +190,54 @@ public class BezierPatchC0 extends Patch {
         if(node.getNodeType() == Node.ELEMENT_NODE) {
             Element patchC0Element = (Element) node;
             setName(patchC0Element.getAttribute("Name"));
-            setDivisionsU(Integer.parseInt(patchC0Element.getAttribute("RowSlices")));
-            setDivisionsV(Integer.parseInt(patchC0Element.getAttribute("ColumnSlices")));
-            String wrap = patchC0Element.getAttribute("WrapDirection");
+            setDivisionsU(Integer.parseInt(patchC0Element.getAttribute("NSlices")));
+            setDivisionsV(Integer.parseInt(patchC0Element.getAttribute("MSlices")));
+
+            int n = Integer.parseInt(patchC0Element.getAttribute("N"));
+            int m = Integer.parseInt(patchC0Element.getAttribute("M"));
 
             NodeList pointsRefs = ((Element)patchC0Element
                     .getElementsByTagName("Points").item(0))
                     .getElementsByTagName("PointRef");
 
-            int rows = 0;
-            int cols = 0;
-            for (int i = 0; i < pointsRefs.getLength(); i++) {
-                Element pointRefElement = (Element) pointsRefs.item(i);
-                int row = Integer.parseInt(pointRefElement.getAttribute("Row")) + 1;
-                int col = Integer.parseInt(pointRefElement.getAttribute("Column")) + 1;
-                if(row > rows) rows = row;
-                if(col > cols) cols = col;
-            }
+            surface = new Point[3 * m + 1][3 * n + 1];
 
-            switch (wrap) {
-                case "Row" -> rows++;
-                case "Column" -> cols++;
-            }
-
-            surface = new Point[rows][cols];
-
-            for (int i = 0; i < pointsRefs.getLength(); i++) {
-                Element pointRefElement = (Element) pointsRefs.item(i);
-                Point point = points.get(pointRefElement.getAttribute("Name"));
-                point.addPropertyChangeListener(pcl);
-                int row = Integer.parseInt(pointRefElement.getAttribute("Row"));
-                int col = Integer.parseInt(pointRefElement.getAttribute("Column"));
-                surface[row][col] = point;
-            }
-
-            switch (wrap) {
-                case "Row" -> System.arraycopy(surface[0], 0, surface[rows - 1], 0, cols);
-                case "Column" -> {
-                    for (int i = 0; i < rows; i++) {
-                        surface[i][cols - 1] = surface[i][0];
-                    }
+            for (int i = 0; i < 3 * m + 1; i++) {
+                for (int j = 0; j < 3 * n + 1; j++) {
+                    Element pointRefElement = (Element) pointsRefs.item(i * (3 * n + 1) + j);
+                    Point point = points.get(pointRefElement.getAttribute("Name"));
+                    point.addPropertyChangeListener(pcl);
+                    surface[i][j] = point;
                 }
             }
 
-            for (int i = 0; i < rows - 1; i += 3) {
-                for (int j = 0; j < cols - 1; j += 3) {
+            for (int i = 0; i < m; i ++) {
+                for (int j = 0; j < n; j++) {
                     this.points.addAll(List.of(
-                            surface[i][j],
-                            surface[i + 1][j],
-                            surface[i + 2][j],
-                            surface[i + 3][j],
+                            surface[3 * i][3 * j],
+                            surface[3 * i + 1][3 * j],
+                            surface[3 * i + 2][3 * j],
+                            surface[3 * i + 3][3 * j],
 
-                            surface[i][j + 1],
-                            surface[i + 1][j + 1],
-                            surface[i + 2][j + 1],
-                            surface[i + 3][j + 1],
+                            surface[3 * i][3 * j +  1],
+                            surface[3 * i + 1][3 * j + 1],
+                            surface[3 * i + 2][3 * j + 1],
+                            surface[3 * i + 3][3 * j + 1],
 
-                            surface[i][j + 2],
-                            surface[i + 1][j + 2],
-                            surface[i + 2][j + 2],
-                            surface[i + 3][j + 2],
+                            surface[3 * i][3 * j + 2],
+                            surface[3 * i + 1][3 * j + 2],
+                            surface[3 * i + 2][3 * j + 2],
+                            surface[3 * i + 3][3 * j + 2],
 
-                            surface[i][j + 3],
-                            surface[i + 1][j + 3],
-                            surface[i + 2][j + 3],
-                            surface[i + 3][j + 3]
+                            surface[3 * i][3 * j + 3],
+                            surface[3 * i + 1][3 * j + 3],
+                            surface[3 * i + 2][3 * j + 3],
+                            surface[3 * i + 3][3 * j + 3]
                     ));
                 }
             }
+
+            System.out.println(this.points.size());
 
             polyMesh = new PolyMesh(surface);
         }

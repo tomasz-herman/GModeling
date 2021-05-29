@@ -136,16 +136,13 @@ public class InterpolationBezierC2 extends Model implements Curve {
     @Override
     public String serialize() {
         return """
-                  <BezierInter Name="%s" ShowBernsteinPoints="%d" ShowBernsteinPolygon="%d" ShowDeBoorPolygon="%d">
+                  <BezierInter Name="%s">
                     <Points>
                 %s
                     </Points>
                   </BezierInter>
                 """.formatted(
                 getName(),
-                0,
-                0,
-                0,
                 points.stream()
                         .map(p -> "      <PointRef Name=\"%s\"/>".formatted(p.getName()))
                         .collect(Collectors.joining("\n"))
@@ -157,7 +154,6 @@ public class InterpolationBezierC2 extends Model implements Curve {
         if(node.getNodeType() == Node.ELEMENT_NODE) {
             Element bezierC0Element = (Element) node;
             setName(bezierC0Element.getAttribute("Name"));
-            setShowPolyline(0 != Integer.parseInt(bezierC0Element.getAttribute("ShowControlPolygon")));
 
             NodeList pointsRefs = ((Element)bezierC0Element
                     .getElementsByTagName("Points").item(0))

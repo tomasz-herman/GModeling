@@ -110,7 +110,7 @@ public class PatchWizard {
         });
 
         addPatchButton.addActionListener(e -> {
-            patch.getPoints().forEach(addModel);
+            patch.getPoints().distinct().forEach(addModel);
             refresh.run();
             dialog.dispose();
         });

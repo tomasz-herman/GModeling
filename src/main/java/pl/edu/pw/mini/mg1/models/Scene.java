@@ -5,8 +5,6 @@ import org.joml.Matrix4f;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
@@ -262,10 +260,7 @@ public class Scene {
         try (PrintWriter writer = new PrintWriter(filename)) {
             writer.println(
                     """
-                    <?xml version="1.0" encoding="utf-8"?>
-                    <Scene xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-                    \txsi:schemaLocation="http://mini.pw.edu.pl/mg1 ./format_draft3.xsd"
-                    \txmlns="http://mini.pw.edu.pl/mg1">
+                    <Scene>
                     """
             );
 

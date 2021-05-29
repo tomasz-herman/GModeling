@@ -2,14 +2,20 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
+import org.joml.Matrix4f;
+import org.joml.Quaternionf;
+import org.joml.Vector3f;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Function;
+
+import static org.joml.Math.toDegrees;
+import static org.joml.Math.toRadians;
 
 public class Torus extends Model {
     private int outerSegments;
@@ -120,11 +126,15 @@ public class Torus extends Model {
 
     @Override
     public String serialize() {
+        Quaternionf rotation = new Quaternionf().rotateZYX(
+                toRadians(getRotation().z()),
+                toRadians(getRotation().y()),
+                toRadians(getRotation().x()));
         return
                 """
-                      <Torus Name="%s" MajorRadius="%f" MinorRadius="%f" VerticalSlices="%d" HorizontalSlices="%d">
+                      <Torus Name="%s" MajorRadius="%f" MinorRadius="%f" MajorSegments="%d" MinorSegments="%d">
                         <Position X="%f" Y="%f" Z="%f"/>
-                        <Rotation X="%f" Y="%f" Z="%f"/>
+                        <Rotation X="%f" Y="%f" Z="%f" W="%f"/>
                         <Scale X="%f" Y="%f" Z="%f"/>
                       </Torus>
                 """.formatted(getName(),
@@ -135,18 +145,19 @@ public class Torus extends Model {
                 getPosition().x(),
                 getPosition().y(),
                 getPosition().z(),
-                getRotation().x(),
-                getRotation().y(),
-                getRotation().z(),
+                        rotation.x,
+                        rotation.y,
+                        rotation.z,
+                        rotation.w,
                 getScale().x(),
                 getScale().y(),
                 getScale().z());
     }
 
     /**
-     *   <Torus Name="Torus_001" MajorRadius="10.10" MinorRadius="9.9" VerticalSlices="5" HorizontalSlices="8">
+     *   <Torus Name="Torus_001" MajorRadius="10.10" MinorRadius="9.9" MajorSegments="5" MinorSegments="8">
      *     <Position X="10.123" Y="13.37" Z="123.456"/>
-     *     <Rotation X="0" Y="6.567" Z="0"/>
+     *     <Rotation X="-0.235337" Y="0.748570" Z="0.010133" W="0.619803"/>
      *     <Scale X="1" Y="1" Z="1"/>
      *   </Torus>
      */
@@ -157,14 +168,15 @@ public class Torus extends Model {
             setName(torusElement.getAttribute("Name"));
             setInnerRadius(Float.parseFloat(torusElement.getAttribute("MinorRadius")));
             setOuterRadius(Float.parseFloat(torusElement.getAttribute("MajorRadius")));
-            setInnerSegments(Integer.parseInt(torusElement.getAttribute("VerticalSlices")));
-            setOuterSegments(Integer.parseInt(torusElement.getAttribute("HorizontalSlices")));
+            setInnerSegments(Integer.parseInt(torusElement.getAttribute("MinorSegments")));
+            setOuterSegments(Integer.parseInt(torusElement.getAttribute("MajorSegments")));
 
             Element positionElement = (Element) torusElement
                     .getElementsByTagName("Position").item(0);
             float x = Float.parseFloat(positionElement.getAttribute("X"));
             float y = Float.parseFloat(positionElement.getAttribute("Y"));
             float z = Float.parseFloat(positionElement.getAttribute("Z"));
+            float w;
             setPosition(x, y, z);
 
             Element scaleElement = (Element) torusElement
@@ -179,7 +191,16 @@ public class Torus extends Model {
             x = Float.parseFloat(rotationElement.getAttribute("X"));
             y = Float.parseFloat(rotationElement.getAttribute("Y"));
             z = Float.parseFloat(rotationElement.getAttribute("Z"));
-            setRotation(x, y, z);
+            w = Float.parseFloat(rotationElement.getAttribute("W"));
+            Quaternionf rotation = new Quaternionf(x, y, z, w);
+            Vector3f angles = new Matrix4f().rotation(rotation).getEulerAnglesZYX(new Vector3f());
+            Function<Float, Float> normalize = a -> {
+                a = (float)toDegrees(a);
+                if(a < 0) a += 360;
+                if(a >= 360) a -= 360;
+                return a;
+            };
+            setRotation(normalize.apply(angles.x), normalize.apply(angles.y), normalize.apply(angles.z));
         }
         return this;
     }

@@ -230,16 +230,16 @@ public class BezierPatchC2 extends Patch {
     @Override
     public String serialize() {
         return """
-                  <PatchC2 Name="%s" ShowControlPolygon="%d" WrapDirection="None" RowSlices="%d" ColumnSlices="%d">
+                  <PatchC2 Name="%s" N="%d" M="%d" NSlices="%d" MSlices="%d">
                     <Points>
                 %s
                     </Points>
-                  </PatchC2>
+                  </PatchC0>
                 """.formatted(
-                getName(), 0, divisionsU, divisionsV,
+                getName(), (surface[0].length - 1) / 3, (surface.length - 1) / 3, divisionsU, divisionsV,
                 IntStream.range(0, surface.length).boxed().flatMap(
                         i -> IntStream.range(0, surface[i].length)
-                                .mapToObj(j -> "      <PointRef Name=\"%s\" Row=\"%d\" Column=\"%d\"/>".formatted(surface[i][j].getName(), i, j))
+                                .mapToObj(j -> "      <PointRef Name=\"%s\"/>".formatted(surface[i][j].getName()))
                 ).collect(Collectors.joining("\n"))
         );
     }
@@ -249,59 +249,30 @@ public class BezierPatchC2 extends Patch {
         if (node.getNodeType() == Node.ELEMENT_NODE) {
             Element patchC2Element = (Element) node;
             setName(patchC2Element.getAttribute("Name"));
-            String wrap = patchC2Element.getAttribute("WrapDirection");
+            setDivisionsU(Integer.parseInt(patchC2Element.getAttribute("NSlices")));
+            setDivisionsV(Integer.parseInt(patchC2Element.getAttribute("MSlices")));
+
+            int n = Integer.parseInt(patchC2Element.getAttribute("N"));
+            int m = Integer.parseInt(patchC2Element.getAttribute("M"));
 
             NodeList pointsRefs = ((Element) patchC2Element
                     .getElementsByTagName("Points").item(0))
                     .getElementsByTagName("PointRef");
 
-            int rows = 0;
-            int cols = 0;
-            for (int i = 0; i < pointsRefs.getLength(); i++) {
-                Element pointRefElement = (Element) pointsRefs.item(i);
-                int row = Integer.parseInt(pointRefElement.getAttribute("Row")) + 1;
-                int col = Integer.parseInt(pointRefElement.getAttribute("Column")) + 1;
-                if (row > rows) rows = row;
-                if (col > cols) cols = col;
-            }
+            surface = new Point[m + 3][n + 3];
 
-            switch (wrap) {
-                case "Row" -> rows += 3;
-                case "Column" -> cols += 3;
-            }
 
-            surface = new Point[rows][cols];
-
-            for (int i = 0; i < pointsRefs.getLength(); i++) {
-                Element pointRefElement = (Element) pointsRefs.item(i);
-                Point point = points.get(pointRefElement.getAttribute("Name"));
-                point.addPropertyChangeListener(pcl);
-                int row = Integer.parseInt(pointRefElement.getAttribute("Row"));
-                int col = Integer.parseInt(pointRefElement.getAttribute("Column"));
-                surface[row][col] = point;
-            }
-
-            switch (wrap) {
-                case "Row" -> {
-                    System.arraycopy(surface[0], 0, surface[rows - 3], 0, cols);
-                    System.arraycopy(surface[1], 0, surface[rows - 2], 0, cols);
-                    System.arraycopy(surface[2], 0, surface[rows - 1], 0, cols);
-                }
-                case "Column" -> {
-                    for (int j = 0; j < rows; j++) {
-                        surface[j][cols - 3] = surface[j][0];
-                    }
-                    for (int j = 0; j < rows; j++) {
-                        surface[j][cols - 2] = surface[j][1];
-                    }
-                    for (int j = 0; j < rows; j++) {
-                        surface[j][cols - 1] = surface[j][2];
-                    }
+            for (int i = 0; i < m + 3; i++) {
+                for (int j = 0; j < n + 3; j++) {
+                    Element pointRefElement = (Element) pointsRefs.item(i * (n + 3) + j);
+                    Point point = points.get(pointRefElement.getAttribute("Name"));
+                    point.addPropertyChangeListener(pcl);
+                    surface[i][j] = point;
                 }
             }
 
-            for (int i = 0; i < rows - 3; i++) {
-                for (int j = 0; j < cols - 3; j++) {
+            for (int i = 0; i < m; i++) {
+                for (int j = 0; j < n; j++) {
                     this.points.addAll(List.of(
                             surface[i][j],
                             surface[i + 1][j],

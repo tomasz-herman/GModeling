@@ -255,16 +255,13 @@ public class BezierC2 extends Model implements Curve {
     @Override
     public String serialize() {
         return """
-                  <BezierC2 Name="%s" ShowBernsteinPoints="%d" ShowBernsteinPolygon="%d" ShowDeBoorPolygon="%d">
+                  <BezierC2 Name="%s">
                     <Points>
                 %s
                     </Points>
                   </BezierC2>
                 """.formatted(
                 getName(),
-                0,
-                0,
-                0,
                 points.stream()
                         .map(p -> "      <PointRef Name=\"%s\"/>".formatted(p.getName()))
                         .collect(Collectors.joining("\n"))
@@ -276,7 +273,6 @@ public class BezierC2 extends Model implements Curve {
         if(node.getNodeType() == Node.ELEMENT_NODE) {
             Element bezierC2Element = (Element) node;
             setName(bezierC2Element.getAttribute("Name"));
-            setShowPolyline(0 != Integer.parseInt(bezierC2Element.getAttribute("ShowControlPolygon")));
 
             NodeList pointsRefs = ((Element)bezierC2Element
                     .getElementsByTagName("Points").item(0))
