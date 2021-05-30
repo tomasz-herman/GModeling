@@ -72,8 +72,8 @@ public class PatchWizard {
         });
         xSpinner.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.1));
         ySpinner.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.1));
-        iSpinner.setModel(new SpinnerNumberModel(2, 1, 10, 1));
-        jSpinner.setModel(new SpinnerNumberModel(2, 1, 10, 1));
+        iSpinner.setModel(new SpinnerNumberModel(2, 1, 100, 1));
+        jSpinner.setModel(new SpinnerNumberModel(2, 1, 100, 1));
         uSpinner.setModel(new SpinnerNumberModel(3, 2, 64, 1));
         vSpinner.setModel(new SpinnerNumberModel(3, 2, 64, 1));
 

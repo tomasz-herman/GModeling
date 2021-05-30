@@ -131,6 +131,18 @@ public class Scene {
         return closest;
     }
 
+    public List<Model> testAll(float x, float y) {
+        Ray ray = camera.getRay(x, y);
+        List<Model> hits = new ArrayList<>();
+        for (Model model : models) {
+            float dist = model.test(ray);
+            if(dist != -1) {
+                hits.add(model);
+            }
+        }
+        return hits;
+    }
+
     public void updateLocalPointerPosition() {
         if(selected == null || selected.length == 0) return;
         Vector3f position = new Vector3f();

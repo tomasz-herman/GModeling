@@ -3,7 +3,7 @@
   <grid id="27dc6" binding="mainPane" layout-manager="GridLayoutManager" row-count="5" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="0" left="0" bottom="0" right="0"/>
     <constraints>
-      <xy x="20" y="20" width="341" height="682"/>
+      <xy x="20" y="20" width="341" height="814"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -173,6 +173,24 @@
                 <properties/>
                 <border type="none" title="rotation"/>
                 <children>
+                  <component id="4ad33" class="javax.swing.JSpinner" binding="xRotation">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="12a8d" class="javax.swing.JSpinner" binding="yRotation">
+                    <constraints>
+                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                  </component>
+                  <component id="86e9f" class="javax.swing.JSpinner" binding="zRotation">
+                    <constraints>
+                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="4" fill="0" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties/>
+                  </component>
                   <component id="21ac1" class="javax.swing.JLabel">
                     <constraints>
                       <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
@@ -195,33 +213,6 @@
                     </constraints>
                     <properties>
                       <text value="z"/>
-                    </properties>
-                  </component>
-                  <component id="4671f" class="javax.swing.JSlider" binding="xRotation" custom-create="true">
-                    <constraints>
-                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <maximum value="36000"/>
-                      <value value="0"/>
-                    </properties>
-                  </component>
-                  <component id="a8580" class="javax.swing.JSlider" binding="yRotation" custom-create="true">
-                    <constraints>
-                      <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <maximum value="36000"/>
-                      <value value="0"/>
-                    </properties>
-                  </component>
-                  <component id="ba03" class="javax.swing.JSlider" binding="zRotation" custom-create="true">
-                    <constraints>
-                      <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="7" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
-                    </constraints>
-                    <properties>
-                      <maximum value="36000"/>
-                      <value value="0"/>
                     </properties>
                   </component>
                 </children>

@@ -33,9 +33,9 @@ public class SceneLayout implements Controller<Scene> {
     private JPanel pointerControllerPane;
     private JRadioButton useLocalPointer;
     private JRadioButton useGlobalPointer;
-    private JSlider xRotation;
-    private JSlider yRotation;
-    private JSlider zRotation;
+    private JSpinner xRotation;
+    private JSpinner yRotation;
+    private JSpinner zRotation;
     private JSpinner yScale;
     private JSpinner zScale;
     private JSpinner xScale;
@@ -162,28 +162,31 @@ public class SceneLayout implements Controller<Scene> {
             addCombo.setSelectedIndex(-1);
             table.revalidate();
         });
-        xScale.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.01));
-        yScale.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.01));
-        zScale.setModel(new SpinnerNumberModel(1, 0.01, 1000, 0.01));
+        xScale.setModel(new SpinnerNumberModel(1, -1000, 1000, 0.01));
+        yScale.setModel(new SpinnerNumberModel(1, -1000, 1000, 0.01));
+        zScale.setModel(new SpinnerNumberModel(1, -1000, 1000, 0.01));
         xTranslation.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
         yTranslation.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
         zTranslation.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
+        xRotation.setModel(new SpinnerNumberModel(0, 0, 360, 1.0));
+        yRotation.setModel(new SpinnerNumberModel(0, 0, 360, 1.0));
+        zRotation.setModel(new SpinnerNumberModel(0, 0, 360, 1.0));
         xRotation.addChangeListener(e -> {
             if (scene != null) {
                 Vector3fc rotation = scene.getRotation();
-                scene.setRotation(xRotation.getValue() / 100f, rotation.y(), rotation.z());
+                scene.setRotation(((Number) xRotation.getValue()).floatValue(), rotation.y(), rotation.z());
             }
         });
         yRotation.addChangeListener(e -> {
             if (scene != null) {
                 Vector3fc rotation = scene.getRotation();
-                scene.setRotation(rotation.x(), yRotation.getValue() / 100f, rotation.z());
+                scene.setRotation(rotation.x(), ((Number) yRotation.getValue()).floatValue(), rotation.z());
             }
         });
         zRotation.addChangeListener(e -> {
             if (scene != null) {
                 Vector3fc rotation = scene.getRotation();
-                scene.setRotation(rotation.x(), rotation.y(), zRotation.getValue() / 100f);
+                scene.setRotation(rotation.x(), rotation.y(), ((Number) zRotation.getValue()).floatValue());
             }
         });
         xScale.addChangeListener(e -> {
@@ -264,9 +267,9 @@ public class SceneLayout implements Controller<Scene> {
             xTranslation.setValue(scene.getTranslation().x());
             yTranslation.setValue(scene.getTranslation().y());
             zTranslation.setValue(scene.getTranslation().z());
-            xRotation.setValue((int) scene.getRotation().x() * 100);
-            yRotation.setValue((int) scene.getRotation().y() * 100);
-            zRotation.setValue((int) scene.getRotation().z() * 100);
+            xRotation.setValue(scene.getRotation().x());
+            yRotation.setValue(scene.getRotation().y());
+            zRotation.setValue(scene.getRotation().z());
         }
         table.revalidate();
     }
@@ -280,12 +283,6 @@ public class SceneLayout implements Controller<Scene> {
 
     public void setModelController(Controller<Model> modelController) {
         this.modelController = modelController;
-    }
-
-    private void createUIComponents() {
-        xRotation = createSlider();
-        yRotation = createSlider();
-        zRotation = createSlider();
     }
 
     private final class SceneTableModel extends AbstractTableModel {
@@ -644,7 +641,6 @@ public class SceneLayout implements Controller<Scene> {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        createUIComponents();
         mainPane = new JPanel();
         mainPane.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
         final JScrollPane scrollPane1 = new JScrollPane();
@@ -718,6 +714,12 @@ public class SceneLayout implements Controller<Scene> {
         panel5.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel3.add(panel5, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
         panel5.setBorder(BorderFactory.createTitledBorder(null, "rotation", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        xRotation = new JSpinner();
+        panel5.add(xRotation, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        yRotation = new JSpinner();
+        panel5.add(yRotation, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        zRotation = new JSpinner();
+        panel5.add(zRotation, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JLabel label4 = new JLabel();
         label4.setText("x");
         panel5.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -727,15 +729,6 @@ public class SceneLayout implements Controller<Scene> {
         final JLabel label6 = new JLabel();
         label6.setText("z");
         panel5.add(label6, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        xRotation.setMaximum(36000);
-        xRotation.setValue(0);
-        panel5.add(xRotation, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        yRotation.setMaximum(36000);
-        yRotation.setValue(0);
-        panel5.add(yRotation, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        zRotation.setMaximum(36000);
-        zRotation.setValue(0);
-        panel5.add(zRotation, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final JPanel panel6 = new JPanel();
         panel6.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         panel3.add(panel6, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));

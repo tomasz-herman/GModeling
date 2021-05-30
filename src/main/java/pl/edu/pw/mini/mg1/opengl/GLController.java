@@ -16,6 +16,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.*;
+import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
 
@@ -25,6 +26,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     private Renderer renderer;
 
     private final Vector2i lastMousePosition = new Vector2i();
+    private final Vector2i selectionStart = new Vector2i();
     private boolean forward;
     private boolean backward;
     private boolean right;
@@ -219,6 +221,12 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         modelController.set(hit);
         if(hit != null) {
             if(e.isControlDown()) scene.invertSelect(hit);
+            if(e.isShiftDown()) {
+                List<Model> hits = scene.testAll((float)e.getX() / gljPanel.getWidth(), 1 - (float)e.getY() / gljPanel.getHeight());
+                for (Model model : hits) {
+                    scene.invertSelect(model);
+                }
+            }
             else scene.selectModel(hit);
         } else {
             scene.selectModels(new int[] {});
@@ -232,11 +240,37 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         if(SwingUtilities.isLeftMouseButton(e)) {
             lastMousePosition.set(e.getX(), e.getY());
         }
+        if(SwingUtilities.isRightMouseButton(e)) {
+            selectionStart.set(e.getX(), e.getY());
+        }
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-
+        if(SwingUtilities.isRightMouseButton(e)) {
+            Vector2i selectionEnd = new Vector2i(e.getX(), e.getY());
+            if(selectionStart.x > selectionEnd.x) {
+                int temp = selectionStart.x;
+                selectionEnd.x = selectionStart.x;
+                selectionStart.x = temp;
+            }
+            if(selectionStart.y > selectionEnd.y) {
+                int temp = selectionStart.y;
+                selectionEnd.y = selectionStart.y;
+                selectionStart.y = temp;
+            }
+            HashSet<Model> selected = new HashSet<>();
+            for (int i = selectionStart.x; i < selectionEnd.x; i++) {
+                for (int j = selectionStart.y; j < selectionEnd.y; j++) {
+                    List<Model> hits = scene.testAll((float)i / gljPanel.getWidth(), 1 - (float)j / gljPanel.getHeight());
+                    selected.addAll(hits);
+                }
+            }
+            scene.selectModels(new int[]{});
+            for (Model model : selected) {
+                scene.invertSelect(model);
+            }
+        }
     }
 
     @Override
