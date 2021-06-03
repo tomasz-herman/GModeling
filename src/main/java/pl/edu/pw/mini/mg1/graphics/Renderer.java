@@ -19,6 +19,7 @@ public class Renderer {
     private final Shader stereoShader;
     private final Shader patchShader;
     private final Shader patchSplineShader;
+    private final Shader patchGregoryShader;
 
     private Function<PerspectiveCamera, Matrix4fc> viewProjectionFunction = PerspectiveCamera::getViewProjectionMatrix;
     private BiConsumer<GL4, Scene> renderFunction = this::render;
@@ -45,6 +46,7 @@ public class Renderer {
         stereoShader = new Shader(gl, "/stereo.vert", "/stereo.frag");
         patchShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/patch.tese", "/patch.geom");
         patchSplineShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/bspline.tese", "/patch.geom");
+        patchGregoryShader = new Shader(gl, "/patch.vert", "/patch.frag", "/gregory.tesc", "/gregory.tese", "/patch.geom");
         gl.glClearColor(0f, 0f, 0f, 1.0f);
         gl.glClearDepth(1.0f);
         gl.glEnable(GL.GL_DEPTH_TEST);
@@ -287,11 +289,31 @@ public class Renderer {
         gl.glUseProgram(patchSplineShader.getProgramID());
 
         patchSplineShader.loadMatrix4f(gl, "mvp", mvp);
-        patchShader.loadInteger(gl, "divisionsU", patch.getDivisionsU());
-        patchShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
+        patchSplineShader.loadInteger(gl, "divisionsU", patch.getDivisionsU());
+        patchSplineShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
+        gl.glDrawElements(patch.getMesh().getPrimitivesType(),
+                patch.getMesh().vertexCount(),
+                GL4.GL_UNSIGNED_INT, 0);
+        gl.glBindVertexArray(0);
+        gl.glUseProgram(0);
+    }
+
+    public void renderGregoryPatch(GL4 gl, PerspectiveCamera camera, GregoryPatch patch) {
+        gl.glLineWidth(1);
+
+        Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
+
+        gl.glUseProgram(patchGregoryShader.getProgramID());
+
+        patchGregoryShader.loadMatrix4f(gl, "mvp", mvp);
+        patchGregoryShader.loadInteger(gl, "divisionsU", 16);
+        patchGregoryShader.loadInteger(gl, "divisionsV", 16);
+
+        gl.glBindVertexArray(patch.getMesh().getVao());
+        gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 20);
         gl.glDrawElements(patch.getMesh().getPrimitivesType(),
                 patch.getMesh().vertexCount(),
                 GL4.GL_UNSIGNED_INT, 0);

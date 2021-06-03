@@ -71,50 +71,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
         scene.getCamera().setPosition(0, 0, 2);
 
-        Point a = new Point();
-        Point b = new Point();
-        Point c = new Point();
-        Point d = new Point();
-        Point e = new Point();
-        Point f = new Point();
-        Point g = new Point();
-
-        var bezier = new BezierInter(List.of(a, b, c, d, e, f, g));
-        bezier.setShowPolyline(false);
-
-        scene.addModelAtPointer(bezier);
-        scene.setPointerWorldCoords(new Vector3f(5, 0, 5));
-        scene.addModelAtPointer(a);
-        scene.setPointerWorldCoords(new Vector3f(6, 0, 5));
-        scene.addModelAtPointer(b);
-        scene.setPointerWorldCoords(new Vector3f(6, 1, 5));
-        scene.addModelAtPointer(c);
-        scene.setPointerWorldCoords(new Vector3f(5, 1, 5));
-        scene.addModelAtPointer(d);
-        scene.setPointerWorldCoords(new Vector3f(5, 2, 5));
-        scene.addModelAtPointer(e);
-        scene.setPointerWorldCoords(new Vector3f(0, 1, 11));
-        scene.addModelAtPointer(f);
-        scene.setPointerWorldCoords(new Vector3f(7, 1, 6));
-        scene.addModelAtPointer(g);
-
-        for (int i = 0; i < 20; i++) {
-            scene.setPointerWorldCoords(new Vector3f(0, 10 - i, 0));
-            scene.addModelAtPointer(new Point());
-            scene.setPointerWorldCoords(new Vector3f(10 - i, 0, 0));
-            scene.addModelAtPointer(new Point());
-            scene.setPointerWorldCoords(new Vector3f(0, 0, 10 - i));
-            scene.addModelAtPointer(new Point());
-        }
-
-        scene.setPointerWorldCoords(new Vector3f(0, 0, 10));
-        scene.addModelAtPointer(new Torus(350, 350, 1, 0.25f));
-
-        scene.addModelAtPointer(BezierPatchC0.flat(2, 2, 2, 2));
-        scene.addModelAtPointer(BezierPatchC0.cylinder(1, 2, 10, 2));
-        scene.addModelAtPointer(BezierPatchC2.example());
-
-        scene.deserialize("scene.xml");
+        scene.addModel(GregoryPatch.example());
 
         modelController.set(null);
         cameraController.set(scene.getCamera());
