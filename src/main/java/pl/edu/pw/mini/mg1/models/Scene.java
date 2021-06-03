@@ -84,7 +84,7 @@ public class Scene {
     }
 
     public void deleteSelected() {
-        Set<Model> nonRemovable = models.stream().filter(m -> m instanceof BezierPatchC0)
+        Set<Model> nonRemovable = models.stream().filter(m -> m instanceof Patch)
                 .map(m -> (BezierPatchC0)m)
                 .flatMap(BezierPatchC0::getPoints)
                 .collect(Collectors.toSet());
@@ -167,6 +167,18 @@ public class Scene {
         updateTransformationMatrix();
         selectedModels.clear();
         Arrays.stream(selected).mapToObj(models::get).forEach(selectedModels::add);
+        updateLocalPointerPosition();
+    }
+
+    public void selectAll() {
+        selected = IntStream.range(0, models.size()).toArray();
+        selectedModels.stream().distinct().forEach(Model::applyTransformationMatrix);
+        translation.set(0);
+        rotation.set(0);
+        scale.set(1);
+        updateTransformationMatrix();
+        selectedModels.clear();
+        selectedModels.addAll(models);
         updateLocalPointerPosition();
     }
 

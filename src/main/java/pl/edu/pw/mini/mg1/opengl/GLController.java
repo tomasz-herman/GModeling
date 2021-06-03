@@ -179,6 +179,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         addAction(gljPanel, "pressed X", () -> unroll = true);
         addAction(gljPanel, "released X", () -> unroll = false);
 
+        addAction(gljPanel, "control pressed A", () -> scene.selectAll());
+        addAction(gljPanel, "control pressed X", () -> scene.deleteSelected());
+
         for (int i = 0; i < 10; i++) {
             int finalI = i;
             addAction(gljPanel, "control pressed %d".formatted(i), () -> scene.serialize("scene%d.xml".formatted(finalI)));
