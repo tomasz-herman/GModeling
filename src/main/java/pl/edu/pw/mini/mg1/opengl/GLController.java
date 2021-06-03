@@ -79,7 +79,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         Point f = new Point();
         Point g = new Point();
 
-        var bezier = new ChordInterpolationBezierC2(List.of(a, b, c, d, e, f, g));
+        var bezier = new BezierInter(List.of(a, b, c, d, e, f, g));
         bezier.setShowPolyline(false);
 
         scene.addModelAtPointer(bezier);

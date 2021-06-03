@@ -16,13 +16,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class InterpolationBezierC2 extends Curve {
+public class BezierInterC2 extends Curve {
     private final List<Point> points = new ArrayList<>();
-    private final BezierCurveC2 bezierCurveC2 = new BezierCurveC2(new ArrayList<>());
+    private final BezierC2 bezierC2 = new BezierC2(new ArrayList<>());
     private final PropertyChangeListener pcl = e -> reload = true;
     private boolean showPolyline = true;
 
-    public InterpolationBezierC2(List<Point> points) {
+    public BezierInterC2(List<Point> points) {
         points.forEach(this::addPoint);
     }
 
@@ -43,7 +43,7 @@ public class InterpolationBezierC2 extends Curve {
     @Override
     public void validate(GL4 gl) {
         super.validate(gl);
-        bezierCurveC2.validate(gl);
+        bezierC2.validate(gl);
     }
 
     @Override
@@ -86,18 +86,18 @@ public class InterpolationBezierC2 extends Curve {
             points.add(point);
         }
 
-        bezierCurveC2.removeAllPoints();
-        points.forEach(bezierCurveC2::addPoint);
-        bezierCurveC2.load(gl);
+        bezierC2.removeAllPoints();
+        points.forEach(bezierC2::addPoint);
+        bezierC2.load(gl);
     }
 
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
-        if(bezierCurveC2 != null) {
-            bezierCurveC2.setShowPolyline(false);
-            bezierCurveC2.setShowBezierPoints(false);
-            bezierCurveC2.setShowBezierPolyline(showPolyline);
-            bezierCurveC2.render(gl, camera, renderer);
+        if(bezierC2 != null) {
+            bezierC2.setShowPolyline(false);
+            bezierC2.setShowBezierPoints(false);
+            bezierC2.setShowBezierPolyline(showPolyline);
+            bezierC2.render(gl, camera, renderer);
         }
     }
 
@@ -111,36 +111,12 @@ public class InterpolationBezierC2 extends Curve {
 
     @Override
     public String serialize() {
-        return """
-                  <BezierInter Name="%s">
-                    <Points>
-                %s
-                    </Points>
-                  </BezierInter>
-                """.formatted(
-                getName(),
-                points.stream()
-                        .map(p -> "      <PointRef Name=\"%s\"/>".formatted(p.getName()))
-                        .collect(Collectors.joining("\n"))
-        );
+        throw new RuntimeException("Not supported");
     }
 
     @Override
     public Model deserialize(Node node, Map<String, Point> points) {
-        if(node.getNodeType() == Node.ELEMENT_NODE) {
-            Element bezierC0Element = (Element) node;
-            setName(bezierC0Element.getAttribute("Name"));
+        throw new RuntimeException("Not supported");
 
-            NodeList pointsRefs = ((Element)bezierC0Element
-                    .getElementsByTagName("Points").item(0))
-                    .getElementsByTagName("PointRef");
-
-            for (int i = 0; i < pointsRefs.getLength(); i++) {
-                Element pointRefElement = (Element) pointsRefs.item(i);
-                Point point = points.get(pointRefElement.getAttribute("Name"));
-                addPoint(point);
-            }
-        }
-        return this;
     }
 }

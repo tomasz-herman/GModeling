@@ -3,17 +3,17 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import pl.edu.pw.mini.mg1.models.ChordInterpolationBezierC2;
+import pl.edu.pw.mini.mg1.models.BezierInter;
 import pl.edu.pw.mini.mg1.models.Model;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class ChordInterpolationBezierC2Layout implements Controller<ChordInterpolationBezierC2> {
+public class ChordInterpolationBezierC2Layout implements Controller<BezierInter> {
     private JPanel mainPane;
     private JCheckBox showPolylineCheckBox;
     private JList<String> pointsList;
-    private ChordInterpolationBezierC2 bezier;
+    private BezierInter bezier;
 
     public ChordInterpolationBezierC2Layout() {
         $$$setupUI$$$();
@@ -24,7 +24,7 @@ public class ChordInterpolationBezierC2Layout implements Controller<ChordInterpo
     }
 
     @Override
-    public void set(ChordInterpolationBezierC2 bezier) {
+    public void set(BezierInter bezier) {
         this.bezier = bezier;
         refresh();
     }

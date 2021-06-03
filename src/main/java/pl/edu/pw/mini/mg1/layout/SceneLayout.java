@@ -113,7 +113,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModelAtPointer(new BezierCurveC0(points));
+                    scene.addModelAtPointer(new BezierC0(points));
                 }
                 case "BezierC2" -> {
                     List<Point> points = scene.getSelectedModels().stream()
@@ -121,7 +121,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModelAtPointer(new BezierCurveC2(points));
+                    scene.addModelAtPointer(new BezierC2(points));
                 }
                 case "Interpolation BezierC2" -> {
                     List<Point> points = scene.getSelectedModels().stream()
@@ -129,7 +129,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModelAtPointer(new InterpolationBezierC2(points));
+                    scene.addModelAtPointer(new BezierInterC2(points));
                 }
                 case "Chord Interpolation BezierC2" -> {
                     List<Point> points = scene.getSelectedModels().stream()
@@ -137,7 +137,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModelAtPointer(new ChordInterpolationBezierC2(points));
+                    scene.addModelAtPointer(new BezierInter(points));
                 }
                 case "Points to curve" -> {
                     List<Model> selected = scene.getSelectedModels();

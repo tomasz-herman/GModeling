@@ -123,21 +123,21 @@ public class ModelLayout implements Controller<Model> {
                 specificFeaturesPane.add(layout.getMainPane());
             } else if (model instanceof Point) {
                 specificFeaturesPane.add(new JPanel());
-            } else if (model instanceof BezierCurveC0) {
+            } else if (model instanceof BezierC0) {
                 BezierLayout layout = new BezierLayout();
-                layout.set((BezierCurveC0) model);
+                layout.set((BezierC0) model);
                 specificFeaturesPane.add(layout.getMainPane());
-            } else if (model instanceof BezierCurveC2) {
+            } else if (model instanceof BezierC2) {
                 BezierC2Layout layout = new BezierC2Layout();
-                layout.set((BezierCurveC2) model);
+                layout.set((BezierC2) model);
                 specificFeaturesPane.add(layout.getMainPane());
-            } else if (model instanceof InterpolationBezierC2) {
+            } else if (model instanceof BezierInterC2) {
                 InterpolationBezierC2Layout layout = new InterpolationBezierC2Layout();
-                layout.set((InterpolationBezierC2) model);
+                layout.set((BezierInterC2) model);
                 specificFeaturesPane.add(layout.getMainPane());
-            } else if (model instanceof ChordInterpolationBezierC2) {
+            } else if (model instanceof BezierInter) {
                 ChordInterpolationBezierC2Layout layout = new ChordInterpolationBezierC2Layout();
-                layout.set((ChordInterpolationBezierC2) model);
+                layout.set((BezierInter) model);
                 specificFeaturesPane.add(layout.getMainPane());
             } else if (model instanceof Patch) {
                 PatchController layout = new PatchController();

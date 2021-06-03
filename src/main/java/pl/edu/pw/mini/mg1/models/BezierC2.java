@@ -3,26 +3,21 @@ package pl.edu.pw.mini.mg1.models;
 import com.jogamp.opengl.GL4;
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BezierCurveC2 extends Curve {
-    private final BezierCurveC0 curve = new BezierCurveC0(new ArrayList<>());
+public class BezierC2 extends Curve {
+    private final BezierC0 curve = new BezierC0(new ArrayList<>());
     private int selectedVirtualPoint = -1;
 
     private boolean showBezierPoints = true;
 
-    public BezierCurveC2(List<Point> points) {
+    public BezierC2(List<Point> points) {
         controlPoints.addAll(points);
         controlPoints.forEach(point -> point.addPropertyChangeListener(pcl));
         reload = true;
@@ -142,40 +137,5 @@ public class BezierCurveC2 extends Curve {
     public void cleanup() {
         super.cleanup();
         curve.cleanup();
-    }
-
-    @Override
-    public String serialize() {
-        return """
-                  <BezierC2 Name="%s">
-                    <Points>
-                %s
-                    </Points>
-                  </BezierC2>
-                """.formatted(
-                getName(),
-                controlPoints.stream()
-                        .map(p -> "      <PointRef Name=\"%s\"/>".formatted(p.getName()))
-                        .collect(Collectors.joining("\n"))
-        );
-    }
-
-    @Override
-    public Model deserialize(Node node, Map<String, Point> points) {
-        if(node.getNodeType() == Node.ELEMENT_NODE) {
-            Element bezierC2Element = (Element) node;
-            setName(bezierC2Element.getAttribute("Name"));
-
-            NodeList pointsRefs = ((Element)bezierC2Element
-                    .getElementsByTagName("Points").item(0))
-                    .getElementsByTagName("PointRef");
-
-            for (int i = 0; i < pointsRefs.getLength(); i++) {
-                Element pointRefElement = (Element) pointsRefs.item(i);
-                Point point = points.get(pointRefElement.getAttribute("Name"));
-                addPoint(point);
-            }
-        }
-        return this;
     }
 }

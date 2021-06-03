@@ -364,15 +364,15 @@ public class Scene {
             }
 
             for (int i = 0; i < bezierC0List.getLength(); i++) {
-                models.add(new BezierCurveC0(new ArrayList<>()).deserialize(bezierC0List.item(i), points));
+                models.add(new BezierC0(new ArrayList<>()).deserialize(bezierC0List.item(i), points));
             }
 
             for (int i = 0; i < bezierC2List.getLength(); i++) {
-                models.add(new BezierCurveC2(new ArrayList<>()).deserialize(bezierC2List.item(i), points));
+                models.add(new BezierC2(new ArrayList<>()).deserialize(bezierC2List.item(i), points));
             }
 
             for (int i = 0; i < bezierInterList.getLength(); i++) {
-                models.add(new ChordInterpolationBezierC2(new ArrayList<>()).deserialize(bezierInterList.item(i), points));
+                models.add(new BezierInter(new ArrayList<>()).deserialize(bezierInterList.item(i), points));
             }
 
             for (int i = 0; i < torusList.getLength(); i++) {
