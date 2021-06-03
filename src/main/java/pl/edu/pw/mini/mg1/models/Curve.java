@@ -15,11 +15,13 @@ import java.util.stream.Stream;
 public abstract class Curve extends Model {
     protected final PropertyChangeListener pcl = e -> reload = true;
 
-    protected List<Point> controlPoints = new ArrayList<>();
+    protected final List<Point> controlPoints = new ArrayList<>();
     protected final List<Point> pointsList = new ArrayList<>();
 
-    protected PolyLine polyLine;
+    protected PolyLine polyLine = new PolyLine(controlPoints);
     protected boolean showPolyLine = false;
+
+    protected abstract void fillPointsList();
 
     @Override
     protected void setupBoundingVolume() {
@@ -72,6 +74,7 @@ public abstract class Curve extends Model {
 
     @Override
     protected void load(GL4 gl) {
+        fillPointsList();
         float[] positions = ArrayUtils.toPrimitive(pointsList.stream()
                 .map(Model::getTransformedPosition)
                 .flatMap(pos -> Stream.of(pos.x(), pos.y(), pos.z()))
@@ -114,5 +117,11 @@ public abstract class Curve extends Model {
     public void dispose(GL4 gl) {
         super.dispose(gl);
         polyLine.dispose(gl);
+        pointsList.clear();
+    }
+
+    @Override
+    public void cleanup() {
+        controlPoints.forEach(point -> point.removePropertyChangeListener(pcl));
     }
 }

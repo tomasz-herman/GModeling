@@ -10,8 +10,6 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-import static pl.edu.pw.mini.mg1.layout.MainLayout.createSlider;
-
 public class ModelLayout implements Controller<Model> {
     private JSpinner rotationX;
     private JSpinner rotationY;
@@ -125,13 +123,13 @@ public class ModelLayout implements Controller<Model> {
                 specificFeaturesPane.add(layout.getMainPane());
             } else if (model instanceof Point) {
                 specificFeaturesPane.add(new JPanel());
-            } else if (model instanceof BezierC0) {
+            } else if (model instanceof BezierCurveC0) {
                 BezierLayout layout = new BezierLayout();
-                layout.set((BezierC0) model);
+                layout.set((BezierCurveC0) model);
                 specificFeaturesPane.add(layout.getMainPane());
-            } else if (model instanceof BezierC2) {
+            } else if (model instanceof BezierCurveC2) {
                 BezierC2Layout layout = new BezierC2Layout();
-                layout.set((BezierC2) model);
+                layout.set((BezierCurveC2) model);
                 specificFeaturesPane.add(layout.getMainPane());
             } else if (model instanceof InterpolationBezierC2) {
                 InterpolationBezierC2Layout layout = new InterpolationBezierC2Layout();

@@ -41,7 +41,7 @@ public class InterpolationBezierC2Layout implements Controller<InterpolationBezi
             pointsList.setListData(new String[]{});
         } else {
             showPolylineCheckBox.setSelected(bezier.isShowPolyline());
-            pointsList.setListData(bezier.getPoints().stream().map(Model::getName).toArray(String[]::new));
+            pointsList.setListData(bezier.getPoints().map(Model::getName).toArray(String[]::new));
         }
     }
 

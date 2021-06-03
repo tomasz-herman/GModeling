@@ -103,4 +103,13 @@ public abstract class Patch extends Model {
         super.dispose(gl);
         polyMesh.dispose(gl);
     }
+
+    @Override
+    public void cleanup() {
+        for (Point[] pointArray : surface) {
+            for (Point point : pointArray) {
+                point.removePropertyChangeListener(pcl);
+            }
+        }
+    }
 }

@@ -4,7 +4,7 @@ import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.joml.Vector3fc;
-import pl.edu.pw.mini.mg1.models.BezierC2;
+import pl.edu.pw.mini.mg1.models.BezierCurveC2;
 import pl.edu.pw.mini.mg1.models.Model;
 import pl.edu.pw.mini.mg1.models.Point;
 
@@ -14,7 +14,7 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
 
-public class BezierC2Layout implements Controller<BezierC2> {
+public class BezierC2Layout implements Controller<BezierCurveC2> {
     private JCheckBox showBSplinePolylineCheckBox;
     private JCheckBox showBezierPolylineCheckBox;
     private JList<String> bsplinePointsList;
@@ -24,31 +24,31 @@ public class BezierC2Layout implements Controller<BezierC2> {
     private JSpinner zPosition;
     private JSpinner xPosition;
     private JCheckBox showBezierPointsCheckBox;
-    private BezierC2 bezierC2;
+    private BezierCurveC2 bezierCurveC2;
     private int idx = -1;
 
     public BezierC2Layout() {
         $$$setupUI$$$();
         showBSplinePolylineCheckBox.addActionListener(e -> {
-            if (bezierC2 == null) return;
-            bezierC2.setShowPolyline(showBSplinePolylineCheckBox.isSelected());
+            if (bezierCurveC2 == null) return;
+            bezierCurveC2.setShowPolyline(showBSplinePolylineCheckBox.isSelected());
         });
         showBezierPolylineCheckBox.addActionListener(e -> {
-            if (bezierC2 == null) return;
-            bezierC2.setShowBezierPolyline(showBezierPolylineCheckBox.isSelected());
+            if (bezierCurveC2 == null) return;
+            bezierCurveC2.setShowBezierPolyline(showBezierPolylineCheckBox.isSelected());
         });
         showBezierPointsCheckBox.addActionListener(e -> {
-            if (bezierC2 == null) return;
-            bezierC2.setShowBezierPoints(showBezierPointsCheckBox.isSelected());
+            if (bezierCurveC2 == null) return;
+            bezierCurveC2.setShowBezierPoints(showBezierPointsCheckBox.isSelected());
         });
         bezierPointsList.addListSelectionListener(e -> {
             if (!e.getValueIsAdjusting()) {
-                if (bezierC2 == null) return;
+                if (bezierCurveC2 == null) return;
                 var indices = bezierPointsList.getSelectionModel().getSelectedIndices();
                 if (indices.length == 0) return;
                 idx = indices[0];
-                bezierC2.setSelectedVirtualPoint(idx);
-                Point p = bezierC2.getBezierPoints().get(idx);
+                bezierCurveC2.setSelectedVirtualPoint(idx);
+                Point p = bezierCurveC2.getVirtualPoints().toList().get(idx);
                 xPosition.setValue(p.getPosition().x());
                 yPosition.setValue(p.getPosition().y());
                 zPosition.setValue(p.getPosition().z());
@@ -59,30 +59,30 @@ public class BezierC2Layout implements Controller<BezierC2> {
         zPosition.setModel(new SpinnerNumberModel(0, -1000, 1000, 0.01));
         xPosition.addChangeListener(e -> {
             if (idx != -1) {
-                if (bezierC2 == null) return;
-                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
-                bezierC2.getBezierPoints().get(idx).setPosition(((Number) xPosition.getValue()).floatValue(), position.y(), position.z());
+                if (bezierCurveC2 == null) return;
+                Vector3fc position = bezierCurveC2.getVirtualPoints().toList().get(idx).getPosition();
+                bezierCurveC2.getVirtualPoints().toList().get(idx).setPosition(((Number) xPosition.getValue()).floatValue(), position.y(), position.z());
             }
         });
         yPosition.addChangeListener(e -> {
             if (idx != -1) {
-                if (bezierC2 == null) return;
-                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
-                bezierC2.getBezierPoints().get(idx).setPosition(position.x(), ((Number) yPosition.getValue()).floatValue(), position.z());
+                if (bezierCurveC2 == null) return;
+                Vector3fc position = bezierCurveC2.getVirtualPoints().toList().get(idx).getPosition();
+                bezierCurveC2.getVirtualPoints().toList().get(idx).setPosition(position.x(), ((Number) yPosition.getValue()).floatValue(), position.z());
             }
         });
         zPosition.addChangeListener(e -> {
             if (idx != -1) {
-                if (bezierC2 == null) return;
-                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
-                bezierC2.getBezierPoints().get(idx).setPosition(position.x(), position.y(), ((Number) zPosition.getValue()).floatValue());
+                if (bezierCurveC2 == null) return;
+                Vector3fc position = bezierCurveC2.getVirtualPoints().toList().get(idx).getPosition();
+                bezierCurveC2.getVirtualPoints().toList().get(idx).setPosition(position.x(), position.y(), ((Number) zPosition.getValue()).floatValue());
             }
         });
     }
 
     @Override
-    public void set(BezierC2 bezierC2) {
-        this.bezierC2 = bezierC2;
+    public void set(BezierCurveC2 bezierCurveC2) {
+        this.bezierCurveC2 = bezierCurveC2;
         refresh();
     }
 
@@ -93,18 +93,18 @@ public class BezierC2Layout implements Controller<BezierC2> {
 
     @Override
     public void refresh() {
-        if (bezierC2 == null) {
+        if (bezierCurveC2 == null) {
             showBSplinePolylineCheckBox.setSelected(false);
             showBezierPolylineCheckBox.setSelected(false);
             showBezierPointsCheckBox.setSelected(false);
             bsplinePointsList.setListData(new String[]{});
             bezierPointsList.setListData(new String[]{});
         } else {
-            showBSplinePolylineCheckBox.setSelected(bezierC2.isShowPolyline());
-            showBezierPolylineCheckBox.setSelected(bezierC2.isShowBezierPolyline());
-            showBezierPointsCheckBox.setSelected(bezierC2.isShowBezierPoints());
-            bsplinePointsList.setListData(bezierC2.getPoints().stream().map(Model::getName).toArray(String[]::new));
-            bezierPointsList.setListData(bezierC2.getBezierPoints().stream().map(Model::getName).toArray(String[]::new));
+            showBSplinePolylineCheckBox.setSelected(bezierCurveC2.isShowPolyline());
+            showBezierPolylineCheckBox.setSelected(bezierCurveC2.isShowBezierPolyline());
+            showBezierPointsCheckBox.setSelected(bezierCurveC2.isShowBezierPoints());
+            bsplinePointsList.setListData(bezierCurveC2.getPoints().map(Model::getName).toArray(String[]::new));
+            bezierPointsList.setListData(bezierCurveC2.getVirtualPoints().map(Model::getName).toArray(String[]::new));
         }
     }
 

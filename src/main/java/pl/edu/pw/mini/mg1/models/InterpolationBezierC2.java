@@ -16,14 +16,19 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class InterpolationBezierC2 extends Model implements Curve {
+public class InterpolationBezierC2 extends Curve {
     private final List<Point> points = new ArrayList<>();
-    private final BezierC2 bezierC2 = new BezierC2(new ArrayList<>());
+    private final BezierCurveC2 bezierCurveC2 = new BezierCurveC2(new ArrayList<>());
     private final PropertyChangeListener pcl = e -> reload = true;
     private boolean showPolyline = true;
 
     public InterpolationBezierC2(List<Point> points) {
         points.forEach(this::addPoint);
+    }
+
+    @Override
+    protected void fillPointsList() {
+
     }
 
     @Override
@@ -36,38 +41,9 @@ public class InterpolationBezierC2 extends Model implements Curve {
     }
 
     @Override
-    public void removePoint(Point point) {
-        points.remove(point);
-        point.removePropertyChangeListener(pcl);
-        reload = true;
-    }
-
-    @Override
-    public void removeAllPoints() {
-        List<Point> copy = new ArrayList<>(points);
-        copy.forEach(this::removePoint);
-    }
-
-    public List<Point> getPoints() {
-        return points;
-    }
-
-    @Override
-    protected void setupBoundingVolume() {
-        boundingVolume = null;
-    }
-
-    @Override
-    public void dispose(GL4 gl) {
-        super.dispose(gl);
-        points.forEach(p -> p.removePropertyChangeListener(pcl));
-        bezierC2.dispose(gl);
-    }
-
-    @Override
     public void validate(GL4 gl) {
         super.validate(gl);
-        bezierC2.validate(gl);
+        bezierCurveC2.validate(gl);
     }
 
     @Override
@@ -110,18 +86,18 @@ public class InterpolationBezierC2 extends Model implements Curve {
             points.add(point);
         }
 
-        bezierC2.removeAllPoints();
-        points.forEach(bezierC2::addPoint);
-        bezierC2.load(gl);
+        bezierCurveC2.removeAllPoints();
+        points.forEach(bezierCurveC2::addPoint);
+        bezierCurveC2.load(gl);
     }
 
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
-        if(bezierC2 != null) {
-            bezierC2.setShowPolyline(false);
-            bezierC2.setShowBezierPoints(false);
-            bezierC2.setShowBezierPolyline(showPolyline);
-            bezierC2.render(gl, camera, renderer);
+        if(bezierCurveC2 != null) {
+            bezierCurveC2.setShowPolyline(false);
+            bezierCurveC2.setShowBezierPoints(false);
+            bezierCurveC2.setShowBezierPolyline(showPolyline);
+            bezierCurveC2.render(gl, camera, renderer);
         }
     }
 

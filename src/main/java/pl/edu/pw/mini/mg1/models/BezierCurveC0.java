@@ -8,9 +8,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class BezierC0 extends Curve {
-    public BezierC0(List<Point> points) {
-        points.forEach(this::addPoint);
+public class BezierCurveC0 extends Curve {
+    public BezierCurveC0(List<Point> points) {
+        controlPoints.addAll(points);
+        controlPoints.forEach(point -> point.addPropertyChangeListener(pcl));
+        reload = true;
+    }
+
+    @Override
+    protected void fillPointsList() {
+        pointsList.addAll(controlPoints);
     }
 
     @Override
