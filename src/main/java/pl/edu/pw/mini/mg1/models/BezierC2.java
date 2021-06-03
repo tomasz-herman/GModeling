@@ -18,9 +18,7 @@ public class BezierC2 extends Curve {
     private boolean showBezierPoints = true;
 
     public BezierC2(List<Point> points) {
-        controlPoints.addAll(points);
-        controlPoints.forEach(point -> point.addPropertyChangeListener(pcl));
-        reload = true;
+        super(points);
     }
 
     public Stream<Point> getVirtualPoints() {

@@ -4,9 +4,7 @@ import java.util.List;
 
 public class BezierC0 extends Curve {
     public BezierC0(List<Point> points) {
-        controlPoints.addAll(points);
-        controlPoints.forEach(point -> point.addPropertyChangeListener(pcl));
-        reload = true;
+        super(points);
     }
 
     @Override

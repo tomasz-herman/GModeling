@@ -7,10 +7,8 @@ import java.util.List;
 
 public class BezierInter extends Curve {
     public BezierInter(List<Point> points) {
-        controlPoints.addAll(points);
-        controlPoints.forEach(point -> point.addPropertyChangeListener(pcl));
+        super(points);
         showPolyLine = false;
-        reload = true;
     }
 
     @Override

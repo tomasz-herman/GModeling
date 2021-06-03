@@ -3,9 +3,7 @@ package pl.edu.pw.mini.mg1.models;
 import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector3fc;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.numerics.SplineInterpolation;
@@ -14,7 +12,6 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class BezierInterC2 extends Curve {
     private final List<Point> points = new ArrayList<>();
@@ -23,7 +20,7 @@ public class BezierInterC2 extends Curve {
     private boolean showPolyline = true;
 
     public BezierInterC2(List<Point> points) {
-        points.forEach(this::addPoint);
+        super(points);
     }
 
     @Override

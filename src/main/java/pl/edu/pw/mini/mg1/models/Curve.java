@@ -26,6 +26,12 @@ public abstract class Curve extends Model {
     protected PolyLine polyLine = new PolyLine(controlPoints);
     protected boolean showPolyLine = false;
 
+    public Curve(List<Point> points) {
+        controlPoints.addAll(points);
+        controlPoints.forEach(point -> point.addPropertyChangeListener(pcl));
+        reload = true;
+    }
+
     protected abstract void fillPointsList();
 
     @Override
