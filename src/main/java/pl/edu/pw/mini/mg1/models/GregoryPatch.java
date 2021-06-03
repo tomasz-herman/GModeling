@@ -51,11 +51,6 @@ public class GregoryPatch extends Model{
     }
 
     @Override
-    protected void setupBoundingVolume() {
-
-    }
-
-    @Override
     protected void load(GL4 gl) {
         Float[] positions = points.stream()
                 .map(Point::getTransformedPosition)

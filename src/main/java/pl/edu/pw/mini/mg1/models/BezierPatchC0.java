@@ -141,11 +141,6 @@ public class BezierPatchC0 extends Patch {
     }
 
     @Override
-    protected void setupBoundingVolume() {
-        this.boundingVolume = null;
-    }
-
-    @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         super.render(gl, camera, renderer);
         renderer.renderPatch(gl, camera, this);

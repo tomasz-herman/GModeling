@@ -23,11 +23,6 @@ public abstract class Patch extends Model {
     protected boolean showBezierMesh = false;
 
     @Override
-    protected void setupBoundingVolume() {
-        this.boundingVolume = null;
-    }
-
-    @Override
     protected void load(GL4 gl) {
         Float[] positions = points.stream()
                 .map(Point::getTransformedPosition)

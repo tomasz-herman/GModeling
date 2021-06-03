@@ -34,11 +34,6 @@ public abstract class Curve extends Model {
 
     protected abstract void fillPointsList();
 
-    @Override
-    protected void setupBoundingVolume() {
-        this.boundingVolume = null;
-    }
-
     public void addPoint(Point point) {
         if (!controlPoints.contains(point)) {
             controlPoints.add(point);

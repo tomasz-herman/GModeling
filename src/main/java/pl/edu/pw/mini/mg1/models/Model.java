@@ -40,7 +40,9 @@ public abstract class Model {
         renderer.render(gl, camera, this);
     }
 
-    protected abstract void setupBoundingVolume();
+    protected void setupBoundingVolume() {
+        this.boundingVolume = null;
+    }
 
     private void calculateModelMatrix() {
         modelMatrix.identity()

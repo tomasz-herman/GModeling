@@ -15,11 +15,6 @@ public class PolyMesh extends Model {
     }
 
     @Override
-    protected void setupBoundingVolume() {
-        boundingVolume = null;
-    }
-
-    @Override
     protected void load(GL4 gl) {
         List<Float> positions = new ArrayList<>();
         List<Integer> indices = new ArrayList<>();

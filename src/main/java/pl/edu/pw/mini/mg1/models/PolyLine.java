@@ -15,11 +15,6 @@ public class PolyLine extends Model {
     }
 
     @Override
-    protected void setupBoundingVolume() {
-        boundingVolume = null;
-    }
-
-    @Override
     protected void load(GL4 gl) {
         float[] positions = ArrayUtils.toPrimitive(points.stream()
                 .map(Model::getTransformedPosition)
