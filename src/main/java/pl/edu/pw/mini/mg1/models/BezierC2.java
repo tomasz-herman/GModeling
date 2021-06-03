@@ -19,18 +19,13 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class BezierC2 extends Model implements Curve {
+public class BezierC2 extends Curve {
     private final List<Point> points = new ArrayList<>();
     private final List<Point> bezierPoints = new ArrayList<>();
     private final List<Point> invalidBezierPoints = new ArrayList<>();
     private final PolyLine polyLine = new PolyLine(points);
     private final PolyLine bezierPolyLine = new PolyLine(bezierPoints);
     private int selectedVirtualPoint = -1;
-    private final PropertyChangeListener pcl = e -> {
-        polyLine.reload = true;
-        bezierPolyLine.reload = true;
-        reload = true;
-    };
 
     private boolean showPolyline = false;
     private boolean showBezierPolyline = true;
@@ -38,33 +33,6 @@ public class BezierC2 extends Model implements Curve {
 
     public BezierC2(List<Point> points) {
         points.forEach(this::addPoint);
-    }
-
-    @Override
-    public void addPoint(Point point) {
-        if (!points.contains(point)) {
-            points.add(point);
-            point.addPropertyChangeListener(pcl);
-        }
-        pcl.propertyChange(null);
-    }
-
-    @Override
-    public void removePoint(Point point) {
-        points.remove(point);
-        point.removePropertyChangeListener(pcl);
-        pcl.propertyChange(null);
-    }
-
-    @Override
-    public void removeAllPoints() {
-        List<Point> copy = new ArrayList<>(points);
-        copy.forEach(this::removePoint);
-    }
-
-    @Override
-    public List<Point> getPoints() {
-        return points;
     }
 
     public List<Point> getBezierPoints() {
