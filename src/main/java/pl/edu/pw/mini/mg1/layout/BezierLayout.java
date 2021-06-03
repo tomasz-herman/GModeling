@@ -41,7 +41,7 @@ public class BezierLayout implements Controller<BezierC0> {
             pointsList.setListData(new String[]{});
         } else {
             showPolyLineCheckBox.setSelected(bezier.isShowPolyline());
-            pointsList.setListData(bezier.getPoints().stream().map(Model::getName).toArray(String[]::new));
+            pointsList.setListData(bezier.getPoints().map(Model::getName).toArray(String[]::new));
         }
     }
 

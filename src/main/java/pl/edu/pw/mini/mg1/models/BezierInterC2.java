@@ -3,9 +3,7 @@ package pl.edu.pw.mini.mg1.models;
 import com.jogamp.opengl.GL4;
 import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector3fc;
-import org.w3c.dom.Element;
 import org.w3c.dom.Node;
-import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.numerics.SplineInterpolation;
@@ -14,16 +12,20 @@ import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
-public class InterpolationBezierC2 extends Model implements Curve {
+public class BezierInterC2 extends Curve {
     private final List<Point> points = new ArrayList<>();
     private final BezierC2 bezierC2 = new BezierC2(new ArrayList<>());
     private final PropertyChangeListener pcl = e -> reload = true;
     private boolean showPolyline = true;
 
-    public InterpolationBezierC2(List<Point> points) {
-        points.forEach(this::addPoint);
+    public BezierInterC2(List<Point> points) {
+        super(points);
+    }
+
+    @Override
+    protected void fillPointsList() {
+
     }
 
     @Override
@@ -33,35 +35,6 @@ public class InterpolationBezierC2 extends Model implements Curve {
             point.addPropertyChangeListener(pcl);
         }
         reload = true;
-    }
-
-    @Override
-    public void removePoint(Point point) {
-        points.remove(point);
-        point.removePropertyChangeListener(pcl);
-        reload = true;
-    }
-
-    @Override
-    public void removeAllPoints() {
-        List<Point> copy = new ArrayList<>(points);
-        copy.forEach(this::removePoint);
-    }
-
-    public List<Point> getPoints() {
-        return points;
-    }
-
-    @Override
-    protected void setupBoundingVolume() {
-        boundingVolume = null;
-    }
-
-    @Override
-    public void dispose(GL4 gl) {
-        super.dispose(gl);
-        points.forEach(p -> p.removePropertyChangeListener(pcl));
-        bezierC2.dispose(gl);
     }
 
     @Override
@@ -135,36 +108,12 @@ public class InterpolationBezierC2 extends Model implements Curve {
 
     @Override
     public String serialize() {
-        return """
-                  <BezierInter Name="%s">
-                    <Points>
-                %s
-                    </Points>
-                  </BezierInter>
-                """.formatted(
-                getName(),
-                points.stream()
-                        .map(p -> "      <PointRef Name=\"%s\"/>".formatted(p.getName()))
-                        .collect(Collectors.joining("\n"))
-        );
+        throw new RuntimeException("Not supported");
     }
 
     @Override
     public Model deserialize(Node node, Map<String, Point> points) {
-        if(node.getNodeType() == Node.ELEMENT_NODE) {
-            Element bezierC0Element = (Element) node;
-            setName(bezierC0Element.getAttribute("Name"));
+        throw new RuntimeException("Not supported");
 
-            NodeList pointsRefs = ((Element)bezierC0Element
-                    .getElementsByTagName("Points").item(0))
-                    .getElementsByTagName("PointRef");
-
-            for (int i = 0; i < pointsRefs.getLength(); i++) {
-                Element pointRefElement = (Element) pointsRefs.item(i);
-                Point point = points.get(pointRefElement.getAttribute("Name"));
-                addPoint(point);
-            }
-        }
-        return this;
     }
 }

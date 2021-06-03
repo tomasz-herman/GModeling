@@ -3,17 +3,17 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import pl.edu.pw.mini.mg1.models.InterpolationBezierC2;
+import pl.edu.pw.mini.mg1.models.BezierInterC2;
 import pl.edu.pw.mini.mg1.models.Model;
 
 import javax.swing.*;
 import java.awt.*;
 
-public class InterpolationBezierC2Layout implements Controller<InterpolationBezierC2> {
+public class InterpolationBezierC2Layout implements Controller<BezierInterC2> {
     private JPanel mainPane;
     private JCheckBox showPolylineCheckBox;
     private JList<String> pointsList;
-    private InterpolationBezierC2 bezier;
+    private BezierInterC2 bezier;
 
     public InterpolationBezierC2Layout() {
         $$$setupUI$$$();
@@ -24,7 +24,7 @@ public class InterpolationBezierC2Layout implements Controller<InterpolationBezi
     }
 
     @Override
-    public void set(InterpolationBezierC2 bezier) {
+    public void set(BezierInterC2 bezier) {
         this.bezier = bezier;
         refresh();
     }
@@ -41,7 +41,7 @@ public class InterpolationBezierC2Layout implements Controller<InterpolationBezi
             pointsList.setListData(new String[]{});
         } else {
             showPolylineCheckBox.setSelected(bezier.isShowPolyline());
-            pointsList.setListData(bezier.getPoints().stream().map(Model::getName).toArray(String[]::new));
+            pointsList.setListData(bezier.getPoints().map(Model::getName).toArray(String[]::new));
         }
     }
 

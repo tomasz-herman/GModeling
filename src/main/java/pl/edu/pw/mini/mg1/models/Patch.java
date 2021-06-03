@@ -8,7 +8,6 @@ import pl.edu.pw.mini.mg1.graphics.Renderer;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -103,5 +102,14 @@ public abstract class Patch extends Model {
     public void dispose(GL4 gl) {
         super.dispose(gl);
         polyMesh.dispose(gl);
+    }
+
+    @Override
+    public void cleanup() {
+        for (Point[] pointArray : surface) {
+            for (Point point : pointArray) {
+                point.removePropertyChangeListener(pcl);
+            }
+        }
     }
 }

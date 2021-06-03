@@ -3,7 +3,6 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
-import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import pl.edu.pw.mini.mg1.models.*;
 import pl.edu.pw.mini.mg1.models.Point;
@@ -23,10 +22,7 @@ import java.awt.Dimension;
 import java.awt.Insets;
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BinaryOperator;
 import java.util.stream.Collectors;
-
-import static pl.edu.pw.mini.mg1.layout.MainLayout.createSlider;
 
 public class SceneLayout implements Controller<Scene> {
     private JTable table;
@@ -133,7 +129,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModelAtPointer(new InterpolationBezierC2(points));
+                    scene.addModelAtPointer(new BezierInterC2(points));
                 }
                 case "Chord Interpolation BezierC2" -> {
                     List<Point> points = scene.getSelectedModels().stream()
@@ -141,7 +137,7 @@ public class SceneLayout implements Controller<Scene> {
                             .map(p -> (Point) p)
                             .collect(Collectors.toList());
                     if (points.size() == 0) break;
-                    scene.addModelAtPointer(new ChordInterpolationBezierC2(points));
+                    scene.addModelAtPointer(new BezierInter(points));
                 }
                 case "Points to curve" -> {
                     List<Model> selected = scene.getSelectedModels();

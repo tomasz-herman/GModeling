@@ -32,7 +32,7 @@ public abstract class Model {
         scale = new Vector3f(1);
         modelMatrix = new Matrix4f();
         transformationMatrix = new Matrix4f();
-        name = getClass().getSimpleName() + " " + GeneratorUtils.getID();
+        name = generateName();
         setupBoundingVolume();
     }
 
@@ -149,6 +149,12 @@ public abstract class Model {
         Vector3f hit = transformedRay.at(distance).mulPosition(modelMatrix);
         return hit.distance(ray.getOrigin());
     }
+
+    protected String generateName() {
+        return getClass().getSimpleName() + " " + GeneratorUtils.getID();
+    }
+
+    public void cleanup() { }
 
     public String serialize() {
         return "";

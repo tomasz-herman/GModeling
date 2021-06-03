@@ -48,7 +48,7 @@ public class BezierC2Layout implements Controller<BezierC2> {
                 if (indices.length == 0) return;
                 idx = indices[0];
                 bezierC2.setSelectedVirtualPoint(idx);
-                Point p = bezierC2.getBezierPoints().get(idx);
+                Point p = bezierC2.getVirtualPoints().toList().get(idx);
                 xPosition.setValue(p.getPosition().x());
                 yPosition.setValue(p.getPosition().y());
                 zPosition.setValue(p.getPosition().z());
@@ -60,22 +60,22 @@ public class BezierC2Layout implements Controller<BezierC2> {
         xPosition.addChangeListener(e -> {
             if (idx != -1) {
                 if (bezierC2 == null) return;
-                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
-                bezierC2.getBezierPoints().get(idx).setPosition(((Number) xPosition.getValue()).floatValue(), position.y(), position.z());
+                Vector3fc position = bezierC2.getVirtualPoints().toList().get(idx).getPosition();
+                bezierC2.getVirtualPoints().toList().get(idx).setPosition(((Number) xPosition.getValue()).floatValue(), position.y(), position.z());
             }
         });
         yPosition.addChangeListener(e -> {
             if (idx != -1) {
                 if (bezierC2 == null) return;
-                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
-                bezierC2.getBezierPoints().get(idx).setPosition(position.x(), ((Number) yPosition.getValue()).floatValue(), position.z());
+                Vector3fc position = bezierC2.getVirtualPoints().toList().get(idx).getPosition();
+                bezierC2.getVirtualPoints().toList().get(idx).setPosition(position.x(), ((Number) yPosition.getValue()).floatValue(), position.z());
             }
         });
         zPosition.addChangeListener(e -> {
             if (idx != -1) {
                 if (bezierC2 == null) return;
-                Vector3fc position = bezierC2.getBezierPoints().get(idx).getPosition();
-                bezierC2.getBezierPoints().get(idx).setPosition(position.x(), position.y(), ((Number) zPosition.getValue()).floatValue());
+                Vector3fc position = bezierC2.getVirtualPoints().toList().get(idx).getPosition();
+                bezierC2.getVirtualPoints().toList().get(idx).setPosition(position.x(), position.y(), ((Number) zPosition.getValue()).floatValue());
             }
         });
     }
@@ -103,8 +103,8 @@ public class BezierC2Layout implements Controller<BezierC2> {
             showBSplinePolylineCheckBox.setSelected(bezierC2.isShowPolyline());
             showBezierPolylineCheckBox.setSelected(bezierC2.isShowBezierPolyline());
             showBezierPointsCheckBox.setSelected(bezierC2.isShowBezierPoints());
-            bsplinePointsList.setListData(bezierC2.getPoints().stream().map(Model::getName).toArray(String[]::new));
-            bezierPointsList.setListData(bezierC2.getBezierPoints().stream().map(Model::getName).toArray(String[]::new));
+            bsplinePointsList.setListData(bezierC2.getPoints().map(Model::getName).toArray(String[]::new));
+            bezierPointsList.setListData(bezierC2.getVirtualPoints().map(Model::getName).toArray(String[]::new));
         }
     }
 

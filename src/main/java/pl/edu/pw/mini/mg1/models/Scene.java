@@ -99,6 +99,10 @@ public class Scene {
                     .filter(m -> m instanceof Patch)
                     .map(m -> (Patch) m)
                     .forEach(patch -> patch.replacePoint(replaced, replacement));
+            getModels().stream()
+                    .filter(m -> m instanceof Curve)
+                    .map(m -> (Curve) m)
+                    .forEach(curve -> curve.replacePoint(replaced, replacement));
             removeModel(replaced);
         }
         addModel(replacement);
@@ -126,6 +130,7 @@ public class Scene {
 
     public void disposeRemovedModels(GL4 gl) {
         removedModels.forEach(model -> model.dispose(gl));
+        removedModels.forEach(Model::cleanup);
         removedModels.clear();
     }
 
@@ -367,7 +372,7 @@ public class Scene {
             }
 
             for (int i = 0; i < bezierInterList.getLength(); i++) {
-                models.add(new InterpolationBezierC2(new ArrayList<>()).deserialize(bezierInterList.item(i), points));
+                models.add(new BezierInter(new ArrayList<>()).deserialize(bezierInterList.item(i), points));
             }
 
             for (int i = 0; i < torusList.getLength(); i++) {
