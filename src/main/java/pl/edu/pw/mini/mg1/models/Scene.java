@@ -83,10 +83,31 @@ public class Scene {
         }
     }
 
+    public void mergePoints() {
+        List<Point> points = getSelectedModels().stream()
+                .filter(m -> m instanceof Point)
+                .map(m -> (Point) m)
+                .toList();
+        if (points.size() < 2) return;
+        Vector3f avg = points.stream()
+                .map(Point::getTransformedPosition)
+                .reduce(new Vector3f(), Vector3f::add, Vector3f::add)
+                .div(points.size());
+        Point replacement = new Point(avg.x, avg.y, avg.z);
+        for (Point replaced : points) {
+            getModels().stream()
+                    .filter(m -> m instanceof Patch)
+                    .map(m -> (Patch) m)
+                    .forEach(patch -> patch.replacePoint(replaced, replacement));
+            removeModel(replaced);
+        }
+        addModel(replacement);
+    }
+
     public void deleteSelected() {
         Set<Model> nonRemovable = models.stream().filter(m -> m instanceof Patch)
-                .map(m -> (BezierPatchC0)m)
-                .flatMap(BezierPatchC0::getPoints)
+                .map(m -> (Patch)m)
+                .flatMap(Patch::getPoints)
                 .collect(Collectors.toSet());
 
         Arrays.stream(selected)

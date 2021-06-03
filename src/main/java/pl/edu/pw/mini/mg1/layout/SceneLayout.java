@@ -92,26 +92,7 @@ public class SceneLayout implements Controller<Scene> {
                         }
                     }
                 }
-                case "Merge points" -> {
-                    List<Point> points = scene.getSelectedModels().stream()
-                            .filter(m -> m instanceof Point)
-                            .map(m -> (Point) m)
-                            .toList();
-                    if (points.size() < 2) return;
-                    Vector3f avg = points.stream()
-                            .map(Point::getTransformedPosition)
-                            .reduce(new Vector3f(), Vector3f::add, Vector3f::add)
-                            .div(points.size());
-                    Point replacement = new Point(avg.x, avg.y, avg.z);
-                    for (Point replaced : points) {
-                        scene.getModels().stream()
-                                .filter(m -> m instanceof Patch)
-                                .map(m -> (Patch) m)
-                                .forEach(patch -> patch.replacePoint(replaced, replacement));
-                        scene.removeModel(replaced);
-                    }
-                    scene.addModel(replacement);
-                }
+                case "Merge points" -> scene.mergePoints();
             }
             deleteCombo.setSelectedIndex(-1);
         });
