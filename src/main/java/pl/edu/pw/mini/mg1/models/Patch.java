@@ -8,6 +8,7 @@ import pl.edu.pw.mini.mg1.graphics.Renderer;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.function.UnaryOperator;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -44,6 +45,24 @@ public abstract class Patch extends Model {
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         if (showBezierMesh) polyMesh.render(gl, camera, renderer);
+    }
+
+    public void replacePoint(Point replaced, Point replacement) {
+        boolean replacements = false;
+        for (int i = 0; i < surface.length; i++) {
+            for (int j = 0; j < surface[i].length; j++) {
+                if(surface[i][j] == replaced) {
+                    replacements = true;
+                    surface[i][j] = replacement;
+                }
+            }
+        }
+        if(replacements) {
+            reload = true;
+            replaced.removePropertyChangeListener(pcl);
+            replacement.addPropertyChangeListener(pcl);
+            points.replaceAll(point -> point == replaced ? replacement : point);
+        }
     }
 
     public int getDivisionsU() {

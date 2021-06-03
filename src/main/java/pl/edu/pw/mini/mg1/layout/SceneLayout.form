@@ -67,6 +67,7 @@
               <model>
                 <item value="Objects"/>
                 <item value="Points from curve"/>
+                <item value="Merge points"/>
               </model>
             </properties>
           </component>

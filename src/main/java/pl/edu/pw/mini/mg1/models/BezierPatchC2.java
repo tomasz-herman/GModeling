@@ -17,8 +17,6 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.jogamp.opengl.math.FloatUtil.PI;
-import static org.joml.Math.cos;
-import static org.joml.Math.sin;
 
 public class BezierPatchC2 extends Patch {
 
@@ -189,8 +187,6 @@ public class BezierPatchC2 extends Patch {
                 patch.surface[i][j].setPosition(p.x * r / R, p.y, p.z * r / R);
             }
         }
-
-
 
         for (int i = 0; i < x; i++) {
             for (int j = 0; j < y; j++) {

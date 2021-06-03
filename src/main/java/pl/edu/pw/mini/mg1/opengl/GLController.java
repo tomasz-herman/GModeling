@@ -221,7 +221,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         modelController.set(hit);
         if(hit != null) {
             if(e.isControlDown()) scene.invertSelect(hit);
-            if(e.isShiftDown()) {
+            else if(e.isShiftDown()) {
                 List<Model> hits = scene.testAll((float)e.getX() / gljPanel.getWidth(), 1 - (float)e.getY() / gljPanel.getHeight());
                 for (Model model : hits) {
                     scene.invertSelect(model);
