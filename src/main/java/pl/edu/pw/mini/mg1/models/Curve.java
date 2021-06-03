@@ -52,6 +52,13 @@ public abstract class Curve extends Model {
         return controlPoints.stream();
     }
 
+    public void replacePoint(Point replaced, Point replacement) {
+        controlPoints.replaceAll(point -> point == replaced ? replacement : point);
+        replaced.removePropertyChangeListener(pcl);
+        replacement.addPropertyChangeListener(pcl);
+        reload = true;
+    }
+
     @Override
     public Matrix4fc getModelMatrix() {
         return new Matrix4f();

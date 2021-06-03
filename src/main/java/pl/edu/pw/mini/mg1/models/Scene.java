@@ -99,6 +99,10 @@ public class Scene {
                     .filter(m -> m instanceof Patch)
                     .map(m -> (Patch) m)
                     .forEach(patch -> patch.replacePoint(replaced, replacement));
+            getModels().stream()
+                    .filter(m -> m instanceof Curve)
+                    .map(m -> (Curve) m)
+                    .forEach(curve -> curve.replacePoint(replaced, replacement));
             removeModel(replaced);
         }
         addModel(replacement);
