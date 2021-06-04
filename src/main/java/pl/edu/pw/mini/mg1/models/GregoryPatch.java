@@ -16,7 +16,11 @@ import java.util.stream.Stream;
 public class GregoryPatch extends Model{
     protected final PropertyChangeListener pcl = e -> reload = true;
 
+    protected final Point[][] s1 = new Point[4][4];
+    protected final Point[][] s2 = new Point[4][4];
+    protected final Point[][] s3 = new Point[4][4];
     protected final List<Point> points = new ArrayList<>();
+
     protected int divisionsU = 3;
     protected int divisionsV = 3;
 
@@ -91,7 +95,17 @@ public class GregoryPatch extends Model{
             s1 = flip(s1);
         }
 
-        patch.points.addAll(calculateGregory(s1, s3, s2));
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                patch.s1[i][j] = s1[i][j];
+                patch.s2[i][j] = s2[i][j];
+                patch.s3[i][j] = s3[i][j];
+                patch.s1[i][j].addPropertyChangeListener(patch.pcl);
+                patch.s2[i][j].addPropertyChangeListener(patch.pcl);
+                patch.s3[i][j].addPropertyChangeListener(patch.pcl);
+            }
+        }
+
         return patch;
     }
 
@@ -323,6 +337,10 @@ public class GregoryPatch extends Model{
 
     @Override
     protected void load(GL4 gl) {
+        if(s1 != null && s2 != null && s3 != null && s1[0][0] != null && s2[0][0] != null && s3[0][0] != null) {
+            points.clear();
+            points.addAll(calculateGregory(s1, s3, s2));
+        }
         Float[] positions = points.stream()
                 .map(Point::getTransformedPosition)
                 .flatMap(v -> Stream.of(v.x(), v.y(), v.z()))
@@ -339,28 +357,20 @@ public class GregoryPatch extends Model{
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         super.render(gl, camera, renderer);
         renderer.renderGregoryPatch(gl, camera, this);
-        gl.glVertexAttrib3f(1, 1, 0, 0);
-
-        for (Point point : points) {
-            point.render(gl, camera, renderer);
-        }
-        gl.glVertexAttrib3f(1, 1, 1, 1);
-
     }
 
     @Override
-    public void validate(GL4 gl) {
-        super.validate(gl);
-        for (Point point : points) {
-            point.validate(gl);
-        }
-    }
-
-    @Override
-    public void dispose(GL4 gl) {
-        super.dispose(gl);
-        for (Point point : points) {
-            point.dispose(gl);
+    public void cleanup() {
+        super.cleanup();
+        for (int i = 0; i < 4; i++) {
+            for (int j = 0; j < 4; j++) {
+                if(s1[i][j] != null)
+                    s1[i][j].removePropertyChangeListener(pcl);
+                if(s2[i][j] != null)
+                    s2[i][j].removePropertyChangeListener(pcl);
+                if(s3[i][j] != null)
+                    s3[i][j].removePropertyChangeListener(pcl);
+            }
         }
     }
 }
