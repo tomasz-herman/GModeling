@@ -193,6 +193,48 @@ public class GregoryPatch extends Model{
         Vector3f P007 = new Vector3f(P005.add(P002.sub(P001, new Vector3f()), new Vector3f()));
         Vector3f P008 = new Vector3f(P013.add(P009.sub(P015, new Vector3f()), new Vector3f()));
 
+        Vector3f P100 = new Vector3f(T00ip1);
+        Vector3f P101 = P100.add(T00ip1.sub(T01ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P104 = new Vector3f(S10ip1);
+        Vector3f P105 = P104.add(S10ip1.sub(S11ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P110 = new Vector3f(R20ip1);
+        Vector3f P111 = P110.add(R20ip1.sub(R21ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P116 = new Vector3f(B30ip1);
+        Vector3f P117 = new Vector3f(R00ip2);
+        Vector3f P112 = P117.add(R00ip2.sub(R01ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P118 = new Vector3f(S00ip2);
+        Vector3f P113 = P118.add(S00ip2.sub(S01ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P119 = new Vector3f(T00ip2);
+        Vector3f P115 = P119.add(T00ip2.sub(T01ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P103 = new Vector3f((Q00ip0.x + Q00ip1.x + Q00ip2.x)/3, (Q00ip0.y + Q00ip1.y + Q00ip2.y)/3, (Q00ip0.z + Q00ip1.z + Q00ip2.z)/3);
+        Vector3f P102 = Q00ip1.lerp(P103, 1f / 3f, new Vector3f());
+        Vector3f P109 = Q00ip2.lerp(P103, 1f / 3f, new Vector3f());
+        Vector3f P106 = new Vector3f(P105);
+        Vector3f P114 = new Vector3f(P113);
+        Vector3f P107 = new Vector3f(P105.add(P102.sub(P101, new Vector3f()), new Vector3f()));
+        Vector3f P108 = new Vector3f(P113.add(P109.sub(P115, new Vector3f()), new Vector3f()));
+
+        Vector3f P200 = new Vector3f(T00ip2);
+        Vector3f P201 = P200.add(T00ip2.sub(T01ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P204 = new Vector3f(S10ip2);
+        Vector3f P205 = P204.add(S10ip2.sub(S11ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P210 = new Vector3f(R20ip2);
+        Vector3f P211 = P210.add(R20ip2.sub(R21ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P216 = new Vector3f(B30ip2);
+        Vector3f P217 = new Vector3f(R00ip0);
+        Vector3f P212 = P217.add(R00ip0.sub(R01ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P218 = new Vector3f(S00ip0);
+        Vector3f P213 = P218.add(S00ip0.sub(S01ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P219 = new Vector3f(T00ip0);
+        Vector3f P215 = P219.add(T00ip0.sub(T01ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P203 = new Vector3f((Q00ip0.x + Q00ip1.x + Q00ip2.x)/3, (Q00ip0.y + Q00ip1.y + Q00ip2.y)/3, (Q00ip0.z + Q00ip1.z + Q00ip2.z)/3);
+        Vector3f P202 = Q00ip2.lerp(P003, 1f / 3f, new Vector3f());
+        Vector3f P209 = Q00ip0.lerp(P003, 1f / 3f, new Vector3f());
+        Vector3f P206 = new Vector3f(P205);
+        Vector3f P214 = new Vector3f(P213);
+        Vector3f P207 = new Vector3f(P205.add(P202.sub(P201, new Vector3f()), new Vector3f()));
+        Vector3f P208 = new Vector3f(P213.add(P209.sub(P215, new Vector3f()), new Vector3f()));
+
         return List.of(
                 new Point(P000),
                 new Point(P001),
@@ -213,7 +255,49 @@ public class GregoryPatch extends Model{
                 new Point(P016),
                 new Point(P017),
                 new Point(P018),
-                new Point(P019)
+                new Point(P019),
+
+                new Point(P100),
+                new Point(P101),
+                new Point(P102),
+                new Point(P103),
+                new Point(P104),
+                new Point(P105),
+                new Point(P106),
+                new Point(P107),
+                new Point(P108),
+                new Point(P109),
+                new Point(P110),
+                new Point(P111),
+                new Point(P112),
+                new Point(P113),
+                new Point(P114),
+                new Point(P115),
+                new Point(P116),
+                new Point(P117),
+                new Point(P118),
+                new Point(P119),
+
+                new Point(P200),
+                new Point(P201),
+                new Point(P202),
+                new Point(P203),
+                new Point(P204),
+                new Point(P205),
+                new Point(P206),
+                new Point(P207),
+                new Point(P208),
+                new Point(P209),
+                new Point(P210),
+                new Point(P211),
+                new Point(P212),
+                new Point(P213),
+                new Point(P214),
+                new Point(P215),
+                new Point(P216),
+                new Point(P217),
+                new Point(P218),
+                new Point(P219)
         );
     }
 
