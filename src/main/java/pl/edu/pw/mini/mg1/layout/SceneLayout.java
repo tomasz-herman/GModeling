@@ -162,7 +162,8 @@ public class SceneLayout implements Controller<Scene> {
                             .filter(m -> m instanceof BezierPatchC0)
                             .map(m -> (BezierPatchC0) m)
                             .collect(Collectors.toList());
-                    scene.addModel(GregoryPatch.gregory(patches));
+                    GregoryPatch patch = GregoryPatch.gregory(patches);
+                    if (patch != null) scene.addModel(patch);
                 }
             }
             addCombo.setSelectedIndex(-1);

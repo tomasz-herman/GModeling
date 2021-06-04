@@ -309,8 +309,8 @@ public class Renderer {
         gl.glUseProgram(patchGregoryShader.getProgramID());
 
         patchGregoryShader.loadMatrix4f(gl, "mvp", mvp);
-        patchGregoryShader.loadInteger(gl, "divisionsU", 16);
-        patchGregoryShader.loadInteger(gl, "divisionsV", 16);
+        patchGregoryShader.loadInteger(gl, "divisionsU", patch.getDivisionsU());
+        patchGregoryShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 20);

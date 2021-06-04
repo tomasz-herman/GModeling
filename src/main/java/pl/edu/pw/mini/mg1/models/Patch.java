@@ -42,6 +42,7 @@ public abstract class Patch extends Model {
     }
 
     public void replacePoint(Point replaced, Point replacement) {
+        if(surface == null) return;
         boolean replacements = false;
         for (int i = 0; i < surface.length; i++) {
             for (int j = 0; j < surface[i].length; j++) {
@@ -90,21 +91,22 @@ public abstract class Patch extends Model {
     @Override
     public void validate(GL4 gl) {
         super.validate(gl);
-        polyMesh.validate(gl);
+        if(polyMesh != null) polyMesh.validate(gl);
     }
 
     @Override
     public void dispose(GL4 gl) {
         super.dispose(gl);
-        polyMesh.dispose(gl);
+        if(polyMesh != null) polyMesh.dispose(gl);
     }
 
     @Override
     public void cleanup() {
-        for (Point[] pointArray : surface) {
-            for (Point point : pointArray) {
-                point.removePropertyChangeListener(pcl);
+        if(surface != null)
+            for (Point[] pointArray : surface) {
+                for (Point point : pointArray) {
+                    point.removePropertyChangeListener(pcl);
+                }
             }
-        }
     }
 }

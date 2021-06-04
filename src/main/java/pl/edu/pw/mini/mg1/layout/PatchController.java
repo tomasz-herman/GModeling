@@ -15,7 +15,6 @@ public class PatchController implements Controller<Patch> {
     private JSpinner divisionsVSpinner;
     private Patch patch;
 
-
     public PatchController() {
 
         showBezierMeshCheckBox.addActionListener(e -> {

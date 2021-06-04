@@ -13,16 +13,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
-public class GregoryPatch extends Model{
-    protected final PropertyChangeListener pcl = e -> reload = true;
-
+public class GregoryPatch extends Patch {
     protected final Point[][] s1 = new Point[4][4];
     protected final Point[][] s2 = new Point[4][4];
     protected final Point[][] s3 = new Point[4][4];
     protected final List<Point> points = new ArrayList<>();
 
-    protected int divisionsU = 3;
-    protected int divisionsV = 3;
+    protected GregoryMesh gregoryMesh = new GregoryMesh(points);
 
     public static GregoryPatch example() {
         GregoryPatch patch = new GregoryPatch();
@@ -93,6 +90,10 @@ public class GregoryPatch extends Model{
                 s1 = rotate(s1);
             }
             s1 = flip(s1);
+        }
+
+        if (s1[0][0] != s2[0][3] || s1[0][3] != s3[0][0] || s2[0][0] != s3[0][3]) {
+            return null;
         }
 
         for (int i = 0; i < 4; i++) {
@@ -187,18 +188,18 @@ public class GregoryPatch extends Model{
         Vector3f Q00ip2 = T00ip2.add(T00ip2.sub(T01ip2, new Vector3f()).mul(0.5f), new Vector3f());
 
         Vector3f P000 = new Vector3f(T00ip0);
-        Vector3f P001 = P000.add(T00ip0.sub(T01ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P001 = P000.add(T00ip0.sub(T01ip0, new Vector3f()), new Vector3f());
         Vector3f P004 = new Vector3f(S10ip0);
-        Vector3f P005 = P004.add(S10ip0.sub(S11ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P005 = P004.add(S10ip0.sub(S11ip0, new Vector3f()), new Vector3f());
         Vector3f P010 = new Vector3f(R20ip0);
-        Vector3f P011 = P010.add(R20ip0.sub(R21ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P011 = P010.add(R20ip0.sub(R21ip0, new Vector3f()), new Vector3f());
         Vector3f P016 = new Vector3f(B30ip0);
         Vector3f P017 = new Vector3f(R00ip1);
-        Vector3f P012 = P017.add(R00ip1.sub(R01ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P012 = P017.add(R00ip1.sub(R01ip1, new Vector3f()), new Vector3f());
         Vector3f P018 = new Vector3f(S00ip1);
-        Vector3f P013 = P018.add(S00ip1.sub(S01ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P013 = P018.add(S00ip1.sub(S01ip1, new Vector3f()), new Vector3f());
         Vector3f P019 = new Vector3f(T00ip1);
-        Vector3f P015 = P019.add(T00ip1.sub(T01ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P015 = P019.add(T00ip1.sub(T01ip1, new Vector3f()), new Vector3f());
         Vector3f P003 = new Vector3f((Q00ip0.x + Q00ip1.x + Q00ip2.x)/3, (Q00ip0.y + Q00ip1.y + Q00ip2.y)/3, (Q00ip0.z + Q00ip1.z + Q00ip2.z)/3);
         Vector3f P002 = Q00ip0.lerp(P003, 1f / 3f, new Vector3f());
         Vector3f P009 = Q00ip1.lerp(P003, 1f / 3f, new Vector3f());
@@ -208,18 +209,18 @@ public class GregoryPatch extends Model{
         Vector3f P008 = new Vector3f(P013.add(P009.sub(P015, new Vector3f()), new Vector3f()));
 
         Vector3f P100 = new Vector3f(T00ip1);
-        Vector3f P101 = P100.add(T00ip1.sub(T01ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P101 = P100.add(T00ip1.sub(T01ip1, new Vector3f()), new Vector3f());
         Vector3f P104 = new Vector3f(S10ip1);
-        Vector3f P105 = P104.add(S10ip1.sub(S11ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P105 = P104.add(S10ip1.sub(S11ip1, new Vector3f()), new Vector3f());
         Vector3f P110 = new Vector3f(R20ip1);
-        Vector3f P111 = P110.add(R20ip1.sub(R21ip1, new Vector3f()).div(3), new Vector3f());
+        Vector3f P111 = P110.add(R20ip1.sub(R21ip1, new Vector3f()), new Vector3f());
         Vector3f P116 = new Vector3f(B30ip1);
         Vector3f P117 = new Vector3f(R00ip2);
-        Vector3f P112 = P117.add(R00ip2.sub(R01ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P112 = P117.add(R00ip2.sub(R01ip2, new Vector3f()), new Vector3f());
         Vector3f P118 = new Vector3f(S00ip2);
-        Vector3f P113 = P118.add(S00ip2.sub(S01ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P113 = P118.add(S00ip2.sub(S01ip2, new Vector3f()), new Vector3f());
         Vector3f P119 = new Vector3f(T00ip2);
-        Vector3f P115 = P119.add(T00ip2.sub(T01ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P115 = P119.add(T00ip2.sub(T01ip2, new Vector3f()), new Vector3f());
         Vector3f P103 = new Vector3f((Q00ip0.x + Q00ip1.x + Q00ip2.x)/3, (Q00ip0.y + Q00ip1.y + Q00ip2.y)/3, (Q00ip0.z + Q00ip1.z + Q00ip2.z)/3);
         Vector3f P102 = Q00ip1.lerp(P103, 1f / 3f, new Vector3f());
         Vector3f P109 = Q00ip2.lerp(P103, 1f / 3f, new Vector3f());
@@ -229,18 +230,18 @@ public class GregoryPatch extends Model{
         Vector3f P108 = new Vector3f(P113.add(P109.sub(P115, new Vector3f()), new Vector3f()));
 
         Vector3f P200 = new Vector3f(T00ip2);
-        Vector3f P201 = P200.add(T00ip2.sub(T01ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P201 = P200.add(T00ip2.sub(T01ip2, new Vector3f()), new Vector3f());
         Vector3f P204 = new Vector3f(S10ip2);
-        Vector3f P205 = P204.add(S10ip2.sub(S11ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P205 = P204.add(S10ip2.sub(S11ip2, new Vector3f()), new Vector3f());
         Vector3f P210 = new Vector3f(R20ip2);
-        Vector3f P211 = P210.add(R20ip2.sub(R21ip2, new Vector3f()).div(3), new Vector3f());
+        Vector3f P211 = P210.add(R20ip2.sub(R21ip2, new Vector3f()), new Vector3f());
         Vector3f P216 = new Vector3f(B30ip2);
         Vector3f P217 = new Vector3f(R00ip0);
-        Vector3f P212 = P217.add(R00ip0.sub(R01ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P212 = P217.add(R00ip0.sub(R01ip0, new Vector3f()), new Vector3f());
         Vector3f P218 = new Vector3f(S00ip0);
-        Vector3f P213 = P218.add(S00ip0.sub(S01ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P213 = P218.add(S00ip0.sub(S01ip0, new Vector3f()), new Vector3f());
         Vector3f P219 = new Vector3f(T00ip0);
-        Vector3f P215 = P219.add(T00ip0.sub(T01ip0, new Vector3f()).div(3), new Vector3f());
+        Vector3f P215 = P219.add(T00ip0.sub(T01ip0, new Vector3f()), new Vector3f());
         Vector3f P203 = new Vector3f((Q00ip0.x + Q00ip1.x + Q00ip2.x)/3, (Q00ip0.y + Q00ip1.y + Q00ip2.y)/3, (Q00ip0.z + Q00ip1.z + Q00ip2.z)/3);
         Vector3f P202 = Q00ip2.lerp(P003, 1f / 3f, new Vector3f());
         Vector3f P209 = Q00ip0.lerp(P003, 1f / 3f, new Vector3f());
@@ -355,8 +356,12 @@ public class GregoryPatch extends Model{
 
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
-        super.render(gl, camera, renderer);
         renderer.renderGregoryPatch(gl, camera, this);
+        if(isShowBezierMesh()) {
+            gl.glVertexAttrib3f(1, 1, 0, 0);
+            gregoryMesh.render(gl, camera, renderer);
+            gl.glVertexAttrib3f(1, 1, 1, 1);
+        }
     }
 
     @Override
@@ -372,5 +377,17 @@ public class GregoryPatch extends Model{
                     s3[i][j].removePropertyChangeListener(pcl);
             }
         }
+    }
+
+    @Override
+    public void validate(GL4 gl) {
+        super.validate(gl);
+        gregoryMesh.validate(gl);
+    }
+
+    @Override
+    public void dispose(GL4 gl) {
+        super.dispose(gl);
+        gregoryMesh.dispose(gl);
     }
 }
