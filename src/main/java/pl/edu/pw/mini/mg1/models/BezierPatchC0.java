@@ -8,6 +8,7 @@ import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -144,6 +145,21 @@ public class BezierPatchC0 extends Patch {
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         super.render(gl, camera, renderer);
         renderer.renderPatch(gl, camera, this);
+    }
+
+    public List<Point[]> getEdges() {
+        int I = surface.length - 1;
+        int J = surface[0].length - 1;
+        List<Point[]> edges = new ArrayList<>();
+        for (int i = 0; i < I; i+=3) {
+            edges.add(new Point[] {surface[i][0], surface[i + 1][0], surface[i + 2][0], surface[i + 3][0]});
+            edges.add(new Point[] {surface[i][I], surface[i + 1][I], surface[i + 2][I], surface[i + 3][I]});
+        }
+        for (int j = 0; j < J; j+=3) {
+            edges.add(new Point[] {surface[0][j], surface[0][j + 1], surface[0][j + 2], surface[0][j + 3]});
+            edges.add(new Point[] {surface[J][j], surface[J][j + 1], surface[J][j + 2], surface[J][j + 3]});
+        }
+        return edges;
     }
 
     @Override

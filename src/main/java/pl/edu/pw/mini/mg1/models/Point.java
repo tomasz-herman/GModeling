@@ -2,6 +2,7 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.joml.Matrix4fc;
+import org.joml.Vector3f;
 import org.joml.Vector3fc;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -18,6 +19,10 @@ public class Point extends Model {
 
     public Point(float x, float y, float z) {
         setPosition(x, y, z);
+    }
+
+    public Point(Vector3fc pos) {
+        setPosition(pos.x(), pos.y(), pos.z());
     }
 
     @Override
@@ -89,5 +94,11 @@ public class Point extends Model {
             setPosition(x, y, z);
         }
         return this;
+    }
+
+    @Override
+    public String toString() {
+        Vector3fc pos = getTransformedPosition();
+        return "(%f %f %f)".formatted(pos.x(), pos.y(), pos.z());
     }
 }

@@ -157,6 +157,13 @@ public class SceneLayout implements Controller<Scene> {
                 }
                 case "BezierC0 Patch" -> new PatchWizard(scene::addModel, scene::removeModel, scene::getPointer, this::refresh);
                 case "BezierC2 Patch" -> new PatchWizard(scene::addModel, scene::removeModel, scene::getPointer, this::refresh, BezierPatchC2::flat, BezierPatchC2::cylinder);
+                case "Gregory Patch" -> {
+                    List<BezierPatchC0> patches = scene.getSelectedModels().stream()
+                            .filter(m -> m instanceof BezierPatchC0)
+                            .map(m -> (BezierPatchC0) m)
+                            .collect(Collectors.toList());
+                    scene.addModel(GregoryPatch.gregory(patches));
+                }
             }
             addCombo.setSelectedIndex(-1);
             table.revalidate();
@@ -664,6 +671,7 @@ public class SceneLayout implements Controller<Scene> {
         defaultComboBoxModel1.addElement("Points to curve");
         defaultComboBoxModel1.addElement("BezierC0 Patch");
         defaultComboBoxModel1.addElement("BezierC2 Patch");
+        defaultComboBoxModel1.addElement("Gregory Patch");
         addCombo.setModel(defaultComboBoxModel1);
         panel1.add(addCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteCombo = new JComboBox();

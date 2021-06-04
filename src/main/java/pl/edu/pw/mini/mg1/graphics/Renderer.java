@@ -23,7 +23,7 @@ public class Renderer {
 
     private Function<PerspectiveCamera, Matrix4fc> viewProjectionFunction = PerspectiveCamera::getViewProjectionMatrix;
     private BiConsumer<GL4, Scene> renderFunction = this::render;
-    private boolean grayscale = true;
+    private boolean grayscale = false;
 
     private int leftBufferID, rightBufferID;
     private int leftDepthTextureID, rightDepthTextureID;
