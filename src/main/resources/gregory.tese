@@ -16,7 +16,7 @@ void main() {
     vec4 p12 = (u != 1 && v != 0) ? ((1 - u) * gl_in[ 7].gl_Position + (    v) * gl_in[ 8].gl_Position) / (1 - u + v) : (gl_in[ 8].gl_Position +  gl_in[ 7].gl_Position) / 2;
     vec4 p13 = gl_in[ 9].gl_Position;
 
-    vec4 p20 = gl_in[ 10].gl_Position;
+    vec4 p20 = gl_in[10].gl_Position;
     vec4 p21 = (u != 0 && v != 1) ? ((    u) * gl_in[12].gl_Position + (1 - v) * gl_in[11].gl_Position) / (1 + u - v) : (gl_in[11].gl_Position +  gl_in[12].gl_Position) / 2;
     vec4 p22 = (u != 1 && v != 1) ? ((1 - u) * gl_in[13].gl_Position + (1 - v) * gl_in[14].gl_Position) / (2 - u - v) : (gl_in[14].gl_Position +  gl_in[13].gl_Position) / 2;
     vec4 p23 = gl_in[15].gl_Position;

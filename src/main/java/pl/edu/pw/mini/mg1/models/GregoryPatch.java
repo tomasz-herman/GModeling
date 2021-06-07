@@ -6,7 +6,6 @@ import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
-import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -389,5 +388,25 @@ public class GregoryPatch extends Patch {
     public void dispose(GL4 gl) {
         super.dispose(gl);
         gregoryMesh.dispose(gl);
+    }
+
+    @Override
+    public void replacePoint(Point replaced, Point replacement) {
+        miniReplace(replaced, replacement, s1);
+        miniReplace(replaced, replacement, s2);
+        miniReplace(replaced, replacement, s3);
+        reload = true;
+    }
+
+    private void miniReplace(Point replaced, Point replacement, Point[][] s) {
+        if(s != null) {
+            for (int i = 0; i < s.length; i++) {
+                for (int j = 0; j < s[i].length; j++) {
+                    if(s[i][j] == replaced) {
+                        s[i][j] = replacement;
+                    }
+                }
+            }
+        }
     }
 }
