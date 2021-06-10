@@ -162,6 +162,21 @@ public class BezierPatchC0 extends Patch {
         return edges;
     }
 
+    public List<Point[][]> miniPatches() {
+        List<Point[][]> patches = new ArrayList<>();
+        for (int i = 0; i < surface.length - 1; i+=3) {
+            for (int j = 0; j < surface[0].length - 1; j+=3) {
+                patches.add(new Point[][] {
+                        {surface[i][j    ], surface[i + 1][j    ], surface[i + 2][j    ], surface[i + 3][j    ]},
+                        {surface[i][j + 1], surface[i + 1][j + 1], surface[i + 2][j + 1], surface[i + 3][j + 1]},
+                        {surface[i][j + 2], surface[i + 1][j + 2], surface[i + 2][j + 2], surface[i + 3][j + 2]},
+                        {surface[i][j + 3], surface[i + 1][j + 3], surface[i + 2][j + 3], surface[i + 3][j + 3]}
+                });
+            }
+        }
+        return patches;
+    }
+
     @Override
     public String serialize() {
         return """

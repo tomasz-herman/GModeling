@@ -52,7 +52,9 @@ public class GregoryPatch extends Patch {
 
     public static GregoryPatch gregory(List<BezierPatchC0> patches) {
         patches = patches.stream().distinct().collect(Collectors.toList());
-        if(patches.size() != 3) return null;
+        List<Point[][]> miniPatches = patches.stream()
+                .flatMap((BezierPatchC0 bezierPatchC0) -> bezierPatchC0.miniPatches().stream())
+                .collect(Collectors.toList());
 
         GregoryPatch patch = new GregoryPatch();
 
@@ -60,35 +62,41 @@ public class GregoryPatch extends Patch {
         Point[][] s2 = new Point[4][4];
         Point[][] s3 = new Point[4][4];
 
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                s1[i][j] = patches.get(0).surface[i][j];
-                s2[i][j] = patches.get(1).surface[i][j];
-                s3[i][j] = patches.get(2).surface[i][j];
-            }
-        }
-
         outer:
-        for (int ii = 0; ii < 2; ii++) {
-            for (int i = 0; i < 4; i++) {
-                for (int jj = 0; jj < 2; jj++) {
-                    for (int j = 0; j < 4; j++) {
-                        for (int kk = 0; kk < 2; kk++) {
-                            for (int k = 0; k < 4; k++) {
-                                if(s1[0][0] == s2[0][3] && s1[0][3] == s3[0][0] && s2[0][0] == s3[0][3]) {
-                                    break outer;
-                                }
-                                s3 = rotate(s3);
-                            }
-                            s3 = flip(s3);
+        for (int iii = 0; iii < miniPatches.size(); iii++) {
+            for (int jjj = 0; jjj < miniPatches.size(); jjj++) {
+                for (int kkk = 0; kkk < miniPatches.size(); kkk++) {
+                    for (int i = 0; i < 4; i++) {
+                        for (int j = 0; j < 4; j++) {
+                            s1[i][j] = miniPatches.get(iii)[i][j];
+                            s2[i][j] = miniPatches.get(jjj)[i][j];
+                            s3[i][j] = miniPatches.get(kkk)[i][j];
                         }
-                        s2 = rotate(s2);
                     }
-                    s2 = flip(s2);
+
+                    for (int ii = 0; ii < 2; ii++) {
+                        for (int i = 0; i < 4; i++) {
+                            for (int jj = 0; jj < 2; jj++) {
+                                for (int j = 0; j < 4; j++) {
+                                    for (int kk = 0; kk < 2; kk++) {
+                                        for (int k = 0; k < 4; k++) {
+                                            if(s1[0][0] == s2[0][3] && s1[0][3] == s3[0][0] && s2[0][0] == s3[0][3]) {
+                                                break outer;
+                                            }
+                                            s3 = rotate(s3);
+                                        }
+                                        s3 = flip(s3);
+                                    }
+                                    s2 = rotate(s2);
+                                }
+                                s2 = flip(s2);
+                            }
+                            s1 = rotate(s1);
+                        }
+                        s1 = flip(s1);
+                    }
                 }
-                s1 = rotate(s1);
             }
-            s1 = flip(s1);
         }
 
         if (s1[0][0] != s2[0][3] || s1[0][3] != s3[0][0] || s2[0][0] != s3[0][3]) {
