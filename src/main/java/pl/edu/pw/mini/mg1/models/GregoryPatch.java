@@ -52,6 +52,7 @@ public class GregoryPatch extends Patch {
 
     public static GregoryPatch gregory(List<BezierPatchC0> patches) {
         patches = patches.stream().distinct().collect(Collectors.toList());
+        if(patches.size() == 0) return null;
         List<Point[][]> miniPatches = patches.stream()
                 .flatMap((BezierPatchC0 bezierPatchC0) -> bezierPatchC0.miniPatches().stream())
                 .collect(Collectors.toList());
