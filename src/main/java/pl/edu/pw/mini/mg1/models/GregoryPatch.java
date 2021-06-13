@@ -6,8 +6,7 @@ import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -50,20 +49,19 @@ public class GregoryPatch extends Patch {
         return patch;
     }
 
-    public static GregoryPatch gregory(List<BezierPatchC0> patches) {
+    public static List<GregoryPatch> gregory(List<BezierPatchC0> patches) {
         patches = patches.stream().distinct().collect(Collectors.toList());
-        if(patches.size() == 0) return null;
+        if(patches.size() == 0) return Collections.emptyList();
         List<Point[][]> miniPatches = patches.stream()
                 .flatMap((BezierPatchC0 bezierPatchC0) -> bezierPatchC0.miniPatches().stream())
                 .collect(Collectors.toList());
 
-        GregoryPatch patch = new GregoryPatch();
+        Set<GregoryPatch> G = new HashSet<>();
 
         Point[][] s1 = new Point[4][4];
         Point[][] s2 = new Point[4][4];
         Point[][] s3 = new Point[4][4];
 
-        outer:
         for (int iii = 0; iii < miniPatches.size(); iii++) {
             for (int jjj = 0; jjj < miniPatches.size(); jjj++) {
                 for (int kkk = 0; kkk < miniPatches.size(); kkk++) {
@@ -74,7 +72,6 @@ public class GregoryPatch extends Patch {
                             s3[i][j] = miniPatches.get(kkk)[i][j];
                         }
                     }
-
                     for (int ii = 0; ii < 2; ii++) {
                         for (int i = 0; i < 4; i++) {
                             for (int jj = 0; jj < 2; jj++) {
@@ -82,7 +79,18 @@ public class GregoryPatch extends Patch {
                                     for (int kk = 0; kk < 2; kk++) {
                                         for (int k = 0; k < 4; k++) {
                                             if(s1[0][0] == s2[0][3] && s1[0][3] == s3[0][0] && s2[0][0] == s3[0][3]) {
-                                                break outer;
+                                                GregoryPatch patch = new GregoryPatch();
+                                                for (int a = 0; a < 4; a++) {
+                                                    for (int b = 0; b < 4; b++) {
+                                                        patch.s1[a][b] = s1[a][b];
+                                                        patch.s2[a][b] = s2[a][b];
+                                                        patch.s3[a][b] = s3[a][b];
+                                                        patch.s1[a][b].addPropertyChangeListener(patch.pcl);
+                                                        patch.s2[a][b].addPropertyChangeListener(patch.pcl);
+                                                        patch.s3[a][b].addPropertyChangeListener(patch.pcl);
+                                                    }
+                                                }
+                                                G.add(patch);
                                             }
                                             s3 = rotate(s3);
                                         }
@@ -100,22 +108,7 @@ public class GregoryPatch extends Patch {
             }
         }
 
-        if (s1[0][0] != s2[0][3] || s1[0][3] != s3[0][0] || s2[0][0] != s3[0][3]) {
-            return null;
-        }
-
-        for (int i = 0; i < 4; i++) {
-            for (int j = 0; j < 4; j++) {
-                patch.s1[i][j] = s1[i][j];
-                patch.s2[i][j] = s2[i][j];
-                patch.s3[i][j] = s3[i][j];
-                patch.s1[i][j].addPropertyChangeListener(patch.pcl);
-                patch.s2[i][j].addPropertyChangeListener(patch.pcl);
-                patch.s3[i][j].addPropertyChangeListener(patch.pcl);
-            }
-        }
-
-        return patch;
+        return G.stream().toList();
     }
 
     private static List<Point> calculateGregory(Point[][] s1, Point[][] s2, Point[][] s3) {
@@ -417,5 +410,36 @@ public class GregoryPatch extends Patch {
                 }
             }
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        GregoryPatch that = (GregoryPatch) o;
+
+        Set<Point> thisPoints = new HashSet<>();
+        Set<Point> thatPoints = new HashSet<>();
+        for (int i = 0; i < 4; i++) {
+                thisPoints.add(s1[0][i]);
+                thisPoints.add(s2[0][i]);
+                thisPoints.add(s3[0][i]);
+                thatPoints.add(that.s1[0][i]);
+                thatPoints.add(that.s2[0][i]);
+                thatPoints.add(that.s3[0][i]);
+        }
+        return thisPoints.containsAll(thatPoints);
+    }
+
+    @Override
+    public int hashCode() {
+        Set<Point> thisPoints = new HashSet<>();
+        for (int i = 0; i < 4; i++) {
+                thisPoints.add(s1[0][i]);
+                thisPoints.add(s2[0][i]);
+                thisPoints.add(s3[0][i]);
+        }
+        return thisPoints.hashCode();
     }
 }
