@@ -419,17 +419,27 @@ public class GregoryPatch extends Patch {
 
         GregoryPatch that = (GregoryPatch) o;
 
+        Set<Point> thisEdge = new HashSet<>();
         Set<Point> thisPoints = new HashSet<>();
+        Set<Point> thatEdge = new HashSet<>();
         Set<Point> thatPoints = new HashSet<>();
         for (int i = 0; i < 4; i++) {
-                thisPoints.add(s1[0][i]);
-                thisPoints.add(s2[0][i]);
-                thisPoints.add(s3[0][i]);
-                thatPoints.add(that.s1[0][i]);
-                thatPoints.add(that.s2[0][i]);
-                thatPoints.add(that.s3[0][i]);
+            thisEdge.add(s1[0][i]);
+            thisEdge.add(s2[0][i]);
+            thisEdge.add(s3[0][i]);
+            thatEdge.add(that.s1[0][i]);
+            thatEdge.add(that.s2[0][i]);
+            thatEdge.add(that.s3[0][i]);
+            for (int j = 0; j < 4; j++) {
+                thisPoints.add(s1[i][j]);
+                thisPoints.add(s2[i][j]);
+                thisPoints.add(s3[i][j]);
+                thatPoints.add(that.s1[i][j]);
+                thatPoints.add(that.s2[i][j]);
+                thatPoints.add(that.s3[i][j]);
+            }
         }
-        return thisPoints.containsAll(thatPoints);
+        return thisEdge.containsAll(thatEdge) && thisPoints.containsAll(thatPoints);
     }
 
     @Override
