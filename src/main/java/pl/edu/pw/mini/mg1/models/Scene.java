@@ -186,13 +186,19 @@ public class Scene {
 
     public void selectModels(int[] selected) {
         this.selected = selected;
-        selectedModels.stream().distinct().forEach(Model::applyTransformationMatrix);
+        selectedModels.stream()
+                .distinct()
+                .peek(model -> model.setSelected(false))
+                .forEach(Model::applyTransformationMatrix);
         translation.set(0);
         rotation.set(0);
         scale.set(1);
         updateTransformationMatrix();
         selectedModels.clear();
-        Arrays.stream(selected).mapToObj(models::get).forEach(selectedModels::add);
+        Arrays.stream(selected)
+                .mapToObj(models::get)
+                .peek(model -> model.setSelected(true))
+                .forEach(selectedModels::add);
         updateLocalPointerPosition();
     }
 
@@ -205,6 +211,7 @@ public class Scene {
         updateTransformationMatrix();
         selectedModels.clear();
         selectedModels.addAll(models);
+        models.forEach(model -> model.setSelected(true));
         updateLocalPointerPosition();
     }
 

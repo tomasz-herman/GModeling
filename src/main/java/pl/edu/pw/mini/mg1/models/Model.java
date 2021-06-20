@@ -23,6 +23,7 @@ public abstract class Model {
     private final Matrix4f modelMatrix;
     private final Matrix4f transformationMatrix;
     protected boolean reload = true;
+    protected boolean selected;
 
     private String name;
 
@@ -168,5 +169,13 @@ public abstract class Model {
 
     public Model deserialize(Node node, Map<String, Point> points) {
         return this;
+    }
+
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
     }
 }
