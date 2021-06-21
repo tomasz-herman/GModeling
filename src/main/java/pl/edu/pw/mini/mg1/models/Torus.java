@@ -7,7 +7,9 @@ import org.joml.Quaternionf;
 import org.joml.Vector3f;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
+import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
+import pl.edu.pw.mini.mg1.graphics.Renderer;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,30 +50,13 @@ public class Torus extends Model {
     }
 
     private void generateGeometry() {
-        List<Float> vertices = new ArrayList<>();
-        List<Integer> indices = new ArrayList<>();
-
-        for (int i = 0; i < outerSegments; i++) {
-            float outerAngle = (float) (2 * Math.PI * i / (outerSegments));
-            for (int j = 0; j < innerSegments; j++) {
-                float innerAngle = (float) (Math.PI * 2 * j / (innerSegments));
-
-                vertices.add(x(outerAngle, innerAngle));
-                vertices.add(y(outerAngle, innerAngle));
-                vertices.add(z(outerAngle, innerAngle));
-
-                indices.add(i * innerSegments + j);
-                indices.add(i * innerSegments + (j + 1) % innerSegments);
-
-                indices.add(i * innerSegments + j);
-                indices.add((i + 1) % outerSegments * innerSegments + j);
-            }
-        }
+        List<Float> vertices = List.of(0f, 0f, 0f);
+        List<Integer> indices = List.of(0);
 
         this.mesh = new Mesh(
                 ArrayUtils.toPrimitive(vertices.toArray(new Float[0])),
                 ArrayUtils.toPrimitive(indices.toArray(new Integer[0])),
-                GL4.GL_LINES);
+                GL4.GL_PATCHES);
     }
 
     private float x(float outerAngle, float innerAngle) {
@@ -122,6 +107,11 @@ public class Torus extends Model {
         this.innerRadius = innerRadius;
         setupBoundingVolume();
         reload = true;
+    }
+
+    @Override
+    public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
+        renderer.renderTorus(gl, camera, this);
     }
 
     @Override

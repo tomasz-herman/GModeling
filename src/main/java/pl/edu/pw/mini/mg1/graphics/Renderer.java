@@ -21,6 +21,7 @@ public class Renderer {
     private final Shader patchShader;
     private final Shader patchSplineShader;
     private final Shader patchGregoryShader;
+    private final Shader torusShader;
 
     private Function<PerspectiveCamera, Matrix4fc> viewProjectionFunction = PerspectiveCamera::getViewProjectionMatrix;
     private BiConsumer<GL4, Scene> renderFunction = this::render;
@@ -48,6 +49,7 @@ public class Renderer {
         patchShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/patch.tese", "/patch.geom");
         patchSplineShader = new Shader(gl, "/patch.vert", "/patch.frag", "/patch.tesc", "/bspline.tese", "/patch.geom");
         patchGregoryShader = new Shader(gl, "/patch.vert", "/patch.frag", "/gregory.tesc", "/gregory.tese", "/patch.geom");
+        torusShader = new Shader(gl, "/torus.vert", "/torus.frag", "/torus.tesc", "/torus.tese", "/torus.geom");
         gl.glClearColor(0f, 0f, 0f, 1.0f);
         gl.glClearDepth(1.0f);
         gl.glEnable(GL.GL_DEPTH_TEST);
@@ -320,6 +322,30 @@ public class Renderer {
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 20);
         gl.glDrawElements(patch.getMesh().getPrimitivesType(),
                 patch.getMesh().vertexCount(),
+                GL4.GL_UNSIGNED_INT, 0);
+        gl.glBindVertexArray(0);
+        gl.glUseProgram(0);
+    }
+
+    public void renderTorus(GL4 gl, PerspectiveCamera camera, Torus torus) {
+        gl.glLineWidth(1);
+
+        Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
+
+        gl.glUseProgram(torusShader.getProgramID());
+
+        torusShader.loadMatrix4f(gl, "mvp", mvp);
+        torusShader.loadInteger(gl, "divisionsU", torus.getInnerSegments());
+        torusShader.loadInteger(gl, "divisionsV", torus.getOuterSegments());
+        torusShader.loadFloat(gl, "r", torus.getInnerRadius());
+        torusShader.loadFloat(gl, "R", torus.getOuterRadius());
+
+        torusShader.loadVector3f(gl, "color", torus.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
+
+        gl.glBindVertexArray(torus.getMesh().getVao());
+        gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 1);
+        gl.glDrawElements(torus.getMesh().getPrimitivesType(),
+                torus.getMesh().vertexCount(),
                 GL4.GL_UNSIGNED_INT, 0);
         gl.glBindVertexArray(0);
         gl.glUseProgram(0);
