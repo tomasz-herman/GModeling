@@ -337,11 +337,13 @@ public class Renderer {
         torusShader.loadMatrix4f(gl, "mvp", mvp);
         torusShader.loadInteger(gl, "divisionsU", torus.getInnerSegments());
         torusShader.loadInteger(gl, "divisionsV", torus.getOuterSegments());
+        torusShader.loadInteger(gl, "trimming", 0);
         torusShader.loadFloat(gl, "r", torus.getInnerRadius());
         torusShader.loadFloat(gl, "R", torus.getOuterRadius());
 
         torusShader.loadVector3f(gl, "color", torus.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
 
+        torus.getTexture().use(gl, 0);
         gl.glBindVertexArray(torus.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 1);
         gl.glDrawElements(torus.getMesh().getPrimitivesType(),

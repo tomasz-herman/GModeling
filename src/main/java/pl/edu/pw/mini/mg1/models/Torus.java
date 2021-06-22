@@ -10,8 +10,8 @@ import org.w3c.dom.Node;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.collisions.BoundingSphere;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
+import pl.edu.pw.mini.mg1.graphics.Texture;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -26,6 +26,8 @@ public class Torus extends Model {
     private float outerRadius;
     private float innerRadius;
 
+    private Texture texture;
+
     public Torus() {
         this(10, 10, 1, 0.25f);
     }
@@ -39,6 +41,7 @@ public class Torus extends Model {
     protected void load(GL4 gl) {
         generateGeometry();
         mesh.load(gl);
+        texture = new Texture(gl, 1024, (u, v) -> u > v ? new Vector3f(0, 0, 0) : new Vector3f(1, 1, 1));
     }
 
     public Torus(int outerSegments, int innerSegments, float outerRadius, float innerRadius) {
@@ -112,6 +115,16 @@ public class Torus extends Model {
     @Override
     public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
         renderer.renderTorus(gl, camera, this);
+    }
+
+    @Override
+    public void dispose(GL4 gl) {
+        super.dispose(gl);
+        if(texture != null) texture.dispose(gl);
+    }
+
+    public Texture getTexture() {
+        return texture;
     }
 
     @Override
