@@ -3,9 +3,13 @@ package pl.edu.pw.mini.mg1.layout;
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
+import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import org.joml.Vector4f;
 import pl.edu.pw.mini.mg1.models.*;
 import pl.edu.pw.mini.mg1.models.Point;
+import pl.edu.pw.mini.mg1.numerics.IntersectionStart;
+import pl.edu.pw.mini.mg1.numerics.Newton;
 
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
@@ -20,9 +24,13 @@ import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.Insets;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.function.Function;
 import java.util.stream.Collectors;
+
+import static org.joml.Math.clamp;
 
 public class SceneLayout implements Controller<Scene> {
     private JTable table;
@@ -166,6 +174,46 @@ public class SceneLayout implements Controller<Scene> {
                     for (GregoryPatch gregoryPatch : gregory) {
                         scene.addModel(gregoryPatch);
                     }
+                }
+                case "Intersection" -> {
+                    List<Intersectable> surfaces = scene.getSelectedModels().stream()
+                            .filter(m -> m instanceof Intersectable)
+                            .map(m -> (Torus) m)
+                            .collect(Collectors.toList());
+                    if (surfaces.size() < 2) break;
+                    Intersectable P = surfaces.get(0);
+                    Intersectable Q = surfaces.get(1);
+                    IntersectionStart start = new IntersectionStart(P::P, Q::P);
+                    Vector4f s = start.solve(null);
+                    if (s == null) break;
+                    boolean pWrapsU = P.wrapsU();
+                    boolean pWrapsV = P.wrapsV();
+                    boolean qWrapsU = Q.wrapsU();
+                    boolean qWrapsV = Q.wrapsV();
+                    Vector3f found = P.P(s.x, s.y);
+                    scene.setPointerWorldCoords(found);
+                    Vector4f next = new Vector4f(s);
+                    int i = 1000;
+                    Function<Float, Float> wrap = val -> val < 0 ? val + 1 : val > 1 ? val - 1 : val;
+                    List<Point> points = new ArrayList<>();
+                    while (i-- > 0) {
+                        Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, 0.01f, 100);
+                        points.add(new Point(P.P(next.x, next.y)));
+                        System.out.println(next + " " + P.P(next.x, next.y) + " " + Q.P(next.z, next.w) + " " + found + " " + found.distance(P.P(next.x, next.y)) + " " + P.P(next.x, next.y).distance(Q.P(next.z, next.w)));
+                        next = newton.solve();
+                        System.out.println(next);
+                        if (!pWrapsU && (next.x > 1 || next.x < 0)) break;
+                        else next.x = wrap.apply(next.x);
+                        if (!pWrapsV && (next.y > 1 || next.y < 0)) break;
+                        else next.y = wrap.apply(next.y);
+                        if (!qWrapsU && (next.z > 1 || next.z < 0)) break;
+                        else next.z = wrap.apply(next.z);
+                        if (!qWrapsV && (next.w > 1 || next.w < 0)) break;
+                        else next.w = wrap.apply(next.w);
+                        if (found.distance(P.P(next.x, next.y)) < 0.005f) break;
+                    }
+                    points.forEach(scene::addModel);
+                    scene.addModel(new BezierInter(points));
                 }
             }
             addCombo.setSelectedIndex(-1);
@@ -675,6 +723,7 @@ public class SceneLayout implements Controller<Scene> {
         defaultComboBoxModel1.addElement("BezierC0 Patch");
         defaultComboBoxModel1.addElement("BezierC2 Patch");
         defaultComboBoxModel1.addElement("Gregory Patch");
+        defaultComboBoxModel1.addElement("Intersection");
         addCombo.setModel(defaultComboBoxModel1);
         panel1.add(addCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteCombo = new JComboBox();

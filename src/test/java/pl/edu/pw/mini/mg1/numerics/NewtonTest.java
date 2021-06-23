@@ -14,7 +14,7 @@ class NewtonTest {
     @Test
     public void test() {
         final BiFunction<Float, Float, Vector3f> P = (u, v) -> new Vector3f(cos(u * 2 * PI) * sin(v * 2 * PI), sin(u * 2 * PI) * sin(v * 2 * PI), cos(v * 2 * PI));
-        final BiFunction<Float, Float, Vector3f> Q = (u, v) -> new Vector3f(cos(u * 2 * PI) * sin(v * 2 * PI) + 1, sin(u * 2 * PI) * sin(v * 2 * PI), cos(v * 2 * PI));
+        final BiFunction<Float, Float, Vector3f> Q = (u, v) -> new Vector3f(cos(u * 2 * PI) * sin(v * 2 * PI) + 1, sin(u * 2 * PI) * sin(v * 2 * PI) - 1, cos(v * 2 * PI));
         final BiFunction<Float, Float, Vector3f> Pn = P.andThen(Vector3f::negate);
         final BiFunction<Float, Float, Vector3f> Qn = P.andThen(Vector3f::negate);
 //        Vector4f x0 = new Vector4f(0.5f, 0.5f * 7/6, 0, 0.5f * 7/6);
@@ -22,10 +22,10 @@ class NewtonTest {
 //        Vector4f x0 = new IntersectionStart(P, Q).solve(P.apply(0.5f, 0.5f * 7/6));
         Vector4f x = new Vector4f(x0);
         final float d = 0.01f;
-        int i = 1000;
+        int i = 100000;
         do {
             Newton newton = new Newton(P, Q, Pn, Qn, x, d, i);
-            System.out.println(x + " " + P.apply(x.x, x.y) + " " + Q.apply(x.z, x.w));
+            System.out.println(x + " " + P.apply(x.x, x.y) + " " + Q.apply(x.z, x.w) + " " + P.apply(x.x, x.y).distance(Q.apply(x.z, x.w)));
             x = newton.solve();
         } while(x.sub(x0, new Vector4f()).lengthSquared() > 0.000001f);
     }

@@ -75,7 +75,7 @@ public class Torus extends Model implements Intersectable {
     }
 
     private float tx(float outerAngle, float innerAngle) {
-        return sin(outerAngle) * -(outerRadius + innerRadius * cos(innerAngle));
+        return -sin(outerAngle) * (outerRadius + innerRadius * cos(innerAngle));
     }
 
     private float ty(float outerAngle, float innerAngle) {
@@ -87,7 +87,7 @@ public class Torus extends Model implements Intersectable {
     }
 
     private float bx(float outerAngle, float innerAngle) {
-        return innerRadius * cos(outerAngle) * sin(innerAngle);
+        return -innerRadius * cos(outerAngle) * sin(innerAngle);
     }
 
     private float by(float outerAngle, float innerAngle) {
@@ -95,7 +95,7 @@ public class Torus extends Model implements Intersectable {
     }
 
     private float bz(float outerAngle, float innerAngle) {
-        return innerRadius * sin(outerAngle) * sin(innerAngle);
+        return -innerRadius * sin(outerAngle) * sin(innerAngle);
     }
 
     @Override

@@ -57,6 +57,7 @@
                 <item value="BezierC0 Patch"/>
                 <item value="BezierC2 Patch"/>
                 <item value="Gregory Patch"/>
+                <item value="Intersection"/>
               </model>
             </properties>
           </component>
