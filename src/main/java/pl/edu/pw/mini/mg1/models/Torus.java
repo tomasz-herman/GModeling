@@ -19,7 +19,7 @@ import java.util.function.Function;
 import static com.jogamp.opengl.math.FloatUtil.PI;
 import static org.joml.Math.*;
 
-public class Torus extends Model {
+public class Torus extends Model implements Intersectable {
     private int outerSegments;
     private int innerSegments;
 
@@ -98,6 +98,7 @@ public class Torus extends Model {
         return innerRadius * sin(outerAngle) * sin(innerAngle);
     }
 
+    @Override
     public Vector3f P(float u, float v) {
         float outerAngle = u * 2 * PI;
         float innerAngle = v * 2 * PI;
@@ -105,6 +106,23 @@ public class Torus extends Model {
         return getModelMatrix().transformPosition(p);
     }
 
+    @Override
+    public Vector3f T(float u, float v) {
+        float outerAngle = u * 2 * PI;
+        float innerAngle = v * 2 * PI;
+        Vector3f t = new Vector3f(tx(outerAngle, innerAngle), ty(outerAngle, innerAngle), tz(outerAngle, innerAngle));
+        return getModelMatrix().transformDirection(t);
+    }
+
+    @Override
+    public Vector3f B(float u, float v) {
+        float outerAngle = u * 2 * PI;
+        float innerAngle = v * 2 * PI;
+        Vector3f b = new Vector3f(bx(outerAngle, innerAngle), by(outerAngle, innerAngle), bz(outerAngle, innerAngle));
+        return getModelMatrix().transformDirection(b);
+    }
+
+    @Override
     public Vector3f N(float u, float v) {
         float outerAngle = u * 2 * PI;
         float innerAngle = v * 2 * PI;
@@ -112,6 +130,16 @@ public class Torus extends Model {
         Vector3f b = new Vector3f(bx(outerAngle, innerAngle), by(outerAngle, innerAngle), bz(outerAngle, innerAngle));
         Vector3f n = t.cross(b).normalize();
         return getModelMatrix().transformDirection(n);
+    }
+
+    @Override
+    public boolean wrapsU() {
+        return true;
+    }
+
+    @Override
+    public boolean wrapsV() {
+        return true;
     }
 
     public int getOuterSegments() {

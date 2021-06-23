@@ -18,7 +18,7 @@ import java.util.stream.IntStream;
 
 import static com.jogamp.opengl.math.FloatUtil.PI;
 
-public class BezierPatchC2 extends Patch {
+public class BezierPatchC2 extends Patch implements Intersectable {
 
     public static BezierPatchC2 example() {
         BezierPatchC2 patch = new BezierPatchC2();
@@ -296,5 +296,35 @@ public class BezierPatchC2 extends Patch {
             polyMesh = new PolyMesh(surface);
         }
         return this;
+    }
+
+    @Override
+    public Vector3f P(float u, float v) {
+        return null;
+    }
+
+    @Override
+    public Vector3f T(float u, float v) {
+        return null;
+    }
+
+    @Override
+    public Vector3f B(float u, float v) {
+        return null;
+    }
+
+    @Override
+    public Vector3f N(float u, float v) {
+        return null;
+    }
+
+    @Override
+    public boolean wrapsU() {
+        return false;
+    }
+
+    @Override
+    public boolean wrapsV() {
+        return false;
     }
 }

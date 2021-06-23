@@ -2,15 +2,14 @@ package pl.edu.pw.mini.mg1.models;
 
 import com.jogamp.opengl.GL4;
 import org.joml.Vector2f;
+import org.joml.Vector3f;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -20,7 +19,7 @@ import static com.jogamp.opengl.math.FloatUtil.tan;
 import static org.joml.Math.cos;
 import static org.joml.Math.sin;
 
-public class BezierPatchC0 extends Patch {
+public class BezierPatchC0 extends Patch implements Intersectable {
 
     public static BezierPatchC0 flat(float w, float h, int x, int y) {
         BezierPatchC0 patch = new BezierPatchC0();
@@ -248,5 +247,51 @@ public class BezierPatchC0 extends Patch {
             polyMesh = new PolyMesh(surface);
         }
         return this;
+    }
+
+    @Override
+    public Vector3f P(float u, float v) {
+        return null;
+    }
+
+    @Override
+    public Vector3f T(float u, float v) {
+        return null;
+    }
+
+    @Override
+    public Vector3f B(float u, float v) {
+        return null;
+    }
+
+    @Override
+    public Vector3f N(float u, float v) {
+        return null;
+    }
+
+    @Override
+    public boolean wrapsU() {
+        int I = surface.length - 1;
+        int J = surface[0].length - 1;
+        Set<Point> e1 = new HashSet<>();
+        Set<Point> e2 = new HashSet<>();
+        for (int i = 0; i <= I; i++) {
+            e1.add(surface[i][0]);
+            e2.add(surface[i][J]);
+        }
+        return e1.containsAll(e2);
+    }
+
+    @Override
+    public boolean wrapsV() {
+        int I = surface.length - 1;
+        int J = surface[0].length - 1;
+        Set<Point> e1 = new HashSet<>();
+        Set<Point> e2 = new HashSet<>();
+        for (int j = 0; j <= J; j++) {
+            e1.add(surface[0][j]);
+            e2.add(surface[I][j]);
+        }
+        return e1.containsAll(e2);
     }
 }
