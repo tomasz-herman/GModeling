@@ -25,6 +25,7 @@ class NewtonTest {
         int i = 1000;
         do {
             Newton newton = new Newton(P, Q, Pn, Qn, x, d, i);
+            System.out.println(x + " " + P.apply(x.x, x.y) + " " + Q.apply(x.z, x.w));
             x = newton.solve();
         } while(x.sub(x0, new Vector4f()).lengthSquared() > 0.000001f);
     }

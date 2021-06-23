@@ -53,7 +53,7 @@ public class IntersectionStart {
             }).orElseThrow();
             R = 0.1f;
         }
-        for (int i = 0; i < 32; i++) {
+        for (int i = 0; i < 100; i++) {
             List<Pair<Vector2f, Vector3f>> pTemp = new ArrayList<>();
             List<Pair<Vector2f, Vector3f>> qTemp = new ArrayList<>();
             for (int j = 0; j < (closeTo == null ? 1024 : 4096); j++) {
@@ -88,7 +88,7 @@ public class IntersectionStart {
                     }
                 }
             }
-            if(lastDist > bestDist) R = R * sqrt(bestDist / lastDist);
+            if(lastDist > bestDist) R = R * sqrt(bestDist / lastDist) * 1.5f;
             if(bestDist < 1e-12f) return new Vector4f(p.getLeft(), q.getLeft().x, q.getLeft().y);;
         }
         return null;

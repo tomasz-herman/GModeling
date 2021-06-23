@@ -16,8 +16,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
 
-import static org.joml.Math.toDegrees;
-import static org.joml.Math.toRadians;
+import static com.jogamp.opengl.math.FloatUtil.PI;
+import static org.joml.Math.*;
 
 public class Torus extends Model {
     private int outerSegments;
@@ -63,15 +63,55 @@ public class Torus extends Model {
     }
 
     private float x(float outerAngle, float innerAngle) {
-        return (float) (Math.cos(outerAngle) * (outerRadius + innerRadius * Math.cos(innerAngle)));
+        return cos(outerAngle) * (outerRadius + innerRadius * cos(innerAngle));
     }
 
     private float y(float outerAngle, float innerAngle) {
-        return (float) (innerRadius * Math.sin(innerAngle));
+        return innerRadius * sin(innerAngle);
     }
 
     private float z(float outerAngle, float innerAngle) {
-        return (float) (Math.sin(outerAngle) * (outerRadius + innerRadius * Math.cos(innerAngle)));
+        return sin(outerAngle) * (outerRadius + innerRadius * cos(innerAngle));
+    }
+
+    private float tx(float outerAngle, float innerAngle) {
+        return sin(outerAngle) * -(outerRadius + innerRadius * cos(innerAngle));
+    }
+
+    private float ty(float outerAngle, float innerAngle) {
+        return 0;
+    }
+
+    private float tz(float outerAngle, float innerAngle) {
+        return cos(outerAngle) * (outerRadius + innerRadius * cos(innerAngle));
+    }
+
+    private float bx(float outerAngle, float innerAngle) {
+        return innerRadius * cos(outerAngle) * sin(innerAngle);
+    }
+
+    private float by(float outerAngle, float innerAngle) {
+        return innerRadius * cos(innerAngle);
+    }
+
+    private float bz(float outerAngle, float innerAngle) {
+        return innerRadius * sin(outerAngle) * sin(innerAngle);
+    }
+
+    public Vector3f P(float u, float v) {
+        float outerAngle = u * 2 * PI;
+        float innerAngle = v * 2 * PI;
+        Vector3f p = new Vector3f(x(outerAngle, innerAngle), y(outerAngle, innerAngle), z(outerAngle, innerAngle));
+        return getModelMatrix().transformPosition(p);
+    }
+
+    public Vector3f N(float u, float v) {
+        float outerAngle = u * 2 * PI;
+        float innerAngle = v * 2 * PI;
+        Vector3f t = new Vector3f(tx(outerAngle, innerAngle), ty(outerAngle, innerAngle), tz(outerAngle, innerAngle));
+        Vector3f b = new Vector3f(bx(outerAngle, innerAngle), by(outerAngle, innerAngle), bz(outerAngle, innerAngle));
+        Vector3f n = t.cross(b).normalize();
+        return getModelMatrix().transformDirection(n);
     }
 
     public int getOuterSegments() {
