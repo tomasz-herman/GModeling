@@ -331,6 +331,7 @@ public class Renderer {
         gl.glLineWidth(1);
 
         Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
+        mvp.mul(torus.getModelMatrix());
 
         gl.glUseProgram(torusShader.getProgramID());
 

@@ -41,7 +41,7 @@ public class Torus extends Model {
     protected void load(GL4 gl) {
         generateGeometry();
         mesh.load(gl);
-        texture = new Texture(gl, 1024, (u, v) -> u > v ? new Vector3f(0, 0, 0) : new Vector3f(1, 1, 1));
+        texture = new Texture(gl, 1024, (u, v) -> new Vector3f());
     }
 
     public Torus(int outerSegments, int innerSegments, float outerRadius, float innerRadius) {
