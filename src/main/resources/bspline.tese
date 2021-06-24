@@ -44,7 +44,7 @@ void main() {
 
     float omu = 1.0 - u;
     float omu2 = omu * omu;
-    float omu3 = omu * omu;
+    float omu3 = omu2 * omu;
     float u2 = u * u;
     float u3 = u * u2;
 
@@ -60,7 +60,7 @@ void main() {
 
     float omv = 1.0 - v;
     float omv2 = omv * omv;
-    float omv3 = omv * omv;
+    float omv3 = omv * omv2;
     float v2 = v * v;
     float v3 = v * v2;
 

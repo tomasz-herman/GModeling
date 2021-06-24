@@ -17,6 +17,7 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static com.jogamp.opengl.math.FloatUtil.PI;
+import static org.joml.Math.clamp;
 
 public class BezierPatchC2 extends Patch implements Intersectable {
 
@@ -300,22 +301,102 @@ public class BezierPatchC2 extends Patch implements Intersectable {
 
     @Override
     public Vector3f P(float u, float v) {
-        return null;
+        int I = surface.length;
+        int J = surface[0].length;
+        int U = I - 3;
+        int V = J - 3;
+        u *= U;
+        v *= V;
+        I = clamp(0, U - 1, (int)u);
+        J = clamp(0, V - 1, (int)v);
+        u -= I;
+        v -= J;
+        System.out.println(I + " " + J);
+        System.out.println(u + " " + v);
+        List<Point> points = this.points.subList(16 * (I * V + J), 16 * (I * V + J + 1));
+//        points.forEach(System.out::println);
+        Vector3f p00 = points.get( 0).getPosition().get(new Vector3f());
+        Vector3f p10 = points.get( 1).getPosition().get(new Vector3f());
+        Vector3f p20 = points.get( 2).getPosition().get(new Vector3f());
+        Vector3f p30 = points.get( 3).getPosition().get(new Vector3f());
+        Vector3f p01 = points.get( 4).getPosition().get(new Vector3f());
+        Vector3f p11 = points.get( 5).getPosition().get(new Vector3f());
+        Vector3f p21 = points.get( 6).getPosition().get(new Vector3f());
+        Vector3f p31 = points.get( 7).getPosition().get(new Vector3f());
+        Vector3f p02 = points.get( 8).getPosition().get(new Vector3f());
+        Vector3f p12 = points.get( 9).getPosition().get(new Vector3f());
+        Vector3f p22 = points.get(10).getPosition().get(new Vector3f());
+        Vector3f p32 = points.get(11).getPosition().get(new Vector3f());
+        Vector3f p03 = points.get(12).getPosition().get(new Vector3f());
+        Vector3f p13 = points.get(13).getPosition().get(new Vector3f());
+        Vector3f p23 = points.get(14).getPosition().get(new Vector3f());
+        Vector3f p33 = points.get(15).getPosition().get(new Vector3f());
+
+        Vector3f b00 = new Vector3f(p00).mul(1.0f / 6.0f).add(new Vector3f(p01).mul(2.0f / 3.0f)).add(new Vector3f(p02).mul(1.0f / 6.0f));
+        Vector3f b01 = new Vector3f(p01).mul(2.0f / 3.0f).add(new Vector3f(p02).mul(1.0f / 3.0f));
+        Vector3f b02 = new Vector3f(p01).mul(1.0f / 3.0f).add(new Vector3f(p02).mul(2.0f / 3.0f));
+        Vector3f b03 = new Vector3f(p01).mul(1.0f / 6.0f).add(new Vector3f(p02).mul(2.0f / 3.0f)).add(new Vector3f(p03).mul(1.0f / 6.0f));
+
+        Vector3f b10 = new Vector3f(p10).mul(1.0f / 6.0f).add(new Vector3f(p11).mul(2.0f / 3.0f)).add(new Vector3f(p12).mul(1.0f / 6.0f));
+        Vector3f b11 = new Vector3f(p11).mul(2.0f / 3.0f).add(new Vector3f(p12).mul(1.0f / 3.0f));
+        Vector3f b12 = new Vector3f(p11).mul(1.0f / 3.0f).add(new Vector3f(p12).mul(2.0f / 3.0f));
+        Vector3f b13 = new Vector3f(p11).mul(1.0f / 6.0f).add(new Vector3f(p12).mul(2.0f / 3.0f)).add(new Vector3f(p13).mul(1.0f / 6.0f));
+
+        Vector3f b20 = new Vector3f(p20).mul(1.0f / 6.0f).add(new Vector3f(p21).mul(2.0f / 3.0f)).add(new Vector3f(p22).mul(1.0f / 6.0f));
+        Vector3f b21 = new Vector3f(p21).mul(2.0f / 3.0f).add(new Vector3f(p22).mul(1.0f / 3.0f));
+        Vector3f b22 = new Vector3f(p21).mul(1.0f / 3.0f).add(new Vector3f(p22).mul(2.0f / 3.0f));
+        Vector3f b23 = new Vector3f(p21).mul(1.0f / 6.0f).add(new Vector3f(p22).mul(2.0f / 3.0f)).add(new Vector3f(p23).mul(1.0f / 6.0f));
+
+        Vector3f b30 = new Vector3f(p30).mul(1.0f / 6.0f).add(new Vector3f(p31).mul(2.0f / 3.0f)).add(new Vector3f(p32).mul(1.0f / 6.0f));
+        Vector3f b31 = new Vector3f(p31).mul(2.0f / 3.0f).add(new Vector3f(p32).mul(1.0f / 3.0f));
+        Vector3f b32 = new Vector3f(p31).mul(1.0f / 3.0f).add(new Vector3f(p32).mul(2.0f / 3.0f));
+        Vector3f b33 = new Vector3f(p31).mul(1.0f / 6.0f).add(new Vector3f(p32).mul(2.0f / 3.0f)).add(new Vector3f(p33).mul(1.0f / 6.0f));
+
+        float omu = 1.0f - u;
+        float omu2 = omu * omu;
+        float omu3 = omu2 * omu;
+        float u2 = u * u;
+        float u3 = u * u2;
+
+        Vector3f d0 = b00.mul(omu3).add(b01.mul(3.0f * u * omu2)).add(b02.mul(3.0f * u2 * omu)).add(b03.mul(u3));
+        Vector3f d1 = b10.mul(omu3).add(b11.mul(3.0f * u * omu2)).add(b12.mul(3.0f * u2 * omu)).add(b13.mul(u3));
+        Vector3f d2 = b20.mul(omu3).add(b21.mul(3.0f * u * omu2)).add(b22.mul(3.0f * u2 * omu)).add(b23.mul(u3));
+        Vector3f d3 = b30.mul(omu3).add(b31.mul(3.0f * u * omu2)).add(b32.mul(3.0f * u2 * omu)).add(b33.mul(u3));
+
+        Vector3f b0 = new Vector3f(d0).mul(1.0f / 6.0f).add(new Vector3f(d1).mul(2.0f / 3.0f)).add(new Vector3f(d2).mul(1.0f / 6.0f));
+        Vector3f b1 = new Vector3f(d1).mul(2.0f / 3.0f).add(new Vector3f(d2).mul(1.0f / 3.0f));
+        Vector3f b2 = new Vector3f(d1).mul(1.0f / 3.0f).add(new Vector3f(d2).mul(2.0f / 3.0f));
+        Vector3f b3 = new Vector3f(d1).mul(1.0f / 6.0f).add(new Vector3f(d2).mul(2.0f / 3.0f)).add(new Vector3f(d3).mul(1.0f / 6.0f));
+
+        float omv = 1.0f - v;
+        float omv2 = omv * omv;
+        float omv3 = omv * omv2;
+        float v2 = v * v;
+        float v3 = v * v2;
+
+        return b0.mul(omv3).add(b1.mul(3.0f * v * omv2)).add(b2.mul(3.0f * v2 * omv)).add(b3.mul(v3));
     }
 
     @Override
     public Vector3f T(float u, float v) {
-        return null;
+        if(u + 1e-4f < 1)
+            return P(u + 1e-4f, v).sub(P(u, v)).div(1e-4f);
+        else
+            return P(u, v).sub(P(u - 1e-4f, v)).div(1e-4f);
     }
 
     @Override
     public Vector3f B(float u, float v) {
-        return null;
+        if(v + 1e-4f < 1)
+            return P(u, v + 1e-4f).sub(P(u, v)).div(1e-4f);
+        else
+            return P(u, v).sub(P(u, v - 1e-4f)).div(1e-4f);
+
     }
 
     @Override
     public Vector3f N(float u, float v) {
-        return null;
+        return T(u, v).cross(B(u, v)).normalize();
     }
 
     @Override
