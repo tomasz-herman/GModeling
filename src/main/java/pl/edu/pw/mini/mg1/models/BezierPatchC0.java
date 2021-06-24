@@ -412,9 +412,9 @@ public class BezierPatchC0 extends Patch implements Intersectable {
         int J = surface[0].length - 1;
         Set<Point> e1 = new HashSet<>();
         Set<Point> e2 = new HashSet<>();
-        for (int i = 0; i <= I; i++) {
-            e1.add(surface[i][0]);
-            e2.add(surface[i][J]);
+        for (int j = 0; j <= J; j++) {
+            e1.add(surface[0][j]);
+            e2.add(surface[I][j]);
         }
         return e1.containsAll(e2);
     }
@@ -425,9 +425,9 @@ public class BezierPatchC0 extends Patch implements Intersectable {
         int J = surface[0].length - 1;
         Set<Point> e1 = new HashSet<>();
         Set<Point> e2 = new HashSet<>();
-        for (int j = 0; j <= J; j++) {
-            e1.add(surface[0][j]);
-            e2.add(surface[I][j]);
+        for (int i = 0; i <= I; i++) {
+            e1.add(surface[i][0]);
+            e2.add(surface[i][J]);
         }
         return e1.containsAll(e2);
     }
