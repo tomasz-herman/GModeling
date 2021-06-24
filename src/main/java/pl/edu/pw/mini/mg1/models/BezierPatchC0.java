@@ -16,8 +16,7 @@ import java.util.stream.IntStream;
 
 import static com.jogamp.opengl.math.FloatUtil.PI;
 import static com.jogamp.opengl.math.FloatUtil.tan;
-import static org.joml.Math.cos;
-import static org.joml.Math.sin;
+import static org.joml.Math.*;
 
 public class BezierPatchC0 extends Patch implements Intersectable {
 
@@ -251,22 +250,160 @@ public class BezierPatchC0 extends Patch implements Intersectable {
 
     @Override
     public Vector3f P(float u, float v) {
-        return null;
+        int I = surface.length;
+        int J = surface[0].length;
+        int U = (I - 4) / 3 + 1;
+        int V = (J - 4) / 3 + 1;
+        u *= U;
+        v *= V;
+        I = clamp(0, U - 1, (int)u);
+        J = clamp(0, V - 1, (int)v);
+        u -= I;
+        v -= J;
+        List<Point> points = this.points.subList(16 * (I * V + J), 16 * (I * V + J + 1));
+        Vector3f p00 = points.get( 0).getPosition().get(new Vector3f());
+        Vector3f p10 = points.get( 1).getPosition().get(new Vector3f());
+        Vector3f p20 = points.get( 2).getPosition().get(new Vector3f());
+        Vector3f p30 = points.get( 3).getPosition().get(new Vector3f());
+        Vector3f p01 = points.get( 4).getPosition().get(new Vector3f());
+        Vector3f p11 = points.get( 5).getPosition().get(new Vector3f());
+        Vector3f p21 = points.get( 6).getPosition().get(new Vector3f());
+        Vector3f p31 = points.get( 7).getPosition().get(new Vector3f());
+        Vector3f p02 = points.get( 8).getPosition().get(new Vector3f());
+        Vector3f p12 = points.get( 9).getPosition().get(new Vector3f());
+        Vector3f p22 = points.get(10).getPosition().get(new Vector3f());
+        Vector3f p32 = points.get(11).getPosition().get(new Vector3f());
+        Vector3f p03 = points.get(12).getPosition().get(new Vector3f());
+        Vector3f p13 = points.get(13).getPosition().get(new Vector3f());
+        Vector3f p23 = points.get(14).getPosition().get(new Vector3f());
+        Vector3f p33 = points.get(15).getPosition().get(new Vector3f());
+        float bu0 = (1-u) * (1-u) * (1-u);
+        float bu1 = 3 * u * (1-u) * (1-u);
+        float bu2 = 3 * u * u * (1-u);
+        float bu3 = u * u * u;
+        float dbu0 = -3 * (1-u) * (1-u);
+        float dbu1 =  3 * (1-u) * (1-3*u);
+        float dbu2 =  3 * u * (2-3*u);
+        float dbu3 =  3 * u * u;
+        float bv0 = (1-v) * (1-v) * (1-v);
+        float bv1 = 3 * v * (1-v) * (1-v);
+        float bv2 = 3 * v * v * (1-v);
+        float bv3 = v * v * v;
+        float dbv0 = -3 * (1-v) * (1-v);
+        float dbv1 =  3 * (1-v) * (1-3*v);
+        float dbv2 =  3 * v * (2-3*v);
+        float dbv3 =  3 * v * v;
+        return (p00.mul(bv0).add(p01.mul(bv1)).add(p02.mul(bv2)).add(p03.mul(bv3)).mul(bu0))
+          .add((p10.mul(bv0).add(p11.mul(bv1)).add(p12.mul(bv2)).add(p13.mul(bv3)).mul(bu1)))
+          .add((p20.mul(bv0).add(p21.mul(bv1)).add(p22.mul(bv2)).add(p23.mul(bv3)).mul(bu2)))
+          .add((p30.mul(bv0).add(p31.mul(bv1)).add(p32.mul(bv2)).add(p33.mul(bv3)).mul(bu3)));
     }
 
     @Override
     public Vector3f T(float u, float v) {
-        return null;
+        int I = surface.length;
+        int J = surface[0].length;
+        int U = (I - 4) / 3 + 1;
+        int V = (J - 4) / 3 + 1;
+        u *= U;
+        v *= V;
+        I = clamp(0, U - 1, (int)u);
+        J = clamp(0, V - 1, (int)v);
+        u -= I;
+        v -= J;
+        List<Point> points = this.points.subList(16 * (I * V + J), 16 * (I * V + J + 1));
+        Vector3f p00 = points.get( 0).getPosition().get(new Vector3f());
+        Vector3f p10 = points.get( 1).getPosition().get(new Vector3f());
+        Vector3f p20 = points.get( 2).getPosition().get(new Vector3f());
+        Vector3f p30 = points.get( 3).getPosition().get(new Vector3f());
+        Vector3f p01 = points.get( 4).getPosition().get(new Vector3f());
+        Vector3f p11 = points.get( 5).getPosition().get(new Vector3f());
+        Vector3f p21 = points.get( 6).getPosition().get(new Vector3f());
+        Vector3f p31 = points.get( 7).getPosition().get(new Vector3f());
+        Vector3f p02 = points.get( 8).getPosition().get(new Vector3f());
+        Vector3f p12 = points.get( 9).getPosition().get(new Vector3f());
+        Vector3f p22 = points.get(10).getPosition().get(new Vector3f());
+        Vector3f p32 = points.get(11).getPosition().get(new Vector3f());
+        Vector3f p03 = points.get(12).getPosition().get(new Vector3f());
+        Vector3f p13 = points.get(13).getPosition().get(new Vector3f());
+        Vector3f p23 = points.get(14).getPosition().get(new Vector3f());
+        Vector3f p33 = points.get(15).getPosition().get(new Vector3f());
+        float bu0 = (1-u) * (1-u) * (1-u);
+        float bu1 = 3 * u * (1-u) * (1-u);
+        float bu2 = 3 * u * u * (1-u);
+        float bu3 = u * u * u;
+        float dbu0 = -3 * (1-u) * (1-u);
+        float dbu1 =  3 * (1-u) * (1-3*u);
+        float dbu2 =  3 * u * (2-3*u);
+        float dbu3 =  3 * u * u;
+        float bv0 = (1-v) * (1-v) * (1-v);
+        float bv1 = 3 * v * (1-v) * (1-v);
+        float bv2 = 3 * v * v * (1-v);
+        float bv3 = v * v * v;
+        float dbv0 = -3 * (1-v) * (1-v);
+        float dbv1 =  3 * (1-v) * (1-3*v);
+        float dbv2 =  3 * v * (2-3*v);
+        float dbv3 =  3 * v * v;
+        return (p00.mul(bv0).add(p01.mul(bv1)).add(p02.mul(bv2)).add(p03.mul(bv3)).mul(dbu0))
+          .add((p10.mul(bv0).add(p11.mul(bv1)).add(p12.mul(bv2)).add(p13.mul(bv3)).mul(dbu1)))
+          .add((p20.mul(bv0).add(p21.mul(bv1)).add(p22.mul(bv2)).add(p23.mul(bv3)).mul(dbu2)))
+          .add((p30.mul(bv0).add(p31.mul(bv1)).add(p32.mul(bv2)).add(p33.mul(bv3)).mul(dbu3)));
     }
 
     @Override
     public Vector3f B(float u, float v) {
-        return null;
+        int I = surface.length;
+        int J = surface[0].length;
+        int U = (I - 4) / 3 + 1;
+        int V = (J - 4) / 3 + 1;
+        u *= U;
+        v *= V;
+        I = clamp(0, U - 1, (int)u);
+        J = clamp(0, V - 1, (int)v);
+        u -= I;
+        v -= J;
+        List<Point> points = this.points.subList(16 * (I * V + J), 16 * (I * V + J + 1));
+        Vector3f p00 = points.get( 0).getPosition().get(new Vector3f());
+        Vector3f p10 = points.get( 1).getPosition().get(new Vector3f());
+        Vector3f p20 = points.get( 2).getPosition().get(new Vector3f());
+        Vector3f p30 = points.get( 3).getPosition().get(new Vector3f());
+        Vector3f p01 = points.get( 4).getPosition().get(new Vector3f());
+        Vector3f p11 = points.get( 5).getPosition().get(new Vector3f());
+        Vector3f p21 = points.get( 6).getPosition().get(new Vector3f());
+        Vector3f p31 = points.get( 7).getPosition().get(new Vector3f());
+        Vector3f p02 = points.get( 8).getPosition().get(new Vector3f());
+        Vector3f p12 = points.get( 9).getPosition().get(new Vector3f());
+        Vector3f p22 = points.get(10).getPosition().get(new Vector3f());
+        Vector3f p32 = points.get(11).getPosition().get(new Vector3f());
+        Vector3f p03 = points.get(12).getPosition().get(new Vector3f());
+        Vector3f p13 = points.get(13).getPosition().get(new Vector3f());
+        Vector3f p23 = points.get(14).getPosition().get(new Vector3f());
+        Vector3f p33 = points.get(15).getPosition().get(new Vector3f());
+        float bu0 = (1-u) * (1-u) * (1-u);
+        float bu1 = 3 * u * (1-u) * (1-u);
+        float bu2 = 3 * u * u * (1-u);
+        float bu3 = u * u * u;
+        float dbu0 = -3 * (1-u) * (1-u);
+        float dbu1 =  3 * (1-u) * (1-3*u);
+        float dbu2 =  3 * u * (2-3*u);
+        float dbu3 =  3 * u * u;
+        float bv0 = (1-v) * (1-v) * (1-v);
+        float bv1 = 3 * v * (1-v) * (1-v);
+        float bv2 = 3 * v * v * (1-v);
+        float bv3 = v * v * v;
+        float dbv0 = -3 * (1-v) * (1-v);
+        float dbv1 =  3 * (1-v) * (1-3*v);
+        float dbv2 =  3 * v * (2-3*v);
+        float dbv3 =  3 * v * v;
+        return (p00.mul(bu0).add(p10.mul(bu1)).add(p20.mul(bu2)).add(p30.mul(bu3)).mul(dbv0))
+          .add((p01.mul(bu0).add(p11.mul(bu1)).add(p21.mul(bu2)).add(p31.mul(bu3)).mul(dbv1)))
+          .add((p02.mul(bu0).add(p12.mul(bu1)).add(p22.mul(bu2)).add(p32.mul(bu3)).mul(dbv2)))
+          .add((p03.mul(bu0).add(p13.mul(bu1)).add(p23.mul(bu2)).add(p33.mul(bu3)).mul(dbv3)));
     }
 
     @Override
     public Vector3f N(float u, float v) {
-        return null;
+        return T(u, v).cross(B(u, v)).normalize();
     }
 
     @Override
