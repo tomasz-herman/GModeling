@@ -178,7 +178,7 @@ public class SceneLayout implements Controller<Scene> {
                 case "Intersection" -> {
                     List<Intersectable> surfaces = scene.getSelectedModels().stream()
                             .filter(m -> m instanceof Intersectable)
-                            .map(m -> (Torus) m)
+                            .map(m -> (Intersectable) m)
                             .collect(Collectors.toList());
                     if (surfaces.size() < 2) break;
                     Intersectable P = surfaces.get(0);
