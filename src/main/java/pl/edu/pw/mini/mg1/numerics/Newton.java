@@ -27,7 +27,6 @@ public class Newton {
 
     public Vector4f solve() {
         Vector4f xn = new Vector4f(x0), xp;
-        System.out.println(P.apply(xn.x, xn.y).distance(Q.apply(xn.z, xn.w)));
         Vector3f tangent = Pn.apply(x0.x, x0.y).cross(Qn.apply(x0.z, x0.w)).normalize();
         QuadFunction<Float, Float, Float, Float, Vector4f> func = (u, v, s, t) -> {
             Vector3f PmQ = P.apply(u, v).sub(Q.apply(s, t));
@@ -42,10 +41,8 @@ public class Newton {
         do {
             xp = new Vector4f(xn);
             xn.sub(J.apply(xn.x, xn.y, xn.z, xn.w).transform(func.apply(xn.x, xn.y, xn.z, xn.w)));
-            System.out.println(xp.sub(xn, new Vector4f()).lengthSquared() + " " + P.apply(xp.x, xp.y).distance(Q.apply(xp.z, xp.w)) + " " + P.apply(xn.x, xn.y).distance(Q.apply(xn.z, xn.w)));
         }
         while (xp.sub(xn, new Vector4f()).lengthSquared() > 1e-12 && i --> 0);
-        System.out.println(i + " " + xn + " " + P.apply(xn.x, xn.y).distance(Q.apply(xn.z, xn.w)));
         return xn;
     }
 

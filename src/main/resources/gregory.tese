@@ -2,6 +2,10 @@
 
 layout(quads, equal_spacing, ccw) in;
 
+out TE_OUT {
+    vec2 uv;
+} te_out;
+
 void main() {
     float u = gl_TessCoord.x;
     float v = gl_TessCoord.y;

@@ -2,6 +2,10 @@
 
 layout(quads, equal_spacing, ccw) in;
 
+out TE_OUT {
+    vec2 uv;
+} te_out;
+
 void main() {
     vec4 p00 = gl_in[ 0].gl_Position;
     vec4 p10 = gl_in[ 1].gl_Position;
@@ -40,7 +44,7 @@ void main() {
     float dbv2 =  3. * v *      (2.-3.*v);
     float dbv3 =  3. * v *      v;
 
-    // finally, we get to compute something:
+    te_out.uv = vec2(gl_TessCoord.x, gl_TessCoord.y);
     gl_Position =
                 ( bu0 * ( bv0*p00 + bv1*p01 + bv2*p02 + bv3*p03 )
                 + bu1 * ( bv0*p10 + bv1*p11 + bv2*p12 + bv3*p13 )

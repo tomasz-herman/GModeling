@@ -199,9 +199,7 @@ public class SceneLayout implements Controller<Scene> {
                     while (i-- > 0) {
                         Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, 0.01f, 100);
                         points.add(new Point(P.P(next.x, next.y)));
-                        System.out.println(next + " " + P.P(next.x, next.y) + " " + Q.P(next.z, next.w) + " " + found + " " + found.distance(P.P(next.x, next.y)) + " " + P.P(next.x, next.y).distance(Q.P(next.z, next.w)));
                         next = newton.solve();
-                        System.out.println(next);
                         if (!pWrapsU && (next.x > 1 || next.x < 0)) break;
                         else next.x = wrap.apply(next.x);
                         if (!pWrapsV && (next.y > 1 || next.y < 0)) break;
