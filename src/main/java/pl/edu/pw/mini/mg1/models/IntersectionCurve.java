@@ -7,16 +7,12 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import pl.edu.pw.mini.mg1.graphics.Texture;
 
-import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 import java.util.function.Function;
 import java.util.stream.Collectors;
-
-import static java.nio.file.Files.writeString;
 
 public class IntersectionCurve extends Curve {
     private final Intersectable P, Q;
@@ -46,8 +42,8 @@ public class IntersectionCurve extends Curve {
     @Override
     protected void load(GL4 gl) {
         super.load(gl);
-        P.setTexture(pFill.toTexture(gl));
-        if(P != Q) Q.setTexture(qFill.toTexture(gl));
+        P.setTexture(pFill.toTexture(gl, P.wrapsU(), P.wrapsV()));
+        if(P != Q) Q.setTexture(qFill.toTexture(gl, Q.wrapsU(), Q.wrapsV()));
     }
 
     @Override
@@ -192,8 +188,8 @@ public class IntersectionCurve extends Curve {
             array[i][j] = true;
         }
 
-        public Texture toTexture(GL4 gl) {
-            return new Texture(gl, RESOLUTION, (i, j) -> array[i][j] ? new Vector3f(1) : new Vector3f());
+        public Texture toTexture(GL4 gl, boolean wrapU, boolean wrapV) {
+            return new Texture(gl, RESOLUTION, (i, j) -> array[i][j] ? new Vector3f(1) : new Vector3f(), wrapU, wrapV);
         }
 
         @Override

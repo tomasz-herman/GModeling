@@ -61,7 +61,7 @@ public class Renderer {
         createFrameBuffer(gl, fboID -> leftBufferID = fboID, texID -> leftTextureID = texID, texID -> leftDepthTextureID = texID);
         createFrameBuffer(gl, fboID -> rightBufferID = fboID, texID -> rightTextureID = texID, texID -> rightDepthTextureID = texID);
         createQuad(gl);
-        defaultTexture = new Texture(gl, 1024, (i, j) -> new Vector3f());
+        defaultTexture = new Texture(gl, 1024, (i, j) -> new Vector3f(), false, false);
     }
 
     public void render(GL4 gl, Scene scene) {

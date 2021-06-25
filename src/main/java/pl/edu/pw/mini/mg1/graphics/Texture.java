@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 public class Texture {
     private final IntBuffer id = GLBuffers.newDirectIntBuffer(1);
 
-    public Texture(GL4 gl, int size, BiFunction<Integer, Integer, Vector3f> pattern) {
+    public Texture(GL4 gl, int size, BiFunction<Integer, Integer, Vector3f> pattern, boolean wrapU, boolean wrapV) {
         gl.glGenTextures(1, id);
         use(gl, 0);
 
@@ -40,8 +40,8 @@ public class Texture {
         gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
         gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 
-        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_MIRRORED_REPEAT);
-        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_MIRRORED_REPEAT);
+        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL4.GL_TEXTURE_WRAP_S, wrapU ? GL4.GL_REPEAT : GL4.GL_CLAMP_TO_EDGE);
+        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL4.GL_TEXTURE_WRAP_T, wrapV ? GL4.GL_REPEAT : GL4.GL_CLAMP_TO_EDGE);
 
         gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
     }
