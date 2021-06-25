@@ -60,6 +60,9 @@ public abstract class Patch extends Model {
         }
     }
 
+    public abstract int U();
+    public abstract int V();
+
     public int getDivisionsU() {
         return divisionsU;
     }

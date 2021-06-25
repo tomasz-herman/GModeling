@@ -274,6 +274,8 @@ public class Renderer {
         patchShader.loadMatrix4f(gl, "mvp", mvp);
         patchShader.loadInteger(gl, "divisionsU", patch.getDivisionsU());
         patchShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
+        patchShader.loadInteger(gl, "U", patch.U());
+        patchShader.loadInteger(gl, "V", patch.V());
         patchShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
 
         gl.glBindVertexArray(patch.getMesh().getVao());
@@ -295,7 +297,9 @@ public class Renderer {
         patchSplineShader.loadMatrix4f(gl, "mvp", mvp);
         patchSplineShader.loadInteger(gl, "divisionsU", patch.getDivisionsU());
         patchSplineShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
-        patchShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
+        patchSplineShader.loadInteger(gl, "U", patch.U());
+        patchSplineShader.loadInteger(gl, "V", patch.V());
+        patchSplineShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
@@ -316,6 +320,8 @@ public class Renderer {
         patchGregoryShader.loadMatrix4f(gl, "mvp", mvp);
         patchGregoryShader.loadInteger(gl, "divisionsU", patch.getDivisionsU());
         patchGregoryShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
+        patchGregoryShader.loadInteger(gl, "U", patch.U());
+        patchGregoryShader.loadInteger(gl, "V", patch.V());
         patchShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
 
         gl.glBindVertexArray(patch.getMesh().getVao());

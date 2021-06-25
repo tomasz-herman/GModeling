@@ -145,6 +145,18 @@ public class BezierPatchC0 extends Patch implements Intersectable {
         renderer.renderPatch(gl, camera, this);
     }
 
+    @Override
+    public int U() {
+        int I = surface.length;
+        return (I - 4) / 3 + 1;
+    }
+
+    @Override
+    public int V() {
+        int J = surface[0].length;
+        return (J - 4) / 3 + 1;
+    }
+
     public List<Point[]> getEdges() {
         int I = surface.length - 1;
         int J = surface[0].length - 1;

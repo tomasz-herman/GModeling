@@ -400,6 +400,16 @@ public class GregoryPatch extends Patch {
         reload = true;
     }
 
+    @Override
+    public int U() {
+        return 1;
+    }
+
+    @Override
+    public int V() {
+        return 1;
+    }
+
     private void miniReplace(Point replaced, Point replacement, Point[][] s) {
         if(s != null) {
             for (int i = 0; i < s.length; i++) {

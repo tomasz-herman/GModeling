@@ -10,10 +10,7 @@ import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -227,6 +224,18 @@ public class BezierPatchC2 extends Patch implements Intersectable {
     }
 
     @Override
+    public int U() {
+        int I = surface.length;
+        return I - 3;
+    }
+
+    @Override
+    public int V() {
+        int J = surface[0].length;
+        return J - 3;
+    }
+
+    @Override
     public String serialize() {
         return """
                   <PatchC2 Name="%s" N="%d" M="%d" NSlices="%d" MSlices="%d">
@@ -237,8 +246,8 @@ public class BezierPatchC2 extends Patch implements Intersectable {
                 """.formatted(
                 getName(), surface[0].length - 3, surface.length - 3, divisionsU, divisionsV,
                 IntStream.range(0, surface.length).boxed().flatMap(
-                        i -> IntStream.range(0, surface[i].length)
-                                .mapToObj(j -> "      <PointRef Name=\"%s\"/>".formatted(surface[i][j].getName()))
+                        i -> Arrays.stream(surface[i]).map(
+                                point -> "      <PointRef Name=\"%s\"/>".formatted(point.getName()))
                 ).collect(Collectors.joining("\n"))
         );
     }

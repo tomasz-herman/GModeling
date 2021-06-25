@@ -4,6 +4,7 @@ layout(quads, equal_spacing, ccw) in;
 
 out TE_OUT {
     vec2 uv;
+    float id;
 } te_out;
 
 void main() {
@@ -69,5 +70,6 @@ void main() {
     float v3 = v * v2;
 
     te_out.uv = vec2(gl_TessCoord.x, gl_TessCoord.y);
+    te_out.id = gl_PrimitiveID;
     gl_Position = omv3 * b0 + 3.0 * v * omv2 * b1 + 3.0 * v2 * omv * b2 + v3 * b3;
 }
