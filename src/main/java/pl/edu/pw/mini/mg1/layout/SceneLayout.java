@@ -180,38 +180,9 @@ public class SceneLayout implements Controller<Scene> {
                             .filter(m -> m instanceof Intersectable)
                             .map(m -> (Intersectable) m)
                             .collect(Collectors.toList());
-                    if (surfaces.size() < 2) break;
-                    Intersectable P = surfaces.get(0);
-                    Intersectable Q = surfaces.get(1);
-                    IntersectionStart start = new IntersectionStart(P::P, Q::P);
-                    Vector4f s = start.solve(null);
-                    if (s == null) break;
-                    boolean pWrapsU = P.wrapsU();
-                    boolean pWrapsV = P.wrapsV();
-                    boolean qWrapsU = Q.wrapsU();
-                    boolean qWrapsV = Q.wrapsV();
-                    Vector3f found = P.P(s.x, s.y);
-                    scene.setPointerWorldCoords(found);
-                    Vector4f next = new Vector4f(s);
-                    int i = 1000;
-                    Function<Float, Float> wrap = val -> val < 0 ? val + 1 : val > 1 ? val - 1 : val;
-                    List<Point> points = new ArrayList<>();
-                    while (i-- > 0) {
-                        Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, 0.01f, 100);
-                        points.add(new Point(P.P(next.x, next.y)));
-                        next = newton.solve();
-                        if (!pWrapsU && (next.x > 1 || next.x < 0)) break;
-                        else next.x = wrap.apply(next.x);
-                        if (!pWrapsV && (next.y > 1 || next.y < 0)) break;
-                        else next.y = wrap.apply(next.y);
-                        if (!qWrapsU && (next.z > 1 || next.z < 0)) break;
-                        else next.z = wrap.apply(next.z);
-                        if (!qWrapsV && (next.w > 1 || next.w < 0)) break;
-                        else next.w = wrap.apply(next.w);
-                        if (found.distance(P.P(next.x, next.y)) < 0.005f) break;
-                    }
-                    points.forEach(scene::addModel);
-                    scene.addModel(new BezierInter(points));
+                    if (surfaces.size() == 0) break;
+                    if (surfaces.size() == 1) new IntersectionWizard(surfaces.get(0), surfaces.get(0), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel);
+                    if (surfaces.size() >= 2) new IntersectionWizard(surfaces.get(0), surfaces.get(1), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel);
                 }
             }
             addCombo.setSelectedIndex(-1);

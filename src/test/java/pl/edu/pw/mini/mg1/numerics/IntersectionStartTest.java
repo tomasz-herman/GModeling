@@ -13,7 +13,7 @@ class IntersectionStartTest {
         Torus P = new Torus(1, 1, 1, 0.5f);
         Torus Q = new Torus(1, 1, 1, 0.5f);
         Q.move(3f, 0 ,0);
-        IntersectionStart intersection = new IntersectionStart(P::P, Q::P);
+        IntersectionStart intersection = new IntersectionStart(P::P, Q::P, false);
         Vector4f point = intersection.solve(null);
         System.out.println(P.P(point.x, point.y));
         System.out.println(Q.P(point.z, point.w));
@@ -24,7 +24,7 @@ class IntersectionStartTest {
         Torus P = new Torus(1, 1, 1, 0.5f);
         Torus Q = new Torus(1, 1, 1, 0.5f);
         Q.move(2.9f, 0 ,0);
-        IntersectionStart intersection = new IntersectionStart(P::P, Q::P);
+        IntersectionStart intersection = new IntersectionStart(P::P, Q::P, false);
         Vector4f point = intersection.solve(null);
         System.out.println(P.P(point.x, point.y));
         System.out.println(Q.P(point.z, point.w));

@@ -18,7 +18,7 @@ class NewtonTest {
         final BiFunction<Float, Float, Vector3f> Pn = P.andThen(Vector3f::negate);
         final BiFunction<Float, Float, Vector3f> Qn = P.andThen(Vector3f::negate);
 //        Vector4f x0 = new Vector4f(0.5f, 0.5f * 7/6, 0, 0.5f * 7/6);
-        Vector4f x0 = new IntersectionStart(P, Q).solve(null);
+        Vector4f x0 = new IntersectionStart(P, Q, false).solve(null);
 //        Vector4f x0 = new IntersectionStart(P, Q).solve(P.apply(0.5f, 0.5f * 7/6));
         Vector4f x = new Vector4f(x0);
         final float d = 0.01f;
