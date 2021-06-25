@@ -7,6 +7,8 @@ import org.joml.Vector3f;
 import org.joml.Vector4f;
 import pl.edu.pw.mini.mg1.graphics.Texture;
 
+import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -16,15 +18,14 @@ import java.util.stream.Collectors;
 
 public class IntersectionCurve extends Curve {
     private final Intersectable P, Q;
-    private final List<Vector2f> p, q;
     private final DiscreteParametersSpace pSpace, qSpace;
     private DiscreteParametersSpace pFill, qFill;
 
     public IntersectionCurve(List<Vector4f> parameters, Intersectable P, Intersectable Q) {
         super(parameters.stream().map(vec4 -> new Point(P.P(vec4.x, vec4.y))).collect(Collectors.toList()));
         setShowPolyline(true);
-        this.p = parameters.stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList());
-        this.q = parameters.stream().map(v -> new Vector2f(v.z, v.w)).collect(Collectors.toList());
+        List<Vector2f> p = parameters.stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList());
+        List<Vector2f> q = parameters.stream().map(v -> new Vector2f(v.z, v.w)).collect(Collectors.toList());
         this.P = P;
         this.Q = Q;
         pSpace = new DiscreteParametersSpace(p);
@@ -32,6 +33,14 @@ public class IntersectionCurve extends Curve {
         qSpace = new DiscreteParametersSpace(q);
         qFill = qSpace.filled(Q.wrapsU(), Q.wrapsV());
         if(P == Q) pFill = qFill = new DiscreteParametersSpace(pFill, qFill);
+    }
+
+    public Image getPSpaceImage() {
+        return pSpace.toImage();
+    }
+
+    public Image getQSpaceImage() {
+        return qSpace.toImage();
     }
 
     @Override
@@ -190,6 +199,16 @@ public class IntersectionCurve extends Curve {
 
         public Texture toTexture(GL4 gl, boolean wrapU, boolean wrapV) {
             return new Texture(gl, RESOLUTION, (i, j) -> array[i][j] ? new Vector3f(1) : new Vector3f(), wrapU, wrapV);
+        }
+
+        public Image toImage() {
+            BufferedImage image = new BufferedImage(RESOLUTION, RESOLUTION, BufferedImage.TYPE_INT_RGB);
+            for (int i = 0; i < RESOLUTION; i++) {
+                for (int j = 0; j < RESOLUTION; j++) {
+                    image.setRGB(i, j, array[i][j] ? -1 : 0);
+                }
+            }
+            return image;
         }
 
         @Override

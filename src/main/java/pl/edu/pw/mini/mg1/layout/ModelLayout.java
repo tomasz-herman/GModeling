@@ -143,6 +143,10 @@ public class ModelLayout implements Controller<Model> {
                 PatchController layout = new PatchController();
                 layout.set((Patch) model);
                 specificFeaturesPane.add(layout.getMainPane());
+            } else if (model instanceof IntersectionCurve) {
+                IntersectionCurveController layout = new IntersectionCurveController();
+                layout.set((IntersectionCurve) model);
+                specificFeaturesPane.add(layout.getMainPane());
             }
         } else {
             modelName.setText(null);
