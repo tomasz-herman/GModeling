@@ -8,6 +8,7 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
+import pl.edu.pw.mini.mg1.graphics.Texture;
 
 import java.util.*;
 import java.util.function.Function;
@@ -19,6 +20,8 @@ import static com.jogamp.opengl.math.FloatUtil.tan;
 import static org.joml.Math.*;
 
 public class BezierPatchC0 extends Patch implements Intersectable {
+
+    private Texture texture;
 
     public static BezierPatchC0 flat(float w, float h, int x, int y) {
         BezierPatchC0 patch = new BezierPatchC0();
@@ -442,5 +445,15 @@ public class BezierPatchC0 extends Patch implements Intersectable {
             e2.add(surface[i][J]);
         }
         return e1.containsAll(e2);
+    }
+
+    @Override
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
+    @Override
+    public Texture getTexture() {
+        return texture;
     }
 }

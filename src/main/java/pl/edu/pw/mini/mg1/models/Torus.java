@@ -41,7 +41,6 @@ public class Torus extends Model implements Intersectable {
     protected void load(GL4 gl) {
         generateGeometry();
         mesh.load(gl);
-        texture = new Texture(gl, 1024, (u, v) -> new Vector3f());
     }
 
     public Torus(int outerSegments, int innerSegments, float outerRadius, float innerRadius) {
@@ -142,6 +141,11 @@ public class Torus extends Model implements Intersectable {
         return true;
     }
 
+    @Override
+    public void setTexture(Texture texture) {
+        this.texture = texture;
+    }
+
     public int getOuterSegments() {
         return outerSegments;
     }
@@ -188,7 +192,6 @@ public class Torus extends Model implements Intersectable {
     @Override
     public void dispose(GL4 gl) {
         super.dispose(gl);
-        if(texture != null) texture.dispose(gl);
     }
 
     public Texture getTexture() {

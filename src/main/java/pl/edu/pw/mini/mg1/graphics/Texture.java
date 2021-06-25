@@ -14,7 +14,7 @@ import java.util.function.BiFunction;
 public class Texture {
     private final IntBuffer id = GLBuffers.newDirectIntBuffer(1);
 
-    public Texture(GL4 gl, int size, BiFunction<Float, Float, Vector3f> pattern) {
+    public Texture(GL4 gl, int size, BiFunction<Integer, Integer, Vector3f> pattern) {
         gl.glGenTextures(1, id);
         use(gl, 0);
 
@@ -22,9 +22,7 @@ public class Texture {
 
         for (int y = 0; y < size; y++) {
             for (int x = 0; x < size; x++) {
-                float u = (float) y / size;
-                float v = (float) x / size;
-                Vector3f color = pattern.apply(u, v);
+                Vector3f color = pattern.apply(x, y);
                 int r = (int) (color.x * 255);
                 int g = (int) (color.y * 255);
                 int b = (int) (color.z * 255);
@@ -42,8 +40,8 @@ public class Texture {
         gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
         gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
 
-        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_REPEAT);
-        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_REPEAT);
+        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_S, GL.GL_MIRRORED_REPEAT);
+        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_WRAP_T, GL.GL_MIRRORED_REPEAT);
 
         gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
     }

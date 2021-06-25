@@ -23,6 +23,8 @@ public class Renderer {
     private final Shader patchGregoryShader;
     private final Shader torusShader;
 
+    private final Texture defaultTexture;
+
     private Function<PerspectiveCamera, Matrix4fc> viewProjectionFunction = PerspectiveCamera::getViewProjectionMatrix;
     private BiConsumer<GL4, Scene> renderFunction = this::render;
     private boolean grayscale = false;
@@ -59,6 +61,7 @@ public class Renderer {
         createFrameBuffer(gl, fboID -> leftBufferID = fboID, texID -> leftTextureID = texID, texID -> leftDepthTextureID = texID);
         createFrameBuffer(gl, fboID -> rightBufferID = fboID, texID -> rightTextureID = texID, texID -> rightDepthTextureID = texID);
         createQuad(gl);
+        defaultTexture = new Texture(gl, 1024, (i, j) -> new Vector3f());
     }
 
     public void render(GL4 gl, Scene scene) {
@@ -276,7 +279,11 @@ public class Renderer {
         patchShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
         patchShader.loadInteger(gl, "U", patch.U());
         patchShader.loadInteger(gl, "V", patch.V());
+        torusShader.loadInteger(gl, "trimming", 0);
         patchShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
+
+        if(patch.getTexture() != null) patch.getTexture().use(gl, 0);
+        else defaultTexture.use(gl, 0);
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
@@ -299,7 +306,11 @@ public class Renderer {
         patchSplineShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
         patchSplineShader.loadInteger(gl, "U", patch.U());
         patchSplineShader.loadInteger(gl, "V", patch.V());
+        torusShader.loadInteger(gl, "trimming", 0);
         patchSplineShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
+
+        if(patch.getTexture() != null) patch.getTexture().use(gl, 0);
+        else defaultTexture.use(gl, 0);
 
         gl.glBindVertexArray(patch.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 16);
@@ -350,7 +361,9 @@ public class Renderer {
 
         torusShader.loadVector3f(gl, "color", torus.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
 
-        torus.getTexture().use(gl, 0);
+        if(torus.getTexture() != null) torus.getTexture().use(gl, 0);
+        else defaultTexture.use(gl, 0);
+
         gl.glBindVertexArray(torus.getMesh().getVao());
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 1);
         gl.glDrawElements(torus.getMesh().getPrimitivesType(),

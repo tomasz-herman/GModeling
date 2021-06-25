@@ -6,9 +6,7 @@ import com.intellij.uiDesigner.core.GridLayoutManager;
 import com.intellij.uiDesigner.core.Spacer;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
-import pl.edu.pw.mini.mg1.models.BezierInter;
-import pl.edu.pw.mini.mg1.models.Intersectable;
-import pl.edu.pw.mini.mg1.models.Model;
+import pl.edu.pw.mini.mg1.models.*;
 import pl.edu.pw.mini.mg1.models.Point;
 import pl.edu.pw.mini.mg1.numerics.IntersectionStart;
 import pl.edu.pw.mini.mg1.numerics.Newton;
@@ -16,6 +14,7 @@ import pl.edu.pw.mini.mg1.numerics.Newton;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.function.BiFunction;
 import java.util.function.Consumer;
@@ -67,13 +66,14 @@ public class IntersectionWizard {
         Vector3f found = P.P(s.x, s.y);
         setPointerPos.accept(found);
         Vector4f next = new Vector4f(s);
-        int i = 1000;
         Function<Float, Float> wrap = val -> val < 0 ? val + 1 : val > 1 ? val - 1 : val;
-        List<Point> points = new ArrayList<>();
+        LinkedList<Vector4f> parameters = new LinkedList<>();
+        parameters.addLast(s);
+        int i = 1000;
         while (i-- > 0) {
             Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, 0.01f, 100);
-            points.add(new Point(P.P(next.x, next.y)));
             next = newton.solve();
+            parameters.addLast(next);
             if (!pWrapsU && (next.x > 1 || next.x < 0)) break;
             else next.x = wrap.apply(next.x);
             if (!pWrapsV && (next.y > 1 || next.y < 0)) break;
@@ -82,10 +82,28 @@ public class IntersectionWizard {
             else next.z = wrap.apply(next.z);
             if (!qWrapsV && (next.w > 1 || next.w < 0)) break;
             else next.w = wrap.apply(next.w);
-            if (found.distance(P.P(next.x, next.y)) < 0.005f) break;
+            if (found.distance(P.P(next.x, next.y)) < 0.005f) {
+                parameters.addLast(s);
+                addModel.accept(new IntersectionCurve(parameters, P, Q));
+                return;
+            }
         }
-        points.forEach(addModel);
-        addModel.accept(new BezierInter(points));
+        i = 1000;
+        next = new Vector4f(s);
+        while (i-- > 0) {
+            Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, -0.01f, 100);
+            next = newton.solve();
+            parameters.addFirst(next);
+            if (!pWrapsU && (next.x > 1 || next.x < 0)) break;
+            else next.x = wrap.apply(next.x);
+            if (!pWrapsV && (next.y > 1 || next.y < 0)) break;
+            else next.y = wrap.apply(next.y);
+            if (!qWrapsU && (next.z > 1 || next.z < 0)) break;
+            else next.z = wrap.apply(next.z);
+            if (!qWrapsV && (next.w > 1 || next.w < 0)) break;
+            else next.w = wrap.apply(next.w);
+        }
+        addModel.accept(new IntersectionCurve(parameters, P, Q));
     }
 
 
