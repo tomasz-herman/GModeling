@@ -15,6 +15,6 @@ void main() {
     int H = int(fs_in.id) / V;
     int W = int(fs_in.id) - V * H;
     vec2 uv = vec2((float(H) + fs_in.uv.x) / U, (float(W) + fs_in.uv.y) / V);
-    if(texture(trimming, uv).r == 1) discard;
+    if(texture(trimming, uv).r > 0) discard;
     FragColor = vec4(color, 1.0);
 }

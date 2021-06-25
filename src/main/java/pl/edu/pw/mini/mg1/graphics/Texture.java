@@ -13,6 +13,7 @@ import java.util.function.BiFunction;
 
 public class Texture {
     private final IntBuffer id = GLBuffers.newDirectIntBuffer(1);
+    private final IntBuffer sampler = GLBuffers.newDirectIntBuffer(1);
 
     public Texture(GL4 gl, int size, BiFunction<Integer, Integer, Vector3f> pattern, boolean wrapU, boolean wrapV) {
         gl.glGenTextures(1, id);
@@ -37,11 +38,13 @@ public class Texture {
 
         gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_RGBA, size, size, 0, GL.GL_RGBA, GL.GL_UNSIGNED_BYTE, buffer);
 
-        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
-        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+        gl.glGenSamplers(1, sampler);
 
-        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL4.GL_TEXTURE_WRAP_S, wrapU ? GL4.GL_REPEAT : GL4.GL_CLAMP_TO_EDGE);
-        gl.glTextureParameteri(GL.GL_TEXTURE_2D, GL4.GL_TEXTURE_WRAP_T, wrapV ? GL4.GL_REPEAT : GL4.GL_CLAMP_TO_EDGE);
+        gl.glSamplerParameteri(sampler.get(0), GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+        gl.glSamplerParameteri(sampler.get(0), GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+
+        gl.glSamplerParameteri(sampler.get(0), GL4.GL_TEXTURE_WRAP_S, wrapU ? GL4.GL_REPEAT : GL4.GL_CLAMP_TO_EDGE);
+        gl.glSamplerParameteri(sampler.get(0), GL4.GL_TEXTURE_WRAP_T, wrapV ? GL4.GL_REPEAT : GL4.GL_CLAMP_TO_EDGE);
 
         gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
     }
@@ -49,9 +52,11 @@ public class Texture {
     public void use(GL4 gl, int unit) {
         gl.glActiveTexture(GL.GL_TEXTURE0 + unit);
         gl.glBindTexture(GL.GL_TEXTURE_2D, id.get(0));
+        gl.glBindSampler(unit, sampler.get(0));
     }
 
     public void dispose(GL4 gl) {
         gl.glDeleteTextures(1, id);
+        gl.glDeleteSamplers(1, sampler);
     }
 }
