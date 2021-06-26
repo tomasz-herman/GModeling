@@ -5,6 +5,8 @@ import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import org.joml.Vector4f;
+import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
+import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.graphics.Texture;
 
 import java.awt.*;
@@ -21,6 +23,8 @@ public class IntersectionCurve extends Curve {
     private final DiscreteParametersSpace pSpace, qSpace;
     private DiscreteParametersSpace pFill, qFill;
     private final List<Vector4f> parameters;
+    private final BezierInter interCurve;
+    private boolean showInterCurve;
 
     public IntersectionCurve(List<Vector4f> parameters, Intersectable P, Intersectable Q) {
         super(parameters.stream().map(vec4 -> new Point(P.P(vec4.x, vec4.y))).collect(Collectors.toList()));
@@ -30,6 +34,7 @@ public class IntersectionCurve extends Curve {
         this.P = P;
         this.Q = Q;
         this.parameters = parameters;
+        interCurve = toInterpolationCurve();
         pSpace = new DiscreteParametersSpace(p);
         pFill = pSpace.filled(P.wrapsU(), P.wrapsV());
         qSpace = new DiscreteParametersSpace(q);
@@ -53,14 +58,29 @@ public class IntersectionCurve extends Curve {
         return Q;
     }
 
+    public boolean isShowInterCurve() {
+        return showInterCurve;
+    }
+
+    public void setShowInterCurve(boolean showInterCurve) {
+        this.showInterCurve = showInterCurve;
+    }
+
     @Override
     protected void fillPointsList() {
 
     }
 
     @Override
+    public void render(GL4 gl, PerspectiveCamera camera, Renderer renderer) {
+        if(showInterCurve) interCurve.render(gl, camera, renderer);
+        else super.render(gl, camera, renderer);
+    }
+
+    @Override
     protected void load(GL4 gl) {
         super.load(gl);
+        interCurve.load(gl);
         P.setTexture(pFill.toTexture(gl, P.wrapsU(), P.wrapsV()));
         if(P != Q) Q.setTexture(qFill.toTexture(gl, Q.wrapsU(), Q.wrapsV()));
     }
@@ -68,6 +88,7 @@ public class IntersectionCurve extends Curve {
     @Override
     public void dispose(GL4 gl) {
         super.dispose(gl);
+        interCurve.dispose(gl);
         if(P.getTexture() != null) P.getTexture().dispose(gl);
         if(P != Q) if(Q.getTexture() != null) Q.getTexture().dispose(gl);
     }
@@ -75,6 +96,7 @@ public class IntersectionCurve extends Curve {
     @Override
     public void cleanup() {
         super.cleanup();
+        interCurve.cleanup();
         P.setLeftSide(true);
         P.setRightSide(true);
         Q.setRightSide(true);

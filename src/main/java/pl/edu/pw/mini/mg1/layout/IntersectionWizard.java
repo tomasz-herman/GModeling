@@ -27,11 +27,9 @@ public class IntersectionWizard {
     private JButton cancelButton;
     private JSpinner stepSpinner;
     private JCheckBox nearPointerCheckbox;
-    private Runnable refresh;
 
     public IntersectionWizard(Intersectable P, Intersectable Q, Consumer<Vector3f> setPointerPos, Supplier<Vector3f> getPointerPos, Consumer<Model> addModel, Runnable refresh) {
         $$$setupUI$$$();
-        this.refresh = refresh;
         this.setPointerPos = setPointerPos;
         this.getPointerPos = getPointerPos;
         this.addModel = addModel;
@@ -42,7 +40,7 @@ public class IntersectionWizard {
                 .buildDialog();
         stepSpinner.setModel(new SpinnerNumberModel(0.01, 0.0001, 10, 0.001));
         cancelButton.addActionListener(e -> dialog.dispose());
-        findButton.addActionListener(e -> findIntersection(P, Q));
+        findButton.addActionListener(e -> findIntersection(P, Q, refresh));
     }
 
     public float getStep() {
@@ -53,7 +51,7 @@ public class IntersectionWizard {
         return nearPointerCheckbox.isSelected();
     }
 
-    public void findIntersection(Intersectable P, Intersectable Q) {
+    public void findIntersection(Intersectable P, Intersectable Q, Runnable refresh) {
         IntersectionStart start = new IntersectionStart(P::P, Q::P, P == Q);
         Vector4f s = start.solve(getNearPointer() ? getPointerPos.get() : null);
         if (s == null) return;
@@ -80,7 +78,7 @@ public class IntersectionWizard {
             else next.z = wrap.apply(next.z);
             if (!qWrapsV && (next.w > 1 || next.w < 0)) break;
             else next.w = wrap.apply(next.w);
-            if (found.distance(P.P(next.x, next.y)) < 0.005f) {
+            if (found.distance(P.P(next.x, next.y)) < getStep()) {
                 parameters.addLast(s);
                 addModel.accept(new IntersectionCurve(parameters, P, Q));
                 refresh.run();

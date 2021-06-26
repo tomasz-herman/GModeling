@@ -15,6 +15,7 @@ public class IntersectionCurveController implements Controller<IntersectionCurve
     private JCheckBox pLeftSideCheckBox;
     private JCheckBox qRightSideCheckBox;
     private JCheckBox qLeftSideCheckBox;
+    private JCheckBox asInterpolationCurveCheckBox;
 
     private IntersectionCurve curve;
 
@@ -25,6 +26,7 @@ public class IntersectionCurveController implements Controller<IntersectionCurve
         pLeftSideCheckBox.addActionListener(e -> curve.getP().setLeftSide(pLeftSideCheckBox.isSelected()));
         qRightSideCheckBox.addActionListener(e -> curve.getQ().setRightSide(qRightSideCheckBox.isSelected()));
         qLeftSideCheckBox.addActionListener(e -> curve.getQ().setLeftSide(qLeftSideCheckBox.isSelected()));
+        asInterpolationCurveCheckBox.addActionListener(e -> curve.setShowInterCurve(asInterpolationCurveCheckBox.isSelected()));
     }
 
     @Override
@@ -47,6 +49,7 @@ public class IntersectionCurveController implements Controller<IntersectionCurve
         qLeftSideCheckBox.setSelected(curve.getQ().isLeftSide());
         qRightSideCheckBox.setEnabled(curve.getP() != curve.getQ());
         qLeftSideCheckBox.setEnabled(curve.getP() != curve.getQ());
+        asInterpolationCurveCheckBox.setSelected(curve.isShowInterCurve());
     }
 
     /**
@@ -58,12 +61,12 @@ public class IntersectionCurveController implements Controller<IntersectionCurve
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(6, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(7, 1, new Insets(0, 0, 0, 0), -1, -1));
         paramsSpaceButton = new JButton();
         paramsSpaceButton.setText("Params space...");
         mainPane.add(paramsSpaceButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPane.add(spacer1, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        mainPane.add(spacer1, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
         pRightSideCheckBox = new JCheckBox();
         pRightSideCheckBox.setText("P right side");
         mainPane.add(pRightSideCheckBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
@@ -76,6 +79,9 @@ public class IntersectionCurveController implements Controller<IntersectionCurve
         qLeftSideCheckBox = new JCheckBox();
         qLeftSideCheckBox.setText("Q left side");
         mainPane.add(qLeftSideCheckBox, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        asInterpolationCurveCheckBox = new JCheckBox();
+        asInterpolationCurveCheckBox.setText("as interpolation curve");
+        mainPane.add(asInterpolationCurveCheckBox, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
