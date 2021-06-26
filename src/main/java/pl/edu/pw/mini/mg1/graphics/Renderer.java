@@ -280,6 +280,8 @@ public class Renderer {
         patchShader.loadInteger(gl, "U", patch.U());
         patchShader.loadInteger(gl, "V", patch.V());
         torusShader.loadInteger(gl, "trimming", 0);
+        torusShader.loadInteger(gl, "right", patch.isRightSide() ? 1 : 0);
+        torusShader.loadInteger(gl, "left", patch.isLeftSide() ? 1 : 0);
         patchShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
 
         if(patch.getTexture() != null) patch.getTexture().use(gl, 0);
@@ -307,6 +309,8 @@ public class Renderer {
         patchSplineShader.loadInteger(gl, "U", patch.U());
         patchSplineShader.loadInteger(gl, "V", patch.V());
         torusShader.loadInteger(gl, "trimming", 0);
+        torusShader.loadInteger(gl, "right", patch.isRightSide() ? 1 : 0);
+        torusShader.loadInteger(gl, "left", patch.isLeftSide() ? 1 : 0);
         patchSplineShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
 
         if(patch.getTexture() != null) patch.getTexture().use(gl, 0);
@@ -333,6 +337,8 @@ public class Renderer {
         patchGregoryShader.loadInteger(gl, "divisionsV", patch.getDivisionsV());
         patchGregoryShader.loadInteger(gl, "U", patch.U());
         patchGregoryShader.loadInteger(gl, "V", patch.V());
+        torusShader.loadInteger(gl, "right", 1);
+        torusShader.loadInteger(gl, "left", 1);
         patchShader.loadVector3f(gl, "color", patch.isSelected() ? new Vector3f(0.8f, 0.6f, 0.2f) : new Vector3f(1));
 
         gl.glBindVertexArray(patch.getMesh().getVao());
@@ -356,6 +362,8 @@ public class Renderer {
         torusShader.loadInteger(gl, "divisionsU", torus.getInnerSegments());
         torusShader.loadInteger(gl, "divisionsV", torus.getOuterSegments());
         torusShader.loadInteger(gl, "trimming", 0);
+        torusShader.loadInteger(gl, "right", torus.isRightSide() ? 1 : 0);
+        torusShader.loadInteger(gl, "left", torus.isLeftSide() ? 1 : 0);
         torusShader.loadFloat(gl, "r", torus.getInnerRadius());
         torusShader.loadFloat(gl, "R", torus.getOuterRadius());
 

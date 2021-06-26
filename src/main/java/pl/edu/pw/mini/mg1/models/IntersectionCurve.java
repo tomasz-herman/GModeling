@@ -20,6 +20,7 @@ public class IntersectionCurve extends Curve {
     private final Intersectable P, Q;
     private final DiscreteParametersSpace pSpace, qSpace;
     private DiscreteParametersSpace pFill, qFill;
+    private final List<Vector4f> parameters;
 
     public IntersectionCurve(List<Vector4f> parameters, Intersectable P, Intersectable Q) {
         super(parameters.stream().map(vec4 -> new Point(P.P(vec4.x, vec4.y))).collect(Collectors.toList()));
@@ -28,6 +29,7 @@ public class IntersectionCurve extends Curve {
         List<Vector2f> q = parameters.stream().map(v -> new Vector2f(v.z, v.w)).collect(Collectors.toList());
         this.P = P;
         this.Q = Q;
+        this.parameters = parameters;
         pSpace = new DiscreteParametersSpace(p);
         pFill = pSpace.filled(P.wrapsU(), P.wrapsV());
         qSpace = new DiscreteParametersSpace(q);
@@ -41,6 +43,14 @@ public class IntersectionCurve extends Curve {
 
     public Image getQSpaceImage() {
         return qSpace.toImage();
+    }
+
+    public Intersectable getP() {
+        return P;
+    }
+
+    public Intersectable getQ() {
+        return Q;
     }
 
     @Override
@@ -60,6 +70,23 @@ public class IntersectionCurve extends Curve {
         super.dispose(gl);
         if(P.getTexture() != null) P.getTexture().dispose(gl);
         if(P != Q) if(Q.getTexture() != null) Q.getTexture().dispose(gl);
+    }
+
+    @Override
+    public void cleanup() {
+        super.cleanup();
+        P.setLeftSide(true);
+        P.setRightSide(true);
+        Q.setRightSide(true);
+        Q.setLeftSide(true);
+    }
+
+    public BezierInter toInterpolationCurve() {
+        List<Point> points = new ArrayList<>();
+        for (Vector4f parameter : parameters) {
+            points.add(new Point(new Vector3f(P.P(parameter.x, parameter.y))));
+        }
+        return new BezierInter(points);
     }
 
     private static class DiscreteParametersSpace {

@@ -181,8 +181,8 @@ public class SceneLayout implements Controller<Scene> {
                             .map(m -> (Intersectable) m)
                             .collect(Collectors.toList());
                     if (surfaces.size() == 0) break;
-                    if (surfaces.size() == 1) new IntersectionWizard(surfaces.get(0), surfaces.get(0), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel);
-                    if (surfaces.size() >= 2) new IntersectionWizard(surfaces.get(0), surfaces.get(1), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel);
+                    if (surfaces.size() == 1) new IntersectionWizard(surfaces.get(0), surfaces.get(0), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel, this::refresh);
+                    if (surfaces.size() >= 2) new IntersectionWizard(surfaces.get(0), surfaces.get(1), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel, this::refresh);
                 }
             }
             addCombo.setSelectedIndex(-1);

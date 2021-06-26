@@ -22,6 +22,7 @@ import static org.joml.Math.*;
 public class BezierPatchC0 extends Patch implements Intersectable {
 
     private Texture texture;
+    private boolean rightSide = true, leftSide = true;
 
     public static BezierPatchC0 flat(float w, float h, int x, int y) {
         BezierPatchC0 patch = new BezierPatchC0();
@@ -455,5 +456,25 @@ public class BezierPatchC0 extends Patch implements Intersectable {
     @Override
     public Texture getTexture() {
         return texture;
+    }
+
+    @Override
+    public boolean isRightSide() {
+        return rightSide;
+    }
+
+    @Override
+    public boolean isLeftSide() {
+        return leftSide;
+    }
+
+    @Override
+    public void setRightSide(boolean value) {
+        this.rightSide = value;
+    }
+
+    @Override
+    public void setLeftSide(boolean value) {
+        this.leftSide = value;
     }
 }

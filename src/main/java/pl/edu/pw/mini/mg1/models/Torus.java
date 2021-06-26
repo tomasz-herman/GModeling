@@ -27,6 +27,8 @@ public class Torus extends Model implements Intersectable {
     private float innerRadius;
 
     private Texture texture;
+    private boolean rightSide = true, leftSide = true;
+
 
     public Torus() {
         this(10, 10, 1, 0.25f);
@@ -196,6 +198,26 @@ public class Torus extends Model implements Intersectable {
 
     public Texture getTexture() {
         return texture;
+    }
+
+    @Override
+    public boolean isRightSide() {
+        return rightSide;
+    }
+
+    @Override
+    public boolean isLeftSide() {
+        return leftSide;
+    }
+
+    @Override
+    public void setRightSide(boolean value) {
+        this.rightSide = value;
+    }
+
+    @Override
+    public void setLeftSide(boolean value) {
+        this.leftSide = value;
     }
 
     @Override

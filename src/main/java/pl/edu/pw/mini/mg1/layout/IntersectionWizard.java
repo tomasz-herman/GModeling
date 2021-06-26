@@ -27,9 +27,11 @@ public class IntersectionWizard {
     private JButton cancelButton;
     private JSpinner stepSpinner;
     private JCheckBox nearPointerCheckbox;
+    private Runnable refresh;
 
-    public IntersectionWizard(Intersectable P, Intersectable Q, Consumer<Vector3f> setPointerPos, Supplier<Vector3f> getPointerPos, Consumer<Model> addModel) {
+    public IntersectionWizard(Intersectable P, Intersectable Q, Consumer<Vector3f> setPointerPos, Supplier<Vector3f> getPointerPos, Consumer<Model> addModel, Runnable refresh) {
         $$$setupUI$$$();
+        this.refresh = refresh;
         this.setPointerPos = setPointerPos;
         this.getPointerPos = getPointerPos;
         this.addModel = addModel;
@@ -81,6 +83,7 @@ public class IntersectionWizard {
             if (found.distance(P.P(next.x, next.y)) < 0.005f) {
                 parameters.addLast(s);
                 addModel.accept(new IntersectionCurve(parameters, P, Q));
+                refresh.run();
                 return;
             }
         }
@@ -100,6 +103,7 @@ public class IntersectionWizard {
             else next.w = wrap.apply(next.w);
         }
         addModel.accept(new IntersectionCurve(parameters, P, Q));
+        refresh.run();
     }
 
 

@@ -12,4 +12,8 @@ public interface Intersectable {
     boolean wrapsV();
     void setTexture(Texture texture);
     Texture getTexture();
+    boolean isRightSide();
+    boolean isLeftSide();
+    void setRightSide(boolean value);
+    void setLeftSide(boolean value);
 }

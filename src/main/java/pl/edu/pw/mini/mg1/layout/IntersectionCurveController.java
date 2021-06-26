@@ -10,20 +10,27 @@ import java.awt.*;
 
 public class IntersectionCurveController implements Controller<IntersectionCurve> {
     private JButton paramsSpaceButton;
-    private JButton flipPSideButton;
-    private JButton flipQSideButton;
     private JPanel mainPane;
+    private JCheckBox pRightSideCheckBox;
+    private JCheckBox pLeftSideCheckBox;
+    private JCheckBox qRightSideCheckBox;
+    private JCheckBox qLeftSideCheckBox;
 
     private IntersectionCurve curve;
 
     public IntersectionCurveController() {
         $$$setupUI$$$();
         paramsSpaceButton.addActionListener(e -> new ParametersSpaceLayout(curve));
+        pRightSideCheckBox.addActionListener(e -> curve.getP().setRightSide(pRightSideCheckBox.isSelected()));
+        pLeftSideCheckBox.addActionListener(e -> curve.getP().setLeftSide(pLeftSideCheckBox.isSelected()));
+        qRightSideCheckBox.addActionListener(e -> curve.getQ().setRightSide(qRightSideCheckBox.isSelected()));
+        qLeftSideCheckBox.addActionListener(e -> curve.getQ().setLeftSide(qLeftSideCheckBox.isSelected()));
     }
 
     @Override
     public void set(IntersectionCurve curve) {
         this.curve = curve;
+        refresh();
     }
 
     @Override
@@ -33,6 +40,13 @@ public class IntersectionCurveController implements Controller<IntersectionCurve
 
     @Override
     public void refresh() {
+        if (curve == null) return;
+        pRightSideCheckBox.setSelected(curve.getP().isRightSide());
+        pLeftSideCheckBox.setSelected(curve.getP().isLeftSide());
+        qRightSideCheckBox.setSelected(curve.getQ().isRightSide());
+        qLeftSideCheckBox.setSelected(curve.getQ().isLeftSide());
+        qRightSideCheckBox.setEnabled(curve.getP() != curve.getQ());
+        qLeftSideCheckBox.setEnabled(curve.getP() != curve.getQ());
     }
 
     /**
@@ -44,18 +58,24 @@ public class IntersectionCurveController implements Controller<IntersectionCurve
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(4, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(6, 1, new Insets(0, 0, 0, 0), -1, -1));
         paramsSpaceButton = new JButton();
         paramsSpaceButton.setText("Params space...");
         mainPane.add(paramsSpaceButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
-        mainPane.add(spacer1, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        flipPSideButton = new JButton();
-        flipPSideButton.setText("Flip P side");
-        mainPane.add(flipPSideButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        flipQSideButton = new JButton();
-        flipQSideButton.setText("Flip Q side");
-        mainPane.add(flipQSideButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPane.add(spacer1, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
+        pRightSideCheckBox = new JCheckBox();
+        pRightSideCheckBox.setText("P right side");
+        mainPane.add(pRightSideCheckBox, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        pLeftSideCheckBox = new JCheckBox();
+        pLeftSideCheckBox.setText("P left side");
+        mainPane.add(pLeftSideCheckBox, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        qRightSideCheckBox = new JCheckBox();
+        qRightSideCheckBox.setText("Q right side");
+        mainPane.add(qRightSideCheckBox, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        qLeftSideCheckBox = new JCheckBox();
+        qLeftSideCheckBox.setText("Q left side");
+        mainPane.add(qLeftSideCheckBox, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
@@ -64,4 +84,5 @@ public class IntersectionCurveController implements Controller<IntersectionCurve
     public JComponent $$$getRootComponent$$$() {
         return mainPane;
     }
+
 }
