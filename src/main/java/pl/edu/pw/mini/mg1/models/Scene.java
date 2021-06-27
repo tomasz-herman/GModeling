@@ -215,6 +215,26 @@ public class Scene {
         updateLocalPointerPosition();
     }
 
+    public void selectPointsFromSelectedObjects() {
+        List<Patch> patches = selectedModels.stream()
+                .filter(m -> m instanceof Patch)
+                .map(m -> (Patch)m)
+                .collect(Collectors.toList());
+        List<Curve> curves = selectedModels.stream()
+                .filter(m -> m instanceof Curve)
+                .map(m -> (Curve)m)
+                .collect(Collectors.toList());
+        List<Point> points = Stream.concat(
+                patches.stream().flatMap(Patch::getPoints),
+                curves.stream().flatMap(Curve::getPoints))
+                    .distinct()
+                    .toList();
+        selectModels(points.stream()
+                .mapToInt(models::indexOf)
+                .filter(i -> i != -1)
+                .toArray());
+    }
+
     public int[] getSelected() {
         return selected;
     }
