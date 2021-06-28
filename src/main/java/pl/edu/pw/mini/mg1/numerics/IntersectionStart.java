@@ -53,12 +53,12 @@ public class IntersectionStart {
                 qTemp.add(Pair.of(Pair.of(quv, qqq), qqq.distanceSquared(closeTo)));
             }
             List<Pair<Vector2f, Vector3f>> ppTemp = pTemp.stream()
-                    .sorted(Comparator.comparingDouble(IntersectionStart::applyAsDouble).reversed())
+                    .sorted(Comparator.comparingDouble(IntersectionStart::applyAsDouble))
                     .limit(4096)
                     .map(Pair::getLeft)
                     .toList();
             List<Pair<Vector2f, Vector3f>> qqTemp = qTemp.stream()
-                    .sorted(Comparator.comparingDouble(IntersectionStart::applyAsDouble).reversed())
+                    .sorted(Comparator.comparingDouble(IntersectionStart::applyAsDouble))
                     .limit(4096)
                     .map(Pair::getLeft)
                     .toList();
@@ -99,6 +99,7 @@ public class IntersectionStart {
                 }
             }
             if(lastDist > bestDist) R = R * sqrt(bestDist / lastDist) * 1.5f;
+            else if(closeTo != null) R = R * 0.1f;
             if(bestDist < 1e-12f) {
                 if(self && p.getLeft().distanceSquared(q.getLeft()) < 1e-3f) return null;
                 return new Vector4f(p.getLeft(), q.getLeft().x, q.getLeft().y);
