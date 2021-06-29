@@ -69,6 +69,7 @@ public class IntersectionWizard {
         while (i-- > 0) {
             Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, getStep(), 100);
             next = newton.solve();
+            if (!next.isFinite()) return;
             parameters.addLast(next);
             if (!pWrapsU && (next.x > 1 || next.x < 0)) break;
             else next.x = wrap.apply(next.x);
@@ -90,6 +91,7 @@ public class IntersectionWizard {
         while (i-- > 0) {
             Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, -getStep(), 100);
             next = newton.solve();
+            if (!next.isFinite()) return;
             parameters.addFirst(next);
             if (!pWrapsU && (next.x > 1 || next.x < 0)) break;
             else next.x = wrap.apply(next.x);
