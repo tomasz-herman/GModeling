@@ -33,11 +33,14 @@ public class Newton {
             float val = P.apply(u, v).sub(P.apply(x0.x, x0.y)).dot(tangent) - d;
             return new Vector4f(PmQ, val);
         };
-        QuadFunction<Float, Float, Float, Float, Matrix4f> J = (u, v, s, t) -> new Matrix4f(
-                func.apply(u + h, v, s, t).sub(func.apply(u, v, s, t)).div(h),
-                func.apply(u, v + h, s, t).sub(func.apply(u, v, s, t)).div(h),
-                func.apply(u, v, s + h, t).sub(func.apply(u, v, s, t)).div(h),
-                func.apply(u, v, s, t + h).sub(func.apply(u, v, s, t)).div(h)).invert();
+        QuadFunction<Float, Float, Float, Float, Matrix4f> J = (u, v, s, t) -> {
+            Vector4f f = func.apply(u, v, s, t);
+            return new Matrix4f(
+                    func.apply(u + h, v, s, t).sub(f).div(h),
+                    func.apply(u, v + h, s, t).sub(f).div(h),
+                    func.apply(u, v, s + h, t).sub(f).div(h),
+                    func.apply(u, v, s, t + h).sub(f).div(h)).invert();
+        };
         do {
             xp = new Vector4f(xn);
             xn.sub(J.apply(xn.x, xn.y, xn.z, xn.w).transform(func.apply(xn.x, xn.y, xn.z, xn.w)));
