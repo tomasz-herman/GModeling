@@ -75,28 +75,24 @@ public class TorusLayout implements Controller<Torus> {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(5, 2, new Insets(0, 5, 0, 5), -1, -1));
-        mainPane.setBorder(BorderFactory.createTitledBorder(null, "Torus specific", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
-        final JLabel label1 = new JLabel();
-        label1.setText("r");
+        mainPane = new javax.swing.JPanel();
+        mainPane.setLayout(new GridLayoutManager(5, 2, new java.awt.Insets(0, 5, 0, 5), -1, -1));
+        mainPane.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Torus specific", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+        final javax.swing.JLabel label1 = new javax.swing.JLabel();
         mainPane.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        innerRadius = new JSpinner();
+        innerRadius = new javax.swing.JSpinner();
         mainPane.add(innerRadius, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label2 = new JLabel();
-        label2.setText("R");
+        final javax.swing.JLabel label2 = new javax.swing.JLabel();
         mainPane.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label3 = new JLabel();
-        label3.setText("n");
+        final javax.swing.JLabel label3 = new javax.swing.JLabel();
         mainPane.add(label3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final JLabel label4 = new JLabel();
-        label4.setText("N");
+        final javax.swing.JLabel label4 = new javax.swing.JLabel();
         mainPane.add(label4, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        outerRadius = new JSpinner();
+        outerRadius = new javax.swing.JSpinner();
         mainPane.add(outerRadius, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        innerSegments = new JSpinner();
+        innerSegments = new javax.swing.JSpinner();
         mainPane.add(innerSegments, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        outerSegments = new JSpinner();
+        outerSegments = new javax.swing.JSpinner();
         mainPane.add(outerSegments, new GridConstraints(3, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         mainPane.add(spacer1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
@@ -105,7 +101,7 @@ public class TorusLayout implements Controller<Torus> {
     /**
      * @noinspection ALL
      */
-    public JComponent $$$getRootComponent$$$() {
+    public javax.swing.JComponent $$$getRootComponent$$$() {
         return mainPane;
     }
 
