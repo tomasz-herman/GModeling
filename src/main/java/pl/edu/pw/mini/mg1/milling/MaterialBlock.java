@@ -61,6 +61,9 @@ public class MaterialBlock {
                 float baseHeight = (1 - procent) * currentLastCoord.z() + procent * nextCoord.z();
                 for (int i = -toolSize.x; i <= toolSize.x; i++) {
                     for (int j = -toolSize.y; j <= toolSize.y; j++) {
+                        if(Float.isNaN(baseHeight - toolStepCache[i + toolSize.x][j + toolSize.y])) {
+                            continue;
+                        }
                         float h = baseHeight + toolStepCache[i + toolSize.x][j + toolSize.y];
                         int X = x + i;
                         int Y = y + j;
