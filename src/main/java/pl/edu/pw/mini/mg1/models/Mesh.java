@@ -10,6 +10,8 @@ import java.util.List;
 public class Mesh {
     private final float[] positions;
     private final float[] colors;
+    private final float[] normals;
+    private final float[] textures;
     private final int[] indices;
     private final IntBuffer vao;
     private final List<IntBuffer> vbos = new ArrayList<>();
@@ -23,6 +25,18 @@ public class Mesh {
         this.positions = positions;
         this.indices = indices;
         this.colors = colors;
+        this.normals = null;
+        this.textures = null;
+        this.vao = GLBuffers.newDirectIntBuffer(1);
+        this.primitivesType = primitivesType;
+    }
+
+    public Mesh(float[] positions, float[] normals, float[] textures, int[] indices, int primitivesType) {
+        this.positions = positions;
+        this.indices = indices;
+        this.normals = normals;
+        this.textures = textures;
+        this.colors = null;
         this.vao = GLBuffers.newDirectIntBuffer(1);
         this.primitivesType = primitivesType;
     }
@@ -32,6 +46,8 @@ public class Mesh {
         gl.glBindVertexArray(vao.get(0));
         loadData(gl, positions, 0, 3);
         if(colors != null) loadData(gl, colors, 1, 3);
+        if(normals != null) loadData(gl, normals, 1, 3);
+        if(textures != null) loadData(gl, textures, 1, 2);
         loadIndices(gl, indices);
         gl.glBindVertexArray(0);
     }
@@ -78,7 +94,6 @@ public class Mesh {
     public int getVbo(int i) {
         return vbos.get(i).get(0);
     }
-
 
     public int vertexCount() {
         return indices.length;

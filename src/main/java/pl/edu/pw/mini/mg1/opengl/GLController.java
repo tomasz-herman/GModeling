@@ -4,11 +4,15 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLJPanel;
 import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Math;
+import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.layout.Controller;
+import pl.edu.pw.mini.mg1.milling.MaterialBlock;
+import pl.edu.pw.mini.mg1.milling.MillingTool;
+import pl.edu.pw.mini.mg1.milling.Path;
 import pl.edu.pw.mini.mg1.models.*;
 
 import javax.swing.AbstractAction;
@@ -16,6 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.*;
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
@@ -72,6 +77,18 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.getCamera().setPosition(0, 0, 2);
 
         scene.addModel(GregoryPatch.example());
+
+        MaterialBlock block = new MaterialBlock(new Vector2f(200, 200), new Vector2i(1000, 1000), 50, 16);
+        MillingTool tool = new MillingTool(16, 20, false);
+
+        try {
+            Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"));
+            block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress));
+            Model model = new MilledBlock(block);
+            scene.addModel(model);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         modelController.set(null);
         cameraController.set(scene.getCamera());

@@ -2,15 +2,15 @@ package pl.edu.pw.mini.mg1.milling;
 
 import org.joml.Vector3f;
 import org.joml.Vector3fc;
+import pl.edu.pw.mini.mg1.models.Point;
+import pl.edu.pw.mini.mg1.models.PolyLine;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
 public class Path {
-    private List<Vector3f> coords;
+    private final List<Vector3f> coords;
 
     public Path(InputStream stream) throws IOException {
         if(stream == null) throw new IllegalArgumentException("Got null stream.");
@@ -59,6 +59,10 @@ public class Path {
 
     public List<Vector3fc> getCoords() {
         return Collections.unmodifiableList(coords);
+    }
+
+    public PolyLine toPolyLine() {
+        return new PolyLine(coords.stream().map(Point::new).toList());
     }
 
     private static Map<Character, String> split(String line) {

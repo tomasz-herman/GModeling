@@ -161,4 +161,8 @@ public class MaterialBlock {
     public float getMaxMillingDepth() {
         return maxMillingDepth;
     }
+
+    public float[][] getHeights() {
+        return heights;
+    }
 }
