@@ -38,7 +38,7 @@ class PathTest {
         }
     }
 
-    private static InputStream stream(String path) {
+    static InputStream stream(String path) {
         return PathTest.class.getResourceAsStream(path);
     }
 }

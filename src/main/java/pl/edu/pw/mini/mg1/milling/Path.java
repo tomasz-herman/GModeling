@@ -55,7 +55,6 @@ public class Path {
             }
             coords.add(coord);
         }
-        coords.forEach(System.out::println);
     }
 
     public List<Vector3fc> getCoords() {
