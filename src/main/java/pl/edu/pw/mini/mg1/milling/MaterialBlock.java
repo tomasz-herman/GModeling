@@ -50,6 +50,7 @@ public class MaterialBlock {
         }
         Vector3fc lastCoord = new Vector3f(0, 0, 300);
         int iter = 0;
+        int lastReportedProgress = -1;
         for (Vector3fc nextCoord : path.getCoords()) {
             Vector2i from = new Vector2i((int)(lastCoord.x() / size.x * resolution.x + resolution.x / 2), (int)(lastCoord.y() / size.y * resolution.y + resolution.y / 2));
             Vector2i to   = new Vector2i((int)(nextCoord.x() / size.x * resolution.x + resolution.x / 2), (int)(nextCoord.y() / size.y * resolution.y + resolution.y / 2));
@@ -82,7 +83,11 @@ public class MaterialBlock {
             });
             lastCoord = nextCoord;
             iter ++;
-            progress.accept((float) iter / path.getCoords().size());
+            float currProgress = 100 * ((float)iter / path.getCoords().size());
+            if((int)currProgress != lastReportedProgress) {
+                lastReportedProgress = (int)currProgress;
+                progress.accept(currProgress);
+            }
         }
     }
 

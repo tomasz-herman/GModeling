@@ -16,7 +16,7 @@ class MaterialBlockTest {
         MaterialBlock block = new MaterialBlock(new Vector2f(100, 100), new Vector2i(1000, 1000), 50, 16);
         MillingTool tool = new MillingTool(16, 20, false);
         Path path = new Path(stream("/p2/1.k16"));
-        assertThatCode(() -> block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress * 100))).doesNotThrowAnyException();
+        assertThatCode(() -> block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress))).doesNotThrowAnyException();
     }
 
 }
