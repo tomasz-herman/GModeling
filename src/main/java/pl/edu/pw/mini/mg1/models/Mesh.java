@@ -46,8 +46,8 @@ public class Mesh {
         gl.glBindVertexArray(vao.get(0));
         loadData(gl, positions, 0, 3);
         if(colors != null) loadData(gl, colors, 1, 3);
-        if(normals != null) loadData(gl, normals, 1, 3);
-        if(textures != null) loadData(gl, textures, 1, 2);
+        if(normals != null) loadData(gl, normals, 2, 3);
+        if(textures != null) loadData(gl, textures, 3, 2);
         loadIndices(gl, indices);
         gl.glBindVertexArray(0);
     }
