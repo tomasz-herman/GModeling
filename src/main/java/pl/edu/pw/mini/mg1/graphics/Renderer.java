@@ -397,6 +397,7 @@ public class Renderer {
         gl.glUseProgram(phongShader.getProgramID());
 
         phongShader.loadMatrix4f(gl, "mvp", mvp);
+        phongShader.loadMatrix4f(gl, "model", model.getModelMatrix());
 
         gl.glBindVertexArray(model.getMesh().getVao());
         gl.glDrawElements(model.getMesh().getPrimitivesType(),
