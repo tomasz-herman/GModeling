@@ -71,11 +71,11 @@ public class MaterialBlock {
                         if (X >= 0 && Y >= 0 && X < heights.length && Y < heights[0].length) {
                             float diff = heights[X][Y] - h;
                             if(diff > tool.getLength()) {
-                                throw new MillingException("Too deep");
+                                throw new MillingException("Too deep, tool length was %.2f mm, but tried to mill %.2f mm of material".formatted(tool.getLength(), diff));
                             }
                             heights[X][Y] = min(heights[X][Y], h);
                             if(heights[X][Y] < maxMillingDepth) {
-                                throw new MillingException("Too low");
+                                throw new MillingException("Too low, tried to mill to %.2f mm height, but limit was set to %.2f mm".formatted(heights[X][Y], maxMillingDepth));
                             }
                         }
                     }

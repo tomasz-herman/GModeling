@@ -11,6 +11,7 @@ import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.layout.Controller;
 import pl.edu.pw.mini.mg1.milling.MaterialBlock;
+import pl.edu.pw.mini.mg1.milling.MillingException;
 import pl.edu.pw.mini.mg1.milling.MillingTool;
 import pl.edu.pw.mini.mg1.milling.Path;
 import pl.edu.pw.mini.mg1.models.*;
@@ -78,12 +79,16 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
         scene.addModel(GregoryPatch.example());
 
-        MaterialBlock block = new MaterialBlock(new Vector2f(200, 200), new Vector2i(1000, 1000), 50, 16);
+        MaterialBlock block = new MaterialBlock(new Vector2f(200, 200), new Vector2i(200, 200), 50, 16);
         MillingTool tool = new MillingTool(16, 20, false);
 
         try {
-            Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"));
-            block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress));
+            Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"), 1);
+            try {
+                block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress));
+            } catch (MillingException e) {
+                e.printStackTrace();
+            }
             Model model = new MilledBlock(block);
             scene.addModel(model);
         } catch (Exception e) {
