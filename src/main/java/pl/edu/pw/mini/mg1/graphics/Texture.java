@@ -7,6 +7,7 @@ import org.apache.commons.lang3.ArrayUtils;
 import org.joml.Vector3f;
 
 import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
 import java.util.ArrayList;
 import java.util.function.BiFunction;
@@ -45,6 +46,25 @@ public class Texture {
 
         gl.glSamplerParameteri(sampler.get(0), GL4.GL_TEXTURE_WRAP_S, wrapU ? GL4.GL_REPEAT : GL4.GL_CLAMP_TO_EDGE);
         gl.glSamplerParameteri(sampler.get(0), GL4.GL_TEXTURE_WRAP_T, wrapV ? GL4.GL_REPEAT : GL4.GL_CLAMP_TO_EDGE);
+
+        gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
+    }
+
+    public Texture(GL4 gl, float[] heights, int x, int y) {
+        gl.glGenTextures(1, id);
+        use(gl, 0);
+
+        FloatBuffer buffer = GLBuffers.newDirectFloatBuffer(heights);
+
+        gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_R32F, x, y, 0, GL4.GL_RED, GL.GL_FLOAT, buffer);
+
+        gl.glGenSamplers(1, sampler);
+
+        gl.glSamplerParameteri(sampler.get(0), GL.GL_TEXTURE_MIN_FILTER, GL.GL_LINEAR);
+        gl.glSamplerParameteri(sampler.get(0), GL.GL_TEXTURE_MAG_FILTER, GL.GL_LINEAR);
+
+        gl.glSamplerParameteri(sampler.get(0), GL4.GL_TEXTURE_WRAP_S, GL4.GL_CLAMP_TO_EDGE);
+        gl.glSamplerParameteri(sampler.get(0), GL4.GL_TEXTURE_WRAP_T, GL4.GL_CLAMP_TO_EDGE);
 
         gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
     }

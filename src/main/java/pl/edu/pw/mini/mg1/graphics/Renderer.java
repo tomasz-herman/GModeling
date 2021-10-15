@@ -23,6 +23,7 @@ public class Renderer {
     private final Shader patchGregoryShader;
     private final Shader torusShader;
     private final Shader phongShader;
+    private final Shader terrainShader;
 
     private final Texture defaultTexture;
 
@@ -54,6 +55,7 @@ public class Renderer {
         patchGregoryShader = new Shader(gl, "/patch.vert", "/patch.frag", "/gregory.tesc", "/gregory.tese", "/patch.geom");
         torusShader = new Shader(gl, "/torus.vert", "/torus.frag", "/torus.tesc", "/torus.tese", "/torus.geom");
         phongShader = new Shader(gl, "/phong.vert", "/phong.frag");
+        terrainShader = new Shader(gl, "/terrain.vert", "/terrain.frag");
         gl.glClearColor(0f, 0f, 0f, 1.0f);
         gl.glClearDepth(1.0f);
         gl.glEnable(GL.GL_DEPTH_TEST);
@@ -210,6 +212,8 @@ public class Renderer {
         patchShader.dispose(gl);
         patchGregoryShader.dispose(gl);
         patchSplineShader.dispose(gl);
+        terrainShader.dispose(gl);
+        defaultTexture.dispose(gl);
         gl.glDeleteFramebuffers(2, new int[] {leftBufferID, rightBufferID}, 0);
         gl.glDeleteTextures(2, new int[] {leftTextureID, rightTextureID, rightDepthTextureID, leftDepthTextureID}, 0);
         gl.glDeleteBuffers(1, new int[]{quadVBO}, 0);
@@ -383,6 +387,29 @@ public class Renderer {
         gl.glPatchParameteri(GL4.GL_PATCH_VERTICES, 1);
         gl.glDrawElements(torus.getMesh().getPrimitivesType(),
                 torus.getMesh().vertexCount(),
+                GL4.GL_UNSIGNED_INT, 0);
+        gl.glBindVertexArray(0);
+        gl.glUseProgram(0);
+    }
+
+    public void renderTerrain(GL4 gl, PerspectiveCamera camera, Model model, Texture heights) {
+        gl.glLineWidth(1);
+
+        Matrix4f mvp = viewProjectionFunction.apply(camera).get(new Matrix4f());
+        mvp.mul(model.getModelMatrix());
+
+        gl.glUseProgram(terrainShader.getProgramID());
+
+        terrainShader.loadMatrix4f(gl, "mvp", mvp);
+        terrainShader.loadMatrix4f(gl, "model", model.getModelMatrix());
+        terrainShader.loadInteger(gl, "heights", 0);
+
+        if(heights != null) heights.use(gl, 0);
+        else defaultTexture.use(gl, 0);
+
+        gl.glBindVertexArray(model.getMesh().getVao());
+        gl.glDrawElements(model.getMesh().getPrimitivesType(),
+                model.getMesh().vertexCount(),
                 GL4.GL_UNSIGNED_INT, 0);
         gl.glBindVertexArray(0);
         gl.glUseProgram(0);

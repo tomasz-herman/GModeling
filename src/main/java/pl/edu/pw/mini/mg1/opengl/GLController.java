@@ -79,7 +79,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
         scene.addModel(GregoryPatch.example());
 
-        MaterialBlock block = new MaterialBlock(new Vector2f(200, 200), new Vector2i(200, 200), 50, 16);
+        MaterialBlock block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(400, 400), 50, 16);
         MillingTool tool = new MillingTool(16, 20, false);
 
         try {

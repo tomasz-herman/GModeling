@@ -11,21 +11,29 @@ import static org.joml.Math.sqrt;
 public class MaterialBlock {
     private final Vector2f size;
     private final Vector2i resolution;
-    private final float depth;
     private final float maxMillingDepth;
 
-    private final float[][] heights;
+    private final float[] heights;
+
+    private void setHeight(int i, int j, float val) {
+        final int width = resolution.x;
+        heights[i * width + j] = val;
+    }
+
+    private float getHeight(int i, int j) {
+        final int width = resolution.x;
+        return heights[i * width + j];
+    }
 
     public MaterialBlock(Vector2f size, Vector2i resolution, float depth, float maxMillingDepth) {
         this.size = new Vector2f(size);
         this.resolution = new Vector2i(resolution);
-        this.depth = depth;
         this.maxMillingDepth = maxMillingDepth;
 
-        heights = new float[resolution.x][resolution.y];
+        heights = new float[resolution.x * resolution.y];
         for (int i = 0; i < resolution.x; i++) {
             for (int j = 0; j < resolution.y; j++) {
-                heights[i][j] = depth;
+                setHeight(i, j, depth);
             }
         }
     }
@@ -68,14 +76,14 @@ public class MaterialBlock {
                         float h = baseHeight + toolStepCache[i + toolSize.x][j + toolSize.y];
                         int X = x + i;
                         int Y = y + j;
-                        if (X >= 0 && Y >= 0 && X < heights.length && Y < heights[0].length) {
-                            float diff = heights[X][Y] - h;
+                        if (X >= 0 && Y >= 0 && X < resolution.x && Y < resolution.y) {
+                            float diff = getHeight(X, Y) - h;
                             if(diff > tool.getLength()) {
                                 throw new MillingException("Too deep, tool length was %.2f mm, but tried to mill %.2f mm of material".formatted(tool.getLength(), diff));
                             }
-                            heights[X][Y] = min(heights[X][Y], h);
-                            if(heights[X][Y] < maxMillingDepth) {
-                                throw new MillingException("Too low, tried to mill to %.2f mm height, but limit was set to %.2f mm".formatted(heights[X][Y], maxMillingDepth));
+                            setHeight(X, Y, min(getHeight(X, Y), h));
+                            if(getHeight(X, Y) < maxMillingDepth) {
+                                throw new MillingException("Too low, tried to mill to %.2f mm height, but limit was set to %.2f mm".formatted(getHeight(X, Y), getMaxMillingDepth()));
                             }
                         }
                     }
@@ -154,15 +162,11 @@ public class MaterialBlock {
         return resolution;
     }
 
-    public float getDepth() {
-        return depth;
-    }
-
     public float getMaxMillingDepth() {
         return maxMillingDepth;
     }
 
-    public float[][] getHeights() {
+    public float[] getHeights() {
         return heights;
     }
 }
