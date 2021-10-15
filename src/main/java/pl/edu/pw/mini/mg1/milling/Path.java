@@ -9,12 +9,19 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
 
+import static org.joml.Math.ceil;
+
 public class Path {
     private final List<Vector3f> coords;
 
     public Path(InputStream stream) throws IOException {
+        this(stream, Float.POSITIVE_INFINITY);
+    }
+
+    public Path(InputStream stream, float maxDist) throws IOException {
         if(stream == null) throw new IllegalArgumentException("Got null stream.");
         coords = new ArrayList<>();
+        coords.add(new Vector3f(0, 0, 80));
         Scanner scanner = new Scanner(stream);
         while(scanner.hasNextLine()) {
             String line = scanner.nextLine();
@@ -27,9 +34,7 @@ public class Path {
                     throw new IOException(nfe);
                 }
             } else {
-                if(!coords.isEmpty()) {
-                    coord.x = coords.get(coords.size() - 1).x;
-                }
+                coord.x = coords.get(coords.size() - 1).x;
             }
             if(tokens.containsKey('Y')) {
                 try {
@@ -38,9 +43,7 @@ public class Path {
                     throw new IOException(nfe);
                 }
             } else {
-                if(!coords.isEmpty()) {
-                    coord.y = coords.get(coords.size() - 1).y;
-                }
+                coord.y = coords.get(coords.size() - 1).y;
             }
             if(tokens.containsKey('Z')) {
                 try {
@@ -49,11 +52,24 @@ public class Path {
                     throw new IOException(nfe);
                 }
             } else {
-                if(!coords.isEmpty()) {
-                    coord.z = coords.get(coords.size() - 1).z;
-                }
+                coord.z = coords.get(coords.size() - 1).z;
             }
-            coords.add(coord);
+            coords.addAll(split(coords.get(coords.size() - 1), coord, maxDist));
+        }
+    }
+
+    private static Collection<Vector3f> split(Vector3fc last, Vector3fc next, float maxDist) {
+        float dist = last.distance(next);
+        if (dist < maxDist) {
+            return Collections.singleton(new Vector3f(next));
+        } else {
+            int divisions = (int) ceil(dist / maxDist);
+            Vector3fc step = next.sub(last, new Vector3f()).div(divisions);
+            Collection<Vector3f> vectors = new ArrayList<>();
+            for (int i = 0; i < divisions; i++) {
+                vectors.add(last.add(step.mul(i + 1, new Vector3f()), new Vector3f()));
+            }
+            return vectors;
         }
     }
 
