@@ -14,6 +14,7 @@ public class MaterialBlock {
     private final float maxMillingDepth;
 
     private final float[] heights;
+    private final Vector2f[] positions;
 
     private void setHeight(int i, int j, float val) {
         final int width = resolution.x;
@@ -31,14 +32,18 @@ public class MaterialBlock {
         this.maxMillingDepth = maxMillingDepth;
 
         heights = new float[resolution.x * resolution.y];
+        positions = new Vector2f[resolution.x * resolution.y];
         for (int i = 0; i < resolution.x; i++) {
             for (int j = 0; j < resolution.y; j++) {
                 setHeight(i, j, depth);
+                positions[i * resolution.x + j] = new Vector2f(
+                        (float) i / resolution.x * size.x - size.x * 0.5f,
+                        (float) j / resolution.y * size.y - size.y * 0.5f);
             }
         }
     }
 
-    public void mill(MillingTool tool, Path path, Consumer<Float> progress) {
+    public void mill(MillingTool tool, Path path, Consumer<Float> progress, Consumer<Vector3f> moveTool, Runnable updateTexture) {
         Vector2i toolSize = new Vector2i((int)(tool.getRadius() * resolution.x / size.x), (int)(tool.getRadius() * resolution.y / size.y));
         float[][] toolStepCache = new float[1 + toolSize.x * 2][1 + toolSize.y * 2];
         for (int i = 0; i < toolStepCache.length; i++) {
@@ -68,6 +73,15 @@ public class MaterialBlock {
                 float currDist = (float) from.distance(x, y);
                 float procent = currDist / totalDist;
                 float baseHeight = (1 - procent) * currentLastCoord.z() + procent * nextCoord.z();
+                if(moveTool != null) {
+                    if (x >= 0 && y >= 0 && x < resolution.x && y < resolution.y) {
+                        Vector2f pos = positions[x * resolution.x + y];
+                        moveTool.accept(new Vector3f(pos.x, baseHeight, pos.y));
+                    } else {
+                        moveTool.accept(new Vector3f((float) x / resolution.x * size.x - size.x * 0.5f,
+                                baseHeight, (float) y / resolution.y * size.y - size.y * 0.5f));
+                    }
+                }
                 for (int i = -toolSize.x; i <= toolSize.x; i++) {
                     for (int j = -toolSize.y; j <= toolSize.y; j++) {
                         if(Float.isNaN(baseHeight - toolStepCache[i + toolSize.x][j + toolSize.y])) {
@@ -96,6 +110,7 @@ public class MaterialBlock {
                 lastReportedProgress = (int)currProgress;
                 progress.accept(currProgress);
             }
+            if(updateTexture != null) updateTexture.run();
         }
     }
 

@@ -54,7 +54,7 @@ public class Texture {
         gl.glGenTextures(1, id);
         use(gl, 0);
 
-        FloatBuffer buffer = GLBuffers.newDirectFloatBuffer(heights);
+        FloatBuffer buffer = FloatBuffer.wrap(heights);
 
         gl.glTexImage2D(GL.GL_TEXTURE_2D, 0, GL.GL_R32F, x, y, 0, GL4.GL_RED, GL.GL_FLOAT, buffer);
 

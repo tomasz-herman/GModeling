@@ -85,7 +85,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         try {
             Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"), 1);
             try {
-                block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress));
+                block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress), null, null);
             } catch (MillingException e) {
                 e.printStackTrace();
             }
