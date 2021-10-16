@@ -6,7 +6,6 @@ import com.jogamp.opengl.util.FPSAnimator;
 import org.joml.Math;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.layout.Controller;
@@ -21,7 +20,6 @@ import javax.swing.JComponent;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 import java.awt.event.*;
-import java.io.IOException;
 import java.util.HashSet;
 import java.util.List;
 import java.util.function.Consumer;
@@ -78,7 +76,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         scene.getCamera().setPosition(0, 0, 2);
 
         MaterialBlock block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(500, 400), 50, 16);
-        MillingTool tool = new MillingTool(16, 20, false);
+        MillingTool tool = new MillingTool(8, 20, false);
 
         Cutter cutter = new Cutter(tool);
         scene.addModel(cutter);
