@@ -18,12 +18,12 @@ public class MaterialBlock {
 
     private void setHeight(int i, int j, float val) {
         final int width = resolution.x;
-        heights[i * width + j] = val;
+        heights[j * width + i] = val;
     }
 
     private float getHeight(int i, int j) {
         final int width = resolution.x;
-        return heights[i * width + j];
+        return heights[j * width + i];
     }
 
     public MaterialBlock(Vector2f size, Vector2i resolution, float depth, float maxMillingDepth) {
@@ -36,7 +36,7 @@ public class MaterialBlock {
         for (int i = 0; i < resolution.x; i++) {
             for (int j = 0; j < resolution.y; j++) {
                 setHeight(i, j, depth);
-                positions[i * resolution.x + j] = new Vector2f(
+                positions[j * resolution.x + i] = new Vector2f(
                         (float) i / resolution.x * size.x - size.x * 0.5f,
                         (float) j / resolution.y * size.y - size.y * 0.5f);
             }
@@ -61,7 +61,7 @@ public class MaterialBlock {
                 }
             }
         }
-        Vector3fc lastCoord = new Vector3f(0, 0, 300);
+        Vector3fc lastCoord = path.getCoords().get(0);
         int iter = 0;
         int lastReportedProgress = -1;
         for (Vector3fc nextCoord : path.getCoords()) {
@@ -72,10 +72,10 @@ public class MaterialBlock {
             drawLine(from, to, (x, y) -> {
                 float currDist = (float) from.distance(x, y);
                 float procent = currDist / totalDist;
-                float baseHeight = (1 - procent) * currentLastCoord.z() + procent * nextCoord.z();
+                float baseHeight = totalDist == 0 ? nextCoord.z() : (1 - procent) * currentLastCoord.z() + procent * nextCoord.z();
                 if(moveTool != null) {
                     if (x >= 0 && y >= 0 && x < resolution.x && y < resolution.y) {
-                        Vector2f pos = positions[x * resolution.x + y];
+                        Vector2f pos = positions[y * resolution.x + x];
                         moveTool.accept(new Vector3f(pos.x, baseHeight, pos.y));
                     } else {
                         moveTool.accept(new Vector3f((float) x / resolution.x * size.x - size.x * 0.5f,

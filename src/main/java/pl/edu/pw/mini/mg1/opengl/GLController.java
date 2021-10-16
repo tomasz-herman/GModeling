@@ -77,10 +77,11 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
         scene.getCamera().setPosition(0, 0, 2);
 
-        scene.addModel(GregoryPatch.example());
-
-        MaterialBlock block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(400, 400), 50, 16);
+        MaterialBlock block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(500, 400), 50, 16);
         MillingTool tool = new MillingTool(16, 20, false);
+
+        Cutter cutter = new Cutter(tool);
+        scene.addModel(cutter);
 
         MilledBlock model = new MilledBlock(block);
         scene.addModel(model);
@@ -91,7 +92,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
                 try {
                     block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress), vec -> {
                         try {
-                            Thread.sleep(10);
+                            vec.div(100);
+                            cutter.setPosition(vec.x, vec.y, vec.z);
+                            Thread.sleep(1);
                         } catch (InterruptedException e) {
                             e.printStackTrace();
                         }

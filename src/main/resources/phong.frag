@@ -4,6 +4,7 @@ out vec4 FragColor;
 in VertexData {
     vec3 normal;
     vec3 position;
+    vec3 texture;
 } fs_in;
 
 const vec3 tileSize = vec3(1.1, 1.0, 1.1);
@@ -60,8 +61,8 @@ void main() {
     float amplitude = 8.0;
     const int roughness = 4;
 
-    float t = 6.28 * fs_in.position.x / tileSize.x ;
-    t += amplitude * turbulence (fs_in.position, roughness);
+    float t = 6.28 * fs_in.texture.x / tileSize.x ;
+    t += amplitude * turbulence (fs_in.texture, roughness);
 
     t = sin(t);
     vec3 marbleColor = marble_color(t);
@@ -69,7 +70,7 @@ void main() {
     vec3 normal = normalize(fs_in.normal);
     vec3 lightDir = vec3(0, -1, 0);
 
-    float light = max(dot(normal, lightDir), 0.2);
+    float light = max(dot(normal, -lightDir), 0.2);
 
     FragColor = vec4(marbleColor * light, 1.0f);
 }

@@ -10,10 +10,12 @@ uniform mat4 model;
 out VertexData {
     vec3 normal;
     vec3 position;
+    vec3 texture;
 } vs_out;
 
 void main() {
     vs_out.normal = normal;
     vs_out.position = vec3(model * vec4(position, 1.0));
+    vs_out.texture = position;
     gl_Position = mvp * vec4(position, 1.0);
 }
