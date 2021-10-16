@@ -17,6 +17,6 @@ void main() {
     vs_out.position = vec3(model * vec4(position, 1.0));
     vs_out.texture = texture;
     float height = texture2D(heights, texture).r / 100;
-
+    vs_out.position.y += height;
     gl_Position = mvp * vec4(position.x, position.y + height, position.z, 1.0);
 }

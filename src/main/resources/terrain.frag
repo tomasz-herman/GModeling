@@ -59,8 +59,8 @@ float turbulence (vec3 P, int numFreq) {
 }
 
 void main() {
-    float amplitude = 8.0;
-    const int roughness = 4;
+    float amplitude = 16.0;
+    const int roughness = 8;
 
     float t = 6.28 * fs_in.position.x / tileSize.x ;
     t += amplitude * turbulence (fs_in.position, roughness);
