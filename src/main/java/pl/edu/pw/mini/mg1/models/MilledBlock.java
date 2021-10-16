@@ -16,6 +16,7 @@ import java.util.stream.Stream;
 
 public class MilledBlock extends Model {
 
+    private boolean reloadTexture = false;
     private final MaterialBlock block;
     private Texture texture;
 
@@ -66,6 +67,15 @@ public class MilledBlock extends Model {
     }
 
     @Override
+    public void validate(GL4 gl) {
+        super.validate(gl);
+        if(reloadTexture) {
+            texture.update(gl, block.getHeights(), block.getResolution().x(), block.getResolution().y());
+            reloadTexture = false;
+        }
+    }
+
+    @Override
     public void dispose(GL4 gl) {
         super.dispose(gl);
         if(texture != null) texture.dispose(gl);
@@ -73,5 +83,9 @@ public class MilledBlock extends Model {
 
     public Texture getTexture() {
         return texture;
+    }
+
+    public void reloadTexture() {
+        this.reloadTexture = true;
     }
 }

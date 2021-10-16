@@ -69,6 +69,21 @@ public class Texture {
         gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
     }
 
+    public void update(GL4 gl, float[] heights, int w, int h) {
+        gl.glBindTexture(GL.GL_TEXTURE_2D, id.get(0));
+        FloatBuffer buffer = FloatBuffer.wrap(heights);
+        gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, 0, 0, w, h, GL4.GL_RED, GL.GL_FLOAT, buffer);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+    }
+
+    public void update(GL4 gl, float[] heights, int x, int y, int w, int h) {
+        gl.glBindTexture(GL.GL_TEXTURE_2D, id.get(0));
+        FloatBuffer buffer = FloatBuffer.wrap(heights);
+        gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, x, y, w, h, GL4.GL_RED, GL.GL_FLOAT, buffer);
+        gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
+    }
+
+
     public void use(GL4 gl, int unit) {
         gl.glActiveTexture(GL.GL_TEXTURE0 + unit);
         gl.glBindTexture(GL.GL_TEXTURE_2D, id.get(0));

@@ -82,18 +82,27 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         MaterialBlock block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(400, 400), 50, 16);
         MillingTool tool = new MillingTool(16, 20, false);
 
-        try {
-            Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"), 1);
+        MilledBlock model = new MilledBlock(block);
+        scene.addModel(model);
+
+        new Thread(() -> {
             try {
-                block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress), null, null);
-            } catch (MillingException e) {
+                Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"), 1);
+                try {
+                    block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress), vec -> {
+                        try {
+                            Thread.sleep(10);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                    }, model::reloadTexture);
+                } catch (MillingException e) {
+                    e.printStackTrace();
+                }
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-            Model model = new MilledBlock(block);
-            scene.addModel(model);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        }).start();
 
         modelController.set(null);
         cameraController.set(scene.getCamera());
