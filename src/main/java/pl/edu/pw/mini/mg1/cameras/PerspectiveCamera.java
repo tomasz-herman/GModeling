@@ -41,16 +41,13 @@ public class PerspectiveCamera {
     private void calculateViewMatrix() {
         Vector3f front = getFront();
         Vector3f up = getUp();
-        viewMatrix.lookAt(position, position.add(front, new Vector3f()), up);
-        viewMatrix.set(getStereoViewMatrix(0));
-        System.out.println(viewMatrix);
+        viewMatrix.identity().lookAt(position, position.add(front, new Vector3f()), up);
         viewProjectionMatrix.set(projectionMatrix)
                 .mul(viewMatrix);
     }
 
     private void calculateProjectionMatrix() {
         projectionMatrix.setPerspective(toRadians(fov), aspect, near, far);
-        projectionMatrix.set(getStereoPerspectiveMatrix(0));
         viewProjectionMatrix.set(projectionMatrix)
                 .mul(viewMatrix);
     }

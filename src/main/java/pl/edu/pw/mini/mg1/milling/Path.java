@@ -38,7 +38,7 @@ public class Path {
             }
             if(tokens.containsKey('Y')) {
                 try {
-                    coord.y = Float.parseFloat(tokens.get('Y'));
+                    coord.y = -Float.parseFloat(tokens.get('Y'));
                 } catch (NumberFormatException nfe) {
                     throw new IOException(nfe);
                 }
