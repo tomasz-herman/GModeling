@@ -6,9 +6,11 @@ import org.joml.Vector2i;
 import pl.edu.pw.mini.mg1.cameras.PerspectiveCamera;
 import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.milling.MaterialBlock;
+import pl.edu.pw.mini.mg1.milling.MillingException;
 import pl.edu.pw.mini.mg1.milling.MillingTool;
 import pl.edu.pw.mini.mg1.milling.Path;
 
+import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -137,7 +139,9 @@ public class MillingSimulator extends Model {
     }
 
     public void simulate(Consumer<Integer> progress) {
-        new Thread(() -> block.mill(tool, path, progress, vec -> {
+        new Thread(() -> {
+            try {
+                block.mill(tool, path, progress, vec -> {
                     try {
                         vec.div(100);
                         cutter.setPosition(vec.x, vec.y, vec.z);
@@ -147,7 +151,11 @@ public class MillingSimulator extends Model {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-        }, blockModel::reloadTexture)
+                }, blockModel::reloadTexture);
+            } catch (MillingException e) {
+                JOptionPane.showMessageDialog(null, e.getMessage());
+            }
+        }
         ).start();
     }
 
