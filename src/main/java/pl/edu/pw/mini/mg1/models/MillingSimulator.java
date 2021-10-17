@@ -13,7 +13,7 @@ import pl.edu.pw.mini.mg1.milling.Path;
 import javax.swing.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 public class MillingSimulator extends Model {
@@ -141,12 +141,18 @@ public class MillingSimulator extends Model {
     public void simulate(Consumer<Integer> progress) {
         new Thread(() -> {
             try {
+                AtomicLong last = new AtomicLong();
                 block.mill(tool, path, progress, vec -> {
                     try {
                         vec.div(100);
                         cutter.setPosition(vec.x, vec.y, vec.z);
                         if(realtime) {
-                            Thread.sleep(10);
+                            long now = System.nanoTime();
+                            long delta = (now - last.get()) / 1_000_000;
+                            if(delta < 10) {
+                                Thread.sleep(10 - delta);
+                            }
+                            last.set(System.nanoTime());
                         }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
