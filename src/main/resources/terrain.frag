@@ -68,12 +68,12 @@ void main() {
     t = sin(t);
     vec3 marbleColor = marble_color(t);
 
-    float top = texture2D(heights, fs_in.texture + vec2(0, 0.0001)).r / 100;
-    float bot = texture2D(heights, fs_in.texture + vec2(0, -0.0001)).r / 100;
-    float left = texture2D(heights, fs_in.texture + vec2(0.0001, 0)).r / 100;
-    float right = texture2D(heights, fs_in.texture + vec2(-0.0001, 0)).r / 100;
+    float top = texture2D(heights, fs_in.texture + vec2(0, 0.001)).r / 100;
+    float bot = texture2D(heights, fs_in.texture + vec2(0, -0.001)).r / 100;
+    float left = texture2D(heights, fs_in.texture + vec2(0.001, 0)).r / 100;
+    float right = texture2D(heights, fs_in.texture + vec2(-0.001, 0)).r / 100;
 
-    vec3 normal = normalize(vec3((bot - top) / 0.0002, 1, (right - left) / 0.0002));
+    vec3 normal = normalize(vec3((bot - top) / 0.002, 1, (right - left) / 0.002));
 
     vec3 lightDir = vec3(0, -1, 0);
 

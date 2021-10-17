@@ -75,35 +75,37 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
         scene.getCamera().setPosition(0, 0, 2);
 
-        MaterialBlock block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(1000, 1000), 50, 16);
-        MillingTool tool = new MillingTool(8, 20, false);
+        scene.addModel(new MillingSimulator());
 
-        Cutter cutter = new Cutter(tool);
-        scene.addModel(cutter);
-
-        MilledBlock model = new MilledBlock(block);
-        scene.addModel(model);
-
-        new Thread(() -> {
-            try {
-                Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"), 1);
-                try {
-                    block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress), vec -> {
-                        try {
-                            vec.div(100);
-                            cutter.setPosition(vec.x, vec.y, vec.z);
-                            Thread.sleep(1);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                    }, model::reloadTexture);
-                } catch (MillingException e) {
-                    e.printStackTrace();
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }).start();
+//        MaterialBlock block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(1000, 1000), 50, 16);
+//        MillingTool tool = new MillingTool(8, 20, false);
+//
+//        Cutter cutter = new Cutter(tool);
+//        scene.addModel(cutter);
+//
+//        MilledBlock model = new MilledBlock(block);
+//        scene.addModel(model);
+//
+//        new Thread(() -> {
+//            try {
+//                Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"), 1);
+//                try {
+//                    block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress), vec -> {
+//                        try {
+//                            vec.div(100);
+//                            cutter.setPosition(vec.x, vec.y, vec.z);
+//                            Thread.sleep(1);
+//                        } catch (InterruptedException e) {
+//                            e.printStackTrace();
+//                        }
+//                    }, model::reloadTexture);
+//                } catch (MillingException e) {
+//                    e.printStackTrace();
+//                }
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
 
         modelController.set(null);
         cameraController.set(scene.getCamera());

@@ -16,7 +16,7 @@ import java.util.stream.Stream;
 
 public class MilledBlock extends Model {
 
-    private boolean reloadTexture = false;
+    private boolean reloadTexture = true;
     private final MaterialBlock block;
     private Texture texture;
 

@@ -181,8 +181,13 @@ public class SceneLayout implements Controller<Scene> {
                             .map(m -> (Intersectable) m)
                             .collect(Collectors.toList());
                     if (surfaces.size() == 0) break;
-                    if (surfaces.size() == 1) new IntersectionWizard(surfaces.get(0), surfaces.get(0), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel, this::refresh);
-                    if (surfaces.size() >= 2) new IntersectionWizard(surfaces.get(0), surfaces.get(1), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel, this::refresh);
+                    if (surfaces.size() == 1)
+                        new IntersectionWizard(surfaces.get(0), surfaces.get(0), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel, this::refresh);
+                    if (surfaces.size() >= 2)
+                        new IntersectionWizard(surfaces.get(0), surfaces.get(1), scene::setPointerWorldCoords, scene::getPointerWorldCoords, scene::addModel, this::refresh);
+                }
+                case "Milling Simulator" -> {
+                    scene.addModel(new MillingSimulator());
                 }
             }
             addCombo.setSelectedIndex(-1);
@@ -693,6 +698,7 @@ public class SceneLayout implements Controller<Scene> {
         defaultComboBoxModel1.addElement("BezierC2 Patch");
         defaultComboBoxModel1.addElement("Gregory Patch");
         defaultComboBoxModel1.addElement("Intersection");
+        defaultComboBoxModel1.addElement("Milling Simulator");
         addCombo.setModel(defaultComboBoxModel1);
         panel1.add(addCombo, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         deleteCombo = new JComboBox();

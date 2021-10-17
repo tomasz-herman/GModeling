@@ -73,6 +73,7 @@ public class Texture {
         gl.glBindTexture(GL.GL_TEXTURE_2D, id.get(0));
         FloatBuffer buffer = FloatBuffer.wrap(heights);
         gl.glTexSubImage2D(GL.GL_TEXTURE_2D, 0, 0, 0, w, h, GL4.GL_RED, GL.GL_FLOAT, buffer);
+        gl.glGenerateMipmap(GL.GL_TEXTURE_2D);
         gl.glBindTexture(GL.GL_TEXTURE_2D, 0);
     }
 

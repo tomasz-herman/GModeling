@@ -58,6 +58,7 @@
                 <item value="BezierC2 Patch"/>
                 <item value="Gregory Patch"/>
                 <item value="Intersection"/>
+                <item value="Milling Simulator"/>
               </model>
             </properties>
           </component>

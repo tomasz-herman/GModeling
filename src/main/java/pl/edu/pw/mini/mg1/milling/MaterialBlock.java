@@ -11,10 +11,11 @@ import static org.joml.Math.sqrt;
 public class MaterialBlock {
     private final Vector2f size;
     private final Vector2i resolution;
-    private final float maxMillingDepth;
+    private final float minHeight;
 
     private final float[] heights;
     private final Vector2f[] positions;
+    private final float originalHeight;
 
     private void setHeight(int i, int j, float val) {
         final int width = resolution.x;
@@ -26,16 +27,17 @@ public class MaterialBlock {
         return heights[j * width + i];
     }
 
-    public MaterialBlock(Vector2f size, Vector2i resolution, float depth, float maxMillingDepth) {
+    public MaterialBlock(Vector2f size, Vector2i resolution, float height, float minHeight) {
         this.size = new Vector2f(size);
         this.resolution = new Vector2i(resolution);
-        this.maxMillingDepth = maxMillingDepth;
+        this.minHeight = minHeight;
+        this.originalHeight = height;
 
         heights = new float[resolution.x * resolution.y];
         positions = new Vector2f[resolution.x * resolution.y];
         for (int i = 0; i < resolution.x; i++) {
             for (int j = 0; j < resolution.y; j++) {
-                setHeight(i, j, depth);
+                setHeight(i, j, height);
                 positions[j * resolution.x + i] = new Vector2f(
                         (float) i / resolution.x * size.x - size.x * 0.5f,
                         (float) j / resolution.y * size.y - size.y * 0.5f);
@@ -43,7 +45,7 @@ public class MaterialBlock {
         }
     }
 
-    public void mill(MillingTool tool, Path path, Consumer<Float> progress, Consumer<Vector3f> moveTool, Runnable updateTexture) {
+    public void mill(MillingTool tool, Path path, Consumer<Integer> progress, Consumer<Vector3f> moveTool, Runnable updateTexture) {
         Vector2i toolSize = new Vector2i((int)(tool.getRadius() * resolution.x / size.x), (int)(tool.getRadius() * resolution.y / size.y));
         float[][] toolStepCache = new float[1 + toolSize.x * 2][1 + toolSize.y * 2];
         for (int i = 0; i < toolStepCache.length; i++) {
@@ -96,8 +98,8 @@ public class MaterialBlock {
                                 throw new MillingException("Too deep, tool length was %.2f mm, but tried to mill %.2f mm of material".formatted(tool.getLength(), diff));
                             }
                             setHeight(X, Y, min(getHeight(X, Y), h));
-                            if(getHeight(X, Y) < maxMillingDepth) {
-                                throw new MillingException("Too low, tried to mill to %.2f mm height, but limit was set to %.2f mm".formatted(getHeight(X, Y), getMaxMillingDepth()));
+                            if(getHeight(X, Y) < minHeight) {
+                                throw new MillingException("Too low, tried to mill to %.2f mm height, but limit was set to %.2f mm".formatted(getHeight(X, Y), getMinHeight()));
                             }
                         }
                     }
@@ -108,7 +110,7 @@ public class MaterialBlock {
             float currProgress = 100 * ((float)iter / path.getCoords().size());
             if((int)currProgress != lastReportedProgress) {
                 lastReportedProgress = (int)currProgress;
-                progress.accept(currProgress);
+                progress.accept((int)currProgress);
             }
             if(updateTexture != null) updateTexture.run();
         }
@@ -177,11 +179,15 @@ public class MaterialBlock {
         return resolution;
     }
 
-    public float getMaxMillingDepth() {
-        return maxMillingDepth;
+    public float getMinHeight() {
+        return minHeight;
     }
 
     public float[] getHeights() {
         return heights;
+    }
+
+    public float getOriginalHeight() {
+        return originalHeight;
     }
 }

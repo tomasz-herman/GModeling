@@ -78,7 +78,7 @@ public class Path {
     }
 
     public PolyLine toPolyLine() {
-        return new PolyLine(coords.stream().map(Point::new).toList());
+        return new PolyLine(coords.stream().map(v -> new Vector3f(v.x, v.z, v.y).div(100)).map(Point::new).toList());
     }
 
     private static Map<Character, String> split(String line) {
