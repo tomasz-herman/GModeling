@@ -73,39 +73,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         renderer = new Renderer(gl);
         scene = new Scene(new PerspectiveCamera(1, 0.1f, 100, 60));
 
-        scene.getCamera().setPosition(0, 0, 2);
+        scene.getCamera().setPosition(-2, 0, 0);
 
         scene.addModel(new MillingSimulator());
-
-//        MaterialBlock block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(1000, 1000), 50, 16);
-//        MillingTool tool = new MillingTool(8, 20, false);
-//
-//        Cutter cutter = new Cutter(tool);
-//        scene.addModel(cutter);
-//
-//        MilledBlock model = new MilledBlock(block);
-//        scene.addModel(model);
-//
-//        new Thread(() -> {
-//            try {
-//                Path path = new Path(GLController.class.getResourceAsStream("/p2/1.k16"), 1);
-//                try {
-//                    block.mill(tool, path, progress -> System.out.printf("%.2f%%%n", progress), vec -> {
-//                        try {
-//                            vec.div(100);
-//                            cutter.setPosition(vec.x, vec.y, vec.z);
-//                            Thread.sleep(1);
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }, model::reloadTexture);
-//                } catch (MillingException e) {
-//                    e.printStackTrace();
-//                }
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        }).start();
 
         modelController.set(null);
         cameraController.set(scene.getCamera());
@@ -139,8 +109,8 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     }
 
     private void handleKeyInput() {
-        if(forward) scene.getCamera().move(0, 0, -cameraSpeed);
-        if(backward) scene.getCamera().move(0, 0, cameraSpeed);
+        if(forward) scene.getCamera().move(0, 0, cameraSpeed);
+        if(backward) scene.getCamera().move(0, 0, -cameraSpeed);
         if(left) scene.getCamera().move(-cameraSpeed, 0, 0);
         if(right) scene.getCamera().move(cameraSpeed, 0, 0);
         if(up) scene.getCamera().move(0, cameraSpeed, 0);
@@ -292,7 +262,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
             Vector2i mouseMove = new Vector2i(e.getX(), e.getY())
                     .sub(lastMousePosition);
             lastMousePosition.set(e.getX(), e.getY());
-            scene.getCamera().rotate(mouseMove.y * 0.1f, mouseMove.x * 0.1f, 0);
+            scene.getCamera().rotate(mouseMove.x * 0.1f, -mouseMove.y * 0.1f, 0);
         }
     }
 

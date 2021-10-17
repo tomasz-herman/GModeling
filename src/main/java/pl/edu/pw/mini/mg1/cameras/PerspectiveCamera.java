@@ -1,5 +1,6 @@
 package pl.edu.pw.mini.mg1.cameras;
 
+import com.jogamp.opengl.math.FloatUtil;
 import org.joml.*;
 import pl.edu.pw.mini.mg1.collisions.Ray;
 
@@ -38,17 +39,18 @@ public class PerspectiveCamera {
     }
 
     private void calculateViewMatrix() {
-        viewMatrix.identity()
-                .rotateZ(toRadians(rotation.z))
-                .rotateX(toRadians(rotation.x))
-                .rotateY(toRadians(rotation.y))
-                .translate(-position.x, -position.y, -position.z);
+        Vector3f front = getFront();
+        Vector3f up = getUp();
+        viewMatrix.lookAt(position, position.add(front, new Vector3f()), up);
+        viewMatrix.set(getStereoViewMatrix(0));
+        System.out.println(viewMatrix);
         viewProjectionMatrix.set(projectionMatrix)
                 .mul(viewMatrix);
     }
 
     private void calculateProjectionMatrix() {
         projectionMatrix.setPerspective(toRadians(fov), aspect, near, far);
+        projectionMatrix.set(getStereoPerspectiveMatrix(0));
         viewProjectionMatrix.set(projectionMatrix)
                 .mul(viewMatrix);
     }
@@ -58,7 +60,7 @@ public class PerspectiveCamera {
         Vector3f front = getFront();
         Vector3f up = getUp();
         Vector3f pos = position.add(right.mul(eyeSeparation * 0.5f * eye, new Vector3f()), new Vector3f());
-        return new Matrix4f().lookAtLH(pos, pos.add(front, new Vector3f()), up);
+        return new Matrix4f().lookAt(pos, pos.add(front, new Vector3f()), up);
     }
 
     private Matrix4f getStereoPerspectiveMatrix(int eye) {
@@ -109,15 +111,16 @@ public class PerspectiveCamera {
     }
 
     public Vector3f getRight() {
-        return viewMatrix.getRow(0, new Vector3f());
+        return getFront().cross(new Vector3f(0, 1, 0)).normalize();
     }
 
     public Vector3f getUp() {
-        return viewMatrix.getRow(1, new Vector3f());
+        return getRight().cross(getFront());
     }
 
     public Vector3f getFront() {
-        return viewMatrix.getRow(2, new Vector3f());
+        return new Vector3f(cos(toRadians(rotation.y)) * cos(toRadians(rotation.x)),
+                sin(toRadians(rotation.y)), cos(toRadians(rotation.y)) * sin(toRadians(rotation.x))).normalize();
     }
 
     private void setAspect(float aspect) {
@@ -151,14 +154,10 @@ public class PerspectiveCamera {
     }
 
     public void move(float dx, float dy, float dz) {
-        if ( dz != 0 ) {
-            position.x -= sin(toRadians(rotation.y)) * dz;
-            position.z += cos(toRadians(rotation.y)) * dz;
-        }
-        if ( dx != 0) {
-            position.x -= sin(toRadians(rotation.y - 90.0f)) * dx;
-            position.z += cos(toRadians(rotation.y - 90.0f)) * dx;
-        }
+        Vector3f front = getFront();
+        Vector3f right = getRight();
+        position.add(front.mul(dz));
+        position.add(right.mul(dx));
         position.y += dy;
         calculateViewMatrix();
     }
