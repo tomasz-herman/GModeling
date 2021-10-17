@@ -2,6 +2,7 @@ package pl.edu.pw.mini.mg1.layout;
 
 import com.intellij.uiDesigner.core.GridConstraints;
 import com.intellij.uiDesigner.core.GridLayoutManager;
+import org.apache.commons.io.FilenameUtils;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import pl.edu.pw.mini.mg1.milling.MaterialBlock;
@@ -61,6 +62,14 @@ public class SimulatorController implements Controller<MillingSimulator> {
             JFileChooser fileChooser = new JFileChooser(".");
             if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
+                String name = file.getName();
+                String ext = FilenameUtils.getExtension(name);
+                if (ext.matches("[fk]\\d+")) {
+                    cutterRound.setSelected(ext.startsWith("k"));
+                    int r = Integer.parseInt(ext.substring(1));
+                    if (r > 0) cutterRadius.setValue(r);
+                    simulator.setTool(newCutter());
+                }
                 try {
                     Path path = new Path(new FileInputStream(file), 1);
                     simulator.setPath(path);
