@@ -11,6 +11,7 @@ import pl.edu.pw.mini.mg1.milling.Path;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Consumer;
 
 public class MillingSimulator extends Model {
@@ -26,6 +27,8 @@ public class MillingSimulator extends Model {
     private boolean showPath = false;
     private boolean showCutter = true;
     private boolean showBlock = true;
+
+    private volatile boolean realtime = false;
 
     public MillingSimulator() {
         block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(400, 400), 50, 15);
@@ -138,11 +141,21 @@ public class MillingSimulator extends Model {
                     try {
                         vec.div(100);
                         cutter.setPosition(vec.x, vec.y, vec.z);
-                        Thread.sleep(10);
+                        if(realtime) {
+                            Thread.sleep(10);
+                        }
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
         }, blockModel::reloadTexture)
         ).start();
+    }
+
+    public boolean getRealtime() {
+        return realtime;
+    }
+
+    public void setRealtime(boolean realtime) {
+        this.realtime = realtime;
     }
 }

@@ -32,8 +32,8 @@ public class SimulatorController implements Controller<MillingSimulator> {
     private JSpinner blockH;
     private JSpinner blockMinH;
     private JButton simulateButton;
-    private JButton doItFasterButton;
     private JProgressBar progressBar;
+    private JCheckBox realtimeCheckBox;
     private MillingSimulator simulator;
 
     public SimulatorController() {
@@ -71,6 +71,7 @@ public class SimulatorController implements Controller<MillingSimulator> {
         });
         showPath.addChangeListener(e -> simulator.setShowPath(showPath.isSelected()));
         simulateButton.addActionListener(e -> simulator.simulate(progressBar::setValue));
+        realtimeCheckBox.addChangeListener(e -> simulator.setRealtime(realtimeCheckBox.isSelected()));
     }
 
     private MaterialBlock newBlock() {
@@ -114,6 +115,8 @@ public class SimulatorController implements Controller<MillingSimulator> {
         showCutter.setSelected(simulator.isShowCutter());
 
         showPath.setSelected(simulator.isShowPath());
+
+        realtimeCheckBox.setSelected(simulator.getRealtime());
     }
 
     /**
@@ -196,11 +199,11 @@ public class SimulatorController implements Controller<MillingSimulator> {
         simulateButton = new JButton();
         simulateButton.setText("Simulate");
         mainPane.add(simulateButton, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        doItFasterButton = new JButton();
-        doItFasterButton.setText("Do it Faster");
-        mainPane.add(doItFasterButton, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         progressBar = new JProgressBar();
         mainPane.add(progressBar, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        realtimeCheckBox = new JCheckBox();
+        realtimeCheckBox.setText("realtime");
+        mainPane.add(realtimeCheckBox, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
