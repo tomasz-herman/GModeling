@@ -60,6 +60,7 @@ public class MillingSimulator extends Model {
         for (Model model : trash) {
             model.dispose(gl);
         }
+        trash.clear();
     }
 
     @Override
@@ -70,19 +71,7 @@ public class MillingSimulator extends Model {
         for (Model model : trash) {
             model.dispose(gl);
         }
-    }
-
-    @Override
-    public void cleanup() {
-        super.cleanup();
-    }
-
-    public void refreshCutter() {
-        cutter.reload = true;
-    }
-
-    public void refreshBlock() {
-        blockModel.reload = true;
+        trash.clear();
     }
 
     public void setPath(Path path) {
@@ -112,8 +101,6 @@ public class MillingSimulator extends Model {
         blockModel = new MilledBlock(block);
     }
 
-
-
     public boolean isShowPath() {
         return showPath;
     }
@@ -138,9 +125,10 @@ public class MillingSimulator extends Model {
         this.showBlock = showBlock;
     }
 
-    public void simulate(Consumer<Integer> progress) {
+    public void simulate(Consumer<Integer> progress, Consumer<Boolean> disablePanels) {
         new Thread(() -> {
             try {
+                if(disablePanels != null) disablePanels.accept(true);
                 AtomicLong last = new AtomicLong();
                 block.mill(tool, path, progress, vec -> {
                     try {
@@ -160,6 +148,8 @@ public class MillingSimulator extends Model {
                 }, blockModel::reloadTexture);
             } catch (MillingException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
+            } finally {
+                if(disablePanels != null) disablePanels.accept(false);
             }
         }
         ).start();
