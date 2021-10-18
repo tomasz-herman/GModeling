@@ -40,6 +40,7 @@ public class SimulatorController implements Controller<MillingSimulator> {
     private JPanel cutterPane;
     private JLabel pathName;
     private MillingSimulator simulator;
+    private boolean refreshing;
 
     private final JFileChooser fileChooser = new JFileChooser(".");
 
@@ -53,17 +54,17 @@ public class SimulatorController implements Controller<MillingSimulator> {
         blockMinH.setModel(new SpinnerNumberModel(15, 0, 1000, 0.1));
         cutterRadius.setModel(new SpinnerNumberModel(5, 0, 100, 0.1));
         cutterLength.setModel(new SpinnerNumberModel(25, 0, 1000, 0.1));
-        blockSizeX.addChangeListener(e -> simulator.setBlock(newBlock()));
-        blockSizeY.addChangeListener(e -> simulator.setBlock(newBlock()));
-        blockResX.addChangeListener(e -> simulator.setBlock(newBlock()));
-        blockResY.addChangeListener(e -> simulator.setBlock(newBlock()));
-        blockH.addChangeListener(e -> simulator.setBlock(newBlock()));
-        blockMinH.addChangeListener(e -> simulator.setBlock(newBlock()));
-        showBlock.addChangeListener(e -> simulator.setShowBlock(showBlock.isSelected()));
-        cutterRadius.addChangeListener(e -> simulator.setTool(newCutter()));
-        cutterLength.addChangeListener(e -> simulator.setTool(newCutter()));
-        cutterRound.addChangeListener(e -> simulator.setTool(newCutter()));
-        showCutter.addChangeListener(e -> simulator.setShowCutter(showCutter.isSelected()));
+        blockSizeX.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
+        blockSizeY.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
+        blockResX.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
+        blockResY.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
+        blockH.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
+        blockMinH.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
+        showBlock.addChangeListener(e -> {if(!refreshing) simulator.setShowBlock(showBlock.isSelected());});
+        cutterRadius.addChangeListener(e -> {if(!refreshing) simulator.setTool(newCutter());});
+        cutterLength.addChangeListener(e -> {if(!refreshing) simulator.setTool(newCutter());});
+        cutterRound.addChangeListener(e -> {if(!refreshing) simulator.setTool(newCutter());});
+        showCutter.addChangeListener(e -> {if(!refreshing) simulator.setShowCutter(showCutter.isSelected());});
         loadButton.addActionListener(e -> {
             if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
@@ -76,7 +77,7 @@ public class SimulatorController implements Controller<MillingSimulator> {
                     simulator.setTool(newCutter());
                 }
                 try {
-                    Path path = new Path(new FileInputStream(file), 5);
+                    Path path = new Path(new FileInputStream(file), 1);
                     simulator.setPath(path);
                     pathName.setText(name);
                 } catch (IOException ex) {
@@ -84,9 +85,9 @@ public class SimulatorController implements Controller<MillingSimulator> {
                 }
             }
         });
-        showPath.addChangeListener(e -> simulator.setShowPath(showPath.isSelected()));
-        simulateButton.addActionListener(e -> simulator.simulate(progressBar::setValue, this::disablePanels));
-        realtimeCheckBox.addChangeListener(e -> simulator.setRealtime(realtimeCheckBox.isSelected()));
+        showPath.addChangeListener(e -> {if(!refreshing) simulator.setShowPath(showPath.isSelected());});
+        simulateButton.addActionListener(e -> {if(!refreshing) simulator.simulate(progressBar::setValue, this::disablePanels);});
+        realtimeCheckBox.addChangeListener(e -> {if(!refreshing) simulator.setRealtime(realtimeCheckBox.isSelected());});
     }
 
     private void disablePanels(boolean disable) {
@@ -133,6 +134,7 @@ public class SimulatorController implements Controller<MillingSimulator> {
 
     @Override
     public void refresh() {
+        refreshing = true;
         blockSizeX.setValue(simulator.getBlock().getSize().x());
         blockSizeY.setValue(simulator.getBlock().getSize().y());
         blockResX.setValue(simulator.getBlock().getResolution().x());
@@ -149,6 +151,7 @@ public class SimulatorController implements Controller<MillingSimulator> {
         showPath.setSelected(simulator.isShowPath());
 
         realtimeCheckBox.setSelected(simulator.getRealtime());
+        refreshing = false;
     }
 
     /**
