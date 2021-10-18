@@ -71,7 +71,7 @@ public class SimulatorController implements Controller<MillingSimulator> {
                 String ext = FilenameUtils.getExtension(name);
                 if (ext.matches("[fk]\\d+")) {
                     cutterRound.setSelected(ext.startsWith("k"));
-                    int r = Integer.parseInt(ext.substring(1));
+                    float r = Integer.parseInt(ext.substring(1)) * 0.5f;
                     if (r > 0) cutterRadius.setValue(r);
                     simulator.setTool(newCutter());
                 }
