@@ -403,6 +403,7 @@ public class Renderer {
         terrainShader.loadMatrix4f(gl, "mvp", mvp);
         terrainShader.loadMatrix4f(gl, "model", model.getModelMatrix());
         terrainShader.loadInteger(gl, "heights", 0);
+        terrainShader.loadVector3f(gl, "viewPos", camera.getPosition());
 
         if(heights != null) heights.use(gl, 0);
         else defaultTexture.use(gl, 0);

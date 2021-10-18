@@ -17,6 +17,7 @@ import java.util.concurrent.atomic.AtomicLong;
 import java.util.function.Consumer;
 
 public class MillingSimulator extends Model {
+    public static final int SIMULATION_TO_SCENE_SCALE = 100;
     private final List<Model> trash = new ArrayList<>();
     private Path path;
     private MillingTool tool;
@@ -132,13 +133,14 @@ public class MillingSimulator extends Model {
                 AtomicLong last = new AtomicLong();
                 block.mill(tool, path, progress, vec -> {
                     try {
-                        vec.div(100);
+                        vec.div(SIMULATION_TO_SCENE_SCALE);
                         cutter.setPosition(vec.x, vec.y, vec.z);
                         if(realtime) {
                             long now = System.nanoTime();
                             long delta = (now - last.get()) / 1_000_000;
-                            if(delta < 10) {
-                                Thread.sleep(10 - delta);
+                            long maxTime = 10;
+                            if(delta < maxTime) {
+                                Thread.sleep(maxTime - delta);
                             }
                             last.set(System.nanoTime());
                         }

@@ -2,6 +2,7 @@
 out vec4 FragColor;
 
 uniform sampler2D heights;
+uniform vec3 viewPos;
 
 in VertexData {
     vec3 position;
@@ -61,6 +62,7 @@ float turbulence (vec3 P, int numFreq) {
 void main() {
     float amplitude = 16.0;
     const int roughness = 8;
+    float specularStrength = 0.25;
 
     float t = 6.28 * fs_in.position.x / tileSize.x ;
     t += amplitude * turbulence (fs_in.position, roughness);
@@ -73,11 +75,16 @@ void main() {
     float left = texture2D(heights, fs_in.texture + vec2(0.001, 0)).r / 100;
     float right = texture2D(heights, fs_in.texture + vec2(-0.001, 0)).r / 100;
 
-    vec3 normal = normalize(vec3((bot - top) / 0.002, 1, (right - left) / 0.002));
+    vec3 normal = normalize(vec3((right - left) / 0.002, 1, (bot - top) / 0.002));
 
     vec3 lightDir = vec3(0, -1, 0);
 
-    float light = max(dot(normal, -lightDir), 0.2);
+    vec3 viewDir = normalize(viewPos - fs_in.position);
+    vec3 reflectDir = reflect(lightDir, normal);
+
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 16);
+
+    float light = max(spec * specularStrength + dot(normal, -lightDir), 0.2);
 
     FragColor = vec4(marbleColor * light, 1.0f);
 }
