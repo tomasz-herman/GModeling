@@ -9,7 +9,6 @@ import pl.edu.pw.mini.mg1.graphics.Renderer;
 import pl.edu.pw.mini.mg1.milling.MillingTool;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.jogamp.opengl.math.FloatUtil.PI;
 import static org.joml.Math.cos;
@@ -29,10 +28,6 @@ public class Cutter extends Model {
         float length = tool.getLength() / 100;
         short rings = 50;
         short sectors = 50;
-
-        if(!tool.isFlat()) {
-            length -= radius;
-        }
 
         float sectorStep = (float) (2 * Math.PI / sectors);
 

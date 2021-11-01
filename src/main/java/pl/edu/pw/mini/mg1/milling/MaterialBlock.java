@@ -91,16 +91,19 @@ public class MaterialBlock {
                         if(Float.isNaN(baseHeight - toolStepCache[i + toolSize.x][j + toolSize.y])) {
                             continue;
                         }
-                        float h = baseHeight + toolStepCache[i + toolSize.x][j + toolSize.y];
+                        float toolShapeCorrection = toolStepCache[i + toolSize.x][j + toolSize.y];
+                        float h = baseHeight + toolShapeCorrection;
                         int X = x + i;
                         int Y = y + j;
                         if (X >= 0 && Y >= 0 && X < resolution.x && Y < resolution.y) {
                             float diff = getHeight(X, Y) - h;
-                            if(tool.isFlat() && downMove && diff > 0) {
+                            if(diff <= 0) continue;
+                            if(tool.isFlat() && downMove) {
                                 throw new MillingException("Flat tool went down");
                             }
-                            if(diff > tool.getLength()) {
-                                throw new MillingException("Too deep, tool length was %.2f mm, but tried to mill %.2f mm of material".formatted(tool.getLength(), diff));
+                            float toolLengthCorrection = tool.isFlat() ? 0 : tool.getRadius() - toolShapeCorrection;
+                            if(diff > tool.getLength() + toolLengthCorrection) {
+                                throw new MillingException("Too deep, tool length was %.2f(%.2f after considering it's shape) mm, but tried to mill %.2f mm of material".formatted(tool.getLength(), tool.getLength() + toolLengthCorrection, diff));
                             }
                             float newH = min(getHeight(X, Y), h);
                             if(newH < minHeight) {
