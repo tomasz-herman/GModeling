@@ -102,10 +102,11 @@ public class MaterialBlock {
                             if(diff > tool.getLength()) {
                                 throw new MillingException("Too deep, tool length was %.2f mm, but tried to mill %.2f mm of material".formatted(tool.getLength(), diff));
                             }
-                            setHeight(X, Y, min(getHeight(X, Y), h));
-                            if(getHeight(X, Y) < minHeight) {
+                            float newH = min(getHeight(X, Y), h);
+                            if(newH < minHeight) {
                                 throw new MillingException("Too low, tried to mill to %.2f mm height, but limit was set to %.2f mm".formatted(getHeight(X, Y), getMinHeight()));
                             }
+                            setHeight(X, Y, newH);
                         }
                     }
                 }
