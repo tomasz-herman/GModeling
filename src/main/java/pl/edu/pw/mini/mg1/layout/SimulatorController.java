@@ -54,17 +54,39 @@ public class SimulatorController implements Controller<MillingSimulator> {
         blockMinH.setModel(new SpinnerNumberModel(15, 0, 1000, 0.1));
         cutterRadius.setModel(new SpinnerNumberModel(5, 0, 100, 0.1));
         cutterLength.setModel(new SpinnerNumberModel(25, 0, 1000, 0.1));
-        blockSizeX.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
-        blockSizeY.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
-        blockResX.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
-        blockResY.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
-        blockH.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
-        blockMinH.addChangeListener(e -> {if(!refreshing) simulator.setBlock(newBlock());});
-        showBlock.addChangeListener(e -> {if(!refreshing) simulator.setShowBlock(showBlock.isSelected());});
-        cutterRadius.addChangeListener(e -> {if(!refreshing) simulator.setTool(newCutter());});
-        cutterLength.addChangeListener(e -> {if(!refreshing) simulator.setTool(newCutter());});
-        cutterRound.addChangeListener(e -> {if(!refreshing) simulator.setTool(newCutter());});
-        showCutter.addChangeListener(e -> {if(!refreshing) simulator.setShowCutter(showCutter.isSelected());});
+        blockSizeX.addChangeListener(e -> {
+            if (!refreshing) simulator.setBlock(newBlock());
+        });
+        blockSizeY.addChangeListener(e -> {
+            if (!refreshing) simulator.setBlock(newBlock());
+        });
+        blockResX.addChangeListener(e -> {
+            if (!refreshing) simulator.setBlock(newBlock());
+        });
+        blockResY.addChangeListener(e -> {
+            if (!refreshing) simulator.setBlock(newBlock());
+        });
+        blockH.addChangeListener(e -> {
+            if (!refreshing) simulator.setBlock(newBlock());
+        });
+        blockMinH.addChangeListener(e -> {
+            if (!refreshing) simulator.setBlock(newBlock());
+        });
+        showBlock.addChangeListener(e -> {
+            if (!refreshing) simulator.setShowBlock(showBlock.isSelected());
+        });
+        cutterRadius.addChangeListener(e -> {
+            if (!refreshing) simulator.setTool(newCutter());
+        });
+        cutterLength.addChangeListener(e -> {
+            if (!refreshing) simulator.setTool(newCutter());
+        });
+        cutterRound.addChangeListener(e -> {
+            if (!refreshing) simulator.setTool(newCutter());
+        });
+        showCutter.addChangeListener(e -> {
+            if (!refreshing) simulator.setShowCutter(showCutter.isSelected());
+        });
         loadButton.addActionListener(e -> {
             if (fileChooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
                 File file = fileChooser.getSelectedFile();
@@ -85,9 +107,15 @@ public class SimulatorController implements Controller<MillingSimulator> {
                 }
             }
         });
-        showPath.addChangeListener(e -> {if(!refreshing) simulator.setShowPath(showPath.isSelected());});
-        simulateButton.addActionListener(e -> {if(!refreshing) simulator.simulate(progressBar::setValue, this::disablePanels);});
-        realtimeCheckBox.addChangeListener(e -> {if(!refreshing) simulator.setRealtime(realtimeCheckBox.isSelected());});
+        showPath.addChangeListener(e -> {
+            if (!refreshing) simulator.setShowPath(showPath.isSelected());
+        });
+        simulateButton.addActionListener(e -> {
+            if (!refreshing) simulator.simulate(progressBar::setValue, this::disablePanels);
+        });
+        realtimeCheckBox.addChangeListener(e -> {
+            if (!refreshing) simulator.setRealtime(realtimeCheckBox.isSelected());
+        });
     }
 
     private void disablePanels(boolean disable) {

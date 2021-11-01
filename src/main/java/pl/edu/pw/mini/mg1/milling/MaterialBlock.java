@@ -5,6 +5,7 @@ import org.joml.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
+import static com.jogamp.opengl.math.FloatUtil.abs;
 import static org.joml.Math.min;
 import static org.joml.Math.sqrt;
 
@@ -70,6 +71,7 @@ public class MaterialBlock {
             Vector2i from = new Vector2i((int)(lastCoord.x() / size.x * resolution.x + resolution.x / 2), (int)(lastCoord.y() / size.y * resolution.y + resolution.y / 2));
             Vector2i to   = new Vector2i((int)(nextCoord.x() / size.x * resolution.x + resolution.x / 2), (int)(nextCoord.y() / size.y * resolution.y + resolution.y / 2));
             float totalDist = (float) from.distance(to);
+            boolean downMove = nextCoord.z() < lastCoord.z();
             Vector3fc currentLastCoord = lastCoord;
             drawLine(from, to, (x, y) -> {
                 float currDist = (float) from.distance(x, y);
@@ -94,6 +96,9 @@ public class MaterialBlock {
                         int Y = y + j;
                         if (X >= 0 && Y >= 0 && X < resolution.x && Y < resolution.y) {
                             float diff = getHeight(X, Y) - h;
+                            if(tool.isFlat() && downMove && diff > 0) {
+                                throw new MillingException("Flat tool went down");
+                            }
                             if(diff > tool.getLength()) {
                                 throw new MillingException("Too deep, tool length was %.2f mm, but tried to mill %.2f mm of material".formatted(tool.getLength(), diff));
                             }
