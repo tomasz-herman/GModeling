@@ -22,6 +22,7 @@ public class MillingSimulator extends Model {
     private Path path;
     private MillingTool tool;
     private MaterialBlock block;
+    private Thread thread;
 
     private PolyLine polyline;
     private MilledBlock blockModel;
@@ -127,34 +128,35 @@ public class MillingSimulator extends Model {
     }
 
     public void simulate(Consumer<Integer> progress, Consumer<Boolean> disablePanels) {
-        new Thread(() -> {
+        thread = new Thread(() -> {
             try {
-                if(disablePanels != null) disablePanels.accept(true);
+                if (disablePanels != null) disablePanels.accept(true);
                 AtomicLong last = new AtomicLong();
                 block.mill(tool, path, progress, vec -> {
                     try {
+                        if(thread.isInterrupted()) throw new InterruptedException();
                         vec.div(SIMULATION_TO_SCENE_SCALE);
                         cutter.setPosition(vec.x, vec.y, vec.z);
-                        if(realtime) {
+                        if (realtime) {
                             long now = System.nanoTime();
                             long delta = (now - last.get()) / 1_000_000;
                             long maxTime = 10;
-                            if(delta < maxTime) {
+                            if (delta < maxTime) {
                                 Thread.sleep(maxTime - delta);
                             }
                             last.set(System.nanoTime());
                         }
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        throw new MillingException("Milling interrupted");
                     }
                 }, blockModel::reloadTexture);
             } catch (MillingException e) {
                 JOptionPane.showMessageDialog(null, e.getMessage());
             } finally {
-                if(disablePanels != null) disablePanels.accept(false);
+                if (disablePanels != null) disablePanels.accept(false);
             }
-        }
-        ).start();
+        });
+        thread.start();
     }
 
     public boolean getRealtime() {
@@ -163,5 +165,9 @@ public class MillingSimulator extends Model {
 
     public void setRealtime(boolean realtime) {
         this.realtime = realtime;
+    }
+
+    public void interrupt() {
+        if(thread != null) thread.interrupt();
     }
 }

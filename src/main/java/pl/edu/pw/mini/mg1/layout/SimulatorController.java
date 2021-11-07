@@ -39,6 +39,7 @@ public class SimulatorController implements Controller<MillingSimulator> {
     private JPanel pathPane;
     private JPanel cutterPane;
     private JLabel pathName;
+    private JButton interruptButton;
     private MillingSimulator simulator;
     private boolean refreshing;
 
@@ -116,6 +117,9 @@ public class SimulatorController implements Controller<MillingSimulator> {
         realtimeCheckBox.addChangeListener(e -> {
             if (!refreshing) simulator.setRealtime(realtimeCheckBox.isSelected());
         });
+        interruptButton.addActionListener(e -> {
+            if (simulator != null) simulator.interrupt();
+        });
     }
 
     private void disablePanels(boolean disable) {
@@ -191,7 +195,7 @@ public class SimulatorController implements Controller<MillingSimulator> {
      */
     private void $$$setupUI$$$() {
         mainPane = new JPanel();
-        mainPane.setLayout(new GridLayoutManager(6, 1, new Insets(0, 0, 0, 0), -1, -1));
+        mainPane.setLayout(new GridLayoutManager(7, 1, new Insets(0, 0, 0, 0), -1, -1));
         blockPane = new JPanel();
         blockPane.setLayout(new GridLayoutManager(7, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(blockPane, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
@@ -269,10 +273,13 @@ public class SimulatorController implements Controller<MillingSimulator> {
         simulateButton.setText("Simulate");
         mainPane.add(simulateButton, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         progressBar = new JProgressBar();
-        mainPane.add(progressBar, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        mainPane.add(progressBar, new GridConstraints(6, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         realtimeCheckBox = new JCheckBox();
         realtimeCheckBox.setText("realtime");
         mainPane.add(realtimeCheckBox, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
+        interruptButton = new JButton();
+        interruptButton.setText("Interrupt");
+        mainPane.add(interruptButton, new GridConstraints(5, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**

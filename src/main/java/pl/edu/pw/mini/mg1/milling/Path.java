@@ -81,7 +81,7 @@ public class Path {
         return new PolyLine(coords.stream().map(v -> new Vector3f(v.x, v.z, v.y).div(100)).map(Point::new).toList());
     }
 
-    private static Map<Character, String> split(String line) {
+    private static Map<Character, String> split(String line) throws IOException {
         Map<Character, String> map = new HashMap<>();
         char code = '\0';
         StringBuilder temp = new StringBuilder();
@@ -89,7 +89,9 @@ public class Path {
             char current = Character.toUpperCase(line.charAt(i));
             if(Character.isAlphabetic(current)) {
                 if(temp.length() > 0) {
-                    map.put(code, temp.toString());
+                    if(map.put(code, temp.toString()) != null) {
+                        throw new IOException("Character twice in map in line: \n%s".formatted(line));
+                    }
                     temp = new StringBuilder();
                 }
                 code = current;
