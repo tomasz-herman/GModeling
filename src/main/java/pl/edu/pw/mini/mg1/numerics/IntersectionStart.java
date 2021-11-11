@@ -11,7 +11,6 @@ import java.util.List;
 import java.util.Random;
 import java.util.function.BiFunction;
 import java.util.function.Function;
-import java.util.function.ToDoubleFunction;
 
 import static org.joml.Math.*;
 
@@ -113,8 +112,10 @@ public class IntersectionStart {
     }
 
     private Vector2f uv(Vector2f uv) {
-        uv.x = clamp(0, 1, uv.x);
-        uv.y = clamp(0, 1, uv.y);
+        uv.x = uv.x % 1;
+        if(uv.x < 0) uv.x += 1;
+        uv.y = uv.y % 1;
+        if(uv.y < 0) uv.y += 1;
         return uv;
     }
 }

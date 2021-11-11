@@ -3,9 +3,12 @@ package pl.edu.pw.mini.mg1.milling;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
+import pl.edu.pw.mini.mg1.layout.IntersectionWizard;
 import pl.edu.pw.mini.mg1.models.Intersectable;
 import pl.edu.pw.mini.mg1.models.MilledBlock;
+import pl.edu.pw.mini.mg1.models.OffsetSurface;
 import pl.edu.pw.mini.mg1.models.Scene;
+import pl.edu.pw.mini.mg1.numerics.Intersection;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -151,6 +154,30 @@ public class PathGenerator {
         positions.add(new Vector3f(-85, 85, 80));
         positions.add(new Vector3f(0, 0, 80));
 
+        return new Path(compressPaths(positions));
+    }
+
+    public static Path generate3(Scene scene) {
+        List<Vector3f> positions = new ArrayList<>();
+        positions.add(new Vector3f(0, 0, 80));
+        Intersectable plane = scene.getModels().stream()
+                .filter(m -> m instanceof Intersectable)
+                .filter(m -> m.getName().equals("Plane"))
+                .map(m -> (Intersectable)m)
+                .map(m -> new OffsetSurface(m, 0.1f))
+                .findFirst().orElse(null);
+        if(plane == null) return new Path(positions);
+        List<Intersectable> surfaces = scene.getModels().stream()
+                .filter(m -> m instanceof Intersectable)
+                .filter(m -> !m.getName().equals("Plane"))
+                .map(m -> (Intersectable)m)
+                .map(m -> new OffsetSurface(m, -0.5f))
+                .collect(Collectors.toList());
+        Intersection intersection = new Intersection(plane, surfaces.get(0));
+        var curve = intersection.find(null, scene::setPointerWorldCoords, 0.1f);
+        positions.add(new Vector3f(0, 0, 80));
+        System.out.println(curve.size());
+        System.out.println(curve);
         return new Path(compressPaths(positions));
     }
 

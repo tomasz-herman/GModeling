@@ -65,7 +65,7 @@ public class IntersectionWizard {
         Function<Float, Float> wrap = val -> val < 0 ? val + 1 : val > 1 ? val - 1 : val;
         LinkedList<Vector4f> parameters = new LinkedList<>();
         parameters.addLast(s);
-        int i = 1000;
+        int i = 10000;
         while (i-- > 0) {
             Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, getStep(), 100);
             next = newton.solve();
@@ -79,14 +79,14 @@ public class IntersectionWizard {
             else next.z = wrap.apply(next.z);
             if (!qWrapsV && (next.w > 1 || next.w < 0)) break;
             else next.w = wrap.apply(next.w);
-            if (found.distance(P.P(next.x, next.y)) < getStep()) {
+            if (found.distance(P.P(next.x, next.y)) < getStep() && i > 3) {
                 parameters.addLast(s);
                 addModel.accept(new IntersectionCurve(parameters, P, Q));
                 refresh.run();
                 return;
             }
         }
-        i = 1000;
+        i = 10000;
         next = new Vector4f(s);
         while (i-- > 0) {
             Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, -getStep(), 100);
@@ -115,39 +115,44 @@ public class IntersectionWizard {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        mainPane = new javax.swing.JPanel();
-        mainPane.setLayout(new GridLayoutManager(4, 1, new java.awt.Insets(5, 5, 5, 5), -1, -1));
-        final javax.swing.JPanel panel1 = new javax.swing.JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 2, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        mainPane = new JPanel();
+        mainPane.setLayout(new GridLayoutManager(4, 1, new Insets(5, 5, 5, 5), -1, -1));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final javax.swing.JLabel label1 = new javax.swing.JLabel();
+        final JLabel label1 = new JLabel();
+        label1.setText("d");
         panel1.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        stepSpinner = new javax.swing.JSpinner();
+        stepSpinner = new JSpinner();
         panel1.add(stepSpinner, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         mainPane.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final javax.swing.JPanel panel2 = new javax.swing.JPanel();
-        panel2.setLayout(new GridLayoutManager(1, 2, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final javax.swing.JLabel label2 = new javax.swing.JLabel();
+        final JLabel label2 = new JLabel();
+        label2.setText("near pointer");
         panel2.add(label2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        nearPointerCheckbox = new javax.swing.JCheckBox();
+        nearPointerCheckbox = new JCheckBox();
+        nearPointerCheckbox.setText("");
         panel2.add(nearPointerCheckbox, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final javax.swing.JPanel panel3 = new javax.swing.JPanel();
-        panel3.setLayout(new GridLayoutManager(1, 3, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        final JPanel panel3 = new JPanel();
+        panel3.setLayout(new GridLayoutManager(1, 3, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel3, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        findButton = new javax.swing.JButton();
+        findButton = new JButton();
+        findButton.setText("Find");
         panel3.add(findButton, new GridConstraints(0, 2, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer2 = new Spacer();
         panel3.add(spacer2, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_WANT_GROW, 1, null, null, null, 0, false));
-        cancelButton = new javax.swing.JButton();
+        cancelButton = new JButton();
+        cancelButton.setText("Cancel");
         panel3.add(cancelButton, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_HORIZONTAL, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
      * @noinspection ALL
      */
-    public javax.swing.JComponent $$$getRootComponent$$$() {
+    public JComponent $$$getRootComponent$$$() {
         return mainPane;
     }
 
