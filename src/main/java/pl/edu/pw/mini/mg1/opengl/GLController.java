@@ -47,6 +47,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
     private Controller<Scene> sceneController;
     private Controller<Scene> pointerController;
     private Controller<Renderer> rendererController;
+    private Controller<Scene> pathController;
     private final GLJPanel gljPanel;
 
     public GLController(GLJPanel gljPanel) {
@@ -82,6 +83,7 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
         sceneController.set(scene);
         pointerController.set(scene);
         rendererController.set(renderer);
+        pathController.set(scene);
     }
 
     @Override
@@ -289,5 +291,9 @@ public class GLController implements GLEventListener, MouseListener, MouseWheelL
 
     public void setRendererController(Controller<Renderer> rendererController) {
         this.rendererController = rendererController;
+    }
+
+    public void setPathsController(Controller<Scene> pathController) {
+        this.pathController = pathController;
     }
 }

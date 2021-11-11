@@ -175,9 +175,9 @@ public class SimulatorController implements Controller<MillingSimulator> {
         blockMinH.setValue(simulator.getBlock().getMinHeight());
         showBlock.setSelected(simulator.isShowBlock());
 
-        cutterRadius.setValue(simulator.getTool().getRadius());
-        cutterLength.setValue(simulator.getTool().getLength());
-        cutterRound.setSelected(!simulator.getTool().isFlat());
+        cutterRadius.setValue(simulator.getTool().radius());
+        cutterLength.setValue(simulator.getTool().length());
+        cutterRound.setSelected(!simulator.getTool().flat());
         showCutter.setSelected(simulator.isShowCutter());
 
         showPath.setSelected(simulator.isShowPath());

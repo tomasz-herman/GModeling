@@ -1,13 +1,14 @@
 package pl.edu.pw.mini.mg1.milling;
 
 import org.joml.*;
+import pl.edu.pw.mini.mg1.models.Intersectable;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static com.jogamp.opengl.math.FloatUtil.abs;
-import static org.joml.Math.min;
-import static org.joml.Math.sqrt;
+import static org.joml.Math.*;
 
 public class MaterialBlock {
     private final Vector2f size;
@@ -47,23 +48,7 @@ public class MaterialBlock {
     }
 
     public void mill(MillingTool tool, Path path, Consumer<Integer> progress, Consumer<Vector3f> moveTool, Runnable updateTexture) {
-        Vector2i toolSize = new Vector2i((int)(tool.getRadius() * resolution.x / size.x), (int)(tool.getRadius() * resolution.y / size.y));
-        float[][] toolStepCache = new float[1 + toolSize.x * 2][1 + toolSize.y * 2];
-        for (int i = 0; i < toolStepCache.length; i++) {
-            for (int j = 0; j < toolStepCache[i].length; j++) {
-                float x = (i - toolSize.x) * size.x / resolution.x;
-                float y = (j - toolSize.y) * size.y / resolution.y;
-                if(x * x + y * y > tool.getRadius() * tool.getRadius()) {
-                    toolStepCache[i][j] = Float.NaN;
-                } else {
-                    if(tool.isFlat()) {
-                        toolStepCache[i][j] = 0.0f;
-                    } else {
-                        toolStepCache[i][j] = tool.getRadius() - sqrt(tool.getRadius() * tool.getRadius() - x * x - y * y);
-                    }
-                }
-            }
-        }
+        MillingTool.Cache cache = tool.new Cache(this);
         Vector3fc lastCoord = path.getCoords().get(0);
         int iter = 0;
         int lastReportedProgress = -1;
@@ -86,28 +71,28 @@ public class MaterialBlock {
                                 baseHeight, (float) y / resolution.y * size.y - size.y * 0.5f));
                     }
                 }
-                for (int i = -toolSize.x; i <= toolSize.x; i++) {
-                    for (int j = -toolSize.y; j <= toolSize.y; j++) {
-                        if(Float.isNaN(baseHeight - toolStepCache[i + toolSize.x][j + toolSize.y])) {
+                for (int i = -cache.getSize().x; i <= cache.getSize().x; i++) {
+                    for (int j = -cache.getSize().y; j <= cache.getSize().y; j++) {
+                        if(Float.isNaN(baseHeight - cache.getShape()[i + cache.getSize().x][j + cache.getSize().y])) {
                             continue;
                         }
-                        float toolShapeCorrection = toolStepCache[i + toolSize.x][j + toolSize.y];
+                        float toolShapeCorrection = cache.getShape()[i + cache.getSize().x][j + cache.getSize().y];
                         float h = baseHeight + toolShapeCorrection;
                         int X = x + i;
                         int Y = y + j;
                         if (X >= 0 && Y >= 0 && X < resolution.x && Y < resolution.y) {
                             float diff = getHeight(X, Y) - h;
                             if(diff <= 0) continue;
-                            if(tool.isFlat() && downMove) {
+                            if(tool.flat() && downMove) {
                                 throw new MillingException("Flat tool went down");
                             }
-                            float toolLengthCorrection = tool.isFlat() ? 0 : tool.getRadius() - toolShapeCorrection;
-                            if(diff > tool.getLength() + toolLengthCorrection) {
-                                throw new MillingException("Too deep, tool length was %.2f(%.2f after considering it's shape) mm, but tried to mill %.2f mm of material".formatted(tool.getLength(), tool.getLength() + toolLengthCorrection, diff));
+                            float toolLengthCorrection = tool.flat() ? 0 : tool.radius() - toolShapeCorrection;
+                            if(diff > tool.length() + toolLengthCorrection) {
+                                throw new MillingException("Too deep, tool length was %.2f(%.2f after considering it's shape) mm, but tried to mill %.2f mm of material".formatted(tool.length(), tool.length() + toolLengthCorrection, diff));
                             }
                             float newH = min(getHeight(X, Y), h);
                             if(newH < minHeight) {
-                                throw new MillingException("Too low, tried to mill to %.2f mm height, but limit was set to %.2f mm".formatted(getHeight(X, Y), getMinHeight()));
+                                throw new MillingException("Too low, tried to mill to %f mm height, but limit was set to %f mm".formatted(newH, minHeight));
                             }
                             setHeight(X, Y, newH);
                         }
@@ -123,6 +108,46 @@ public class MaterialBlock {
             }
             if(updateTexture != null) updateTexture.run();
         }
+    }
+
+    public void renderPatches(List<Intersectable> patches) {
+        Arrays.fill(heights, minHeight);
+        for (Intersectable patch : patches) {
+            int samples = 3000;
+            for (int i = 0; i <= samples; i++) {
+                float u = (float) i / samples;
+                for (int j = 0; j <= samples; j++) {
+                    float v = (float) j / samples;
+                    Vector3f p = patch.P(u, v).mul(10);
+                    int I = clamp(0, this.resolution.x - 1, (int) (((p.x + size.x / 2) / size.x) * this.resolution.x));
+                    int J = clamp(0, this.resolution.y - 1, (int) (((p.z + size.y / 2) / size.y) * this.resolution.y));
+                    if(getHeight(I, J) < p.y + minHeight) setHeight(I, J, p.y + minHeight);
+                }
+            }
+        }
+    }
+
+    public float findMaxHeight(float posX, float posY, MillingTool.Cache cache) {
+        int I = clamp(0, resolution.x - 1, (int) (((posX + size.x / 2) / size.x) * resolution.x));
+        int J = clamp(0, resolution.y - 1, (int) (((posY + size.y / 2) / size.y) * resolution.y));
+        
+        float maxH = minHeight;
+
+        for (int i = -cache.getSize().x; i <= cache.getSize().x; i++) {
+            for (int j = -cache.getSize().y; j <= cache.getSize().y; j++) {
+                if(Float.isNaN(cache.getShape()[i + cache.getSize().x][j + cache.getSize().y])) {
+                    continue;
+                }
+                float toolShapeCorrection = cache.getShape()[i + cache.getSize().x][j + cache.getSize().y];
+                int X = I + i;
+                int Y = J + j;
+                if (X >= 0 && Y >= 0 && X < resolution.x && Y < resolution.y) {
+                    float h = getHeight(X, Y) - toolShapeCorrection;
+                    if(h > maxH) maxH = h;
+                }
+            }
+        }
+        return maxH;
     }
 
     private void drawLine(Vector2i from, Vector2i to, BiConsumer<Integer, Integer> mid) {

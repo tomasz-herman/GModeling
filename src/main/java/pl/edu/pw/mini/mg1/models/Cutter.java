@@ -24,8 +24,8 @@ public class Cutter extends Model {
 
     @Override
     protected void load(GL4 gl) {
-        float radius = tool.getRadius() / 100;
-        float length = tool.getLength() / 100;
+        float radius = tool.radius() / 100;
+        float length = tool.length() / 100;
         short rings = 50;
         short sectors = 50;
 
@@ -45,7 +45,7 @@ public class Cutter extends Model {
 
         for (int i = 0; i < 2; ++i) {
             float h = i * length;
-            if(!tool.isFlat()) {
+            if(!tool.flat()) {
                 h += radius;
             }
             float t = 1.0f - i;
@@ -73,7 +73,7 @@ public class Cutter extends Model {
 
         for (int i = 0; i < 2; ++i) {
             float h = i * length;
-            if(!tool.isFlat()) {
+            if(!tool.flat()) {
                 h += radius;
             }
             float nz = -1 + i * 2;
@@ -142,7 +142,7 @@ public class Cutter extends Model {
             }
         }
 
-        if (!tool.isFlat()) {
+        if (!tool.flat()) {
             float R = 1f / (rings - 1);
             float S = 1f / (sectors - 1);
             short r, s;

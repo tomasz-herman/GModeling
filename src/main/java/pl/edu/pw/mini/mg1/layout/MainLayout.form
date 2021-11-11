@@ -49,6 +49,7 @@
                 <item value="Scene"/>
                 <item value="Pointer"/>
                 <item value="Renderer"/>
+                <item value="Paths"/>
               </model>
             </properties>
           </component>

@@ -8,11 +8,16 @@ import pl.edu.pw.mini.mg1.models.PolyLine;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.joml.Math.ceil;
 
 public class Path {
     private final List<Vector3f> coords;
+
+    public Path(List<Vector3f> coords) {
+        this.coords = coords;
+    }
 
     public Path(InputStream stream) throws IOException {
         this(stream, Float.POSITIVE_INFINITY);
@@ -101,5 +106,15 @@ public class Path {
         }
         if(temp.length() > 0) map.put(code, temp.toString());
         return map;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder buffer = new StringBuilder();
+        AtomicInteger i = new AtomicInteger(3);
+        coords.forEach(v -> buffer.append("N%dG01X%.3fY%.3fZ%.3f\n"
+                .formatted(i.getAndIncrement(), v.x, v.y, v.z)));
+        return buffer.toString();
+
     }
 }

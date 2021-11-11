@@ -1,25 +1,40 @@
 package pl.edu.pw.mini.mg1.milling;
 
-public class MillingTool {
-    private final float radius;
-    private final float length;
-    private final boolean flat;
+import org.joml.Vector2i;
 
-    public MillingTool(float radius, float length, boolean flat) {
-        this.radius = radius;
-        this.length = length;
-        this.flat = flat;
-    }
+import static org.joml.Math.sqrt;
 
-    public float getRadius() {
-        return radius;
-    }
+public record MillingTool(float radius, float length, boolean flat) {
+    public class Cache {
+        private final Vector2i size;
+        private final float[][] shape;
 
-    public boolean isFlat() {
-        return flat;
-    }
+        public Cache(MaterialBlock block) {
+            size = new Vector2i((int) (radius * block.getResolution().x() / block.getSize().x()), (int) (radius * block.getResolution().y() / block.getSize().y()));
+            shape = new float[1 + size.x * 2][1 + size.y * 2];
+            for (int i = 0; i < shape.length; i++) {
+                for (int j = 0; j < shape[i].length; j++) {
+                    float x = (i - size.x) * block.getSize().x() / block.getResolution().x();
+                    float y = (j - size.y) * block.getSize().y() / block.getResolution().y();
+                    if (x * x + y * y > radius * radius) {
+                        shape[i][j] = Float.NaN;
+                    } else {
+                        if (flat) {
+                            shape[i][j] = 0.0f;
+                        } else {
+                            shape[i][j] = radius - sqrt(radius * radius - x * x - y * y);
+                        }
+                    }
+                }
+            }
+        }
 
-    public float getLength() {
-        return length;
+        public Vector2i getSize() {
+            return size;
+        }
+
+        public float[][] getShape() {
+            return shape;
+        }
     }
 }
