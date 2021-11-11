@@ -1,21 +1,21 @@
 package pl.edu.pw.mini.mg1.milling;
 
+import org.apache.commons.lang3.tuple.Pair;
+import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Vector2f;
 import org.joml.Vector2i;
 import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.layout.IntersectionWizard;
-import pl.edu.pw.mini.mg1.models.Intersectable;
-import pl.edu.pw.mini.mg1.models.MilledBlock;
-import pl.edu.pw.mini.mg1.models.OffsetSurface;
-import pl.edu.pw.mini.mg1.models.Scene;
+import pl.edu.pw.mini.mg1.models.*;
 import pl.edu.pw.mini.mg1.numerics.Intersection;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.joml.Math.clamp;
-import static org.joml.Math.max;
+import static org.joml.Math.*;
 
 public class PathGenerator {
     public static Path generate1(Scene scene) {
@@ -173,17 +173,125 @@ public class PathGenerator {
                 .map(m -> (Intersectable)m)
                 .map(m -> new OffsetSurface(m, -0.5f))
                 .collect(Collectors.toList());
-        Intersection intersection = new Intersection(plane, surfaces.get(0));
-        var curve = intersection.find(null, scene::setPointerWorldCoords, 0.01f);
-        var curvePos = curve.stream().map(c -> plane.P(c.x, c.y)).map(c -> c.mul(10).add(0, 15, 0)).collect(Collectors.toList());
+        List<Vector3f> envelope = findBestIntersection(plane, surfaces.get(0));
+        scene.addModel(new BezierC0(envelope.stream().map(Point::new).collect(Collectors.toList())));
+        surfaces.remove(0);
+
+        for (Intersectable surface : surfaces) {
+            List<Vector3f> curve = findBestIntersection(plane, surface);
+            scene.addModel(new BezierC0(envelope.stream().map(Point::new).collect(Collectors.toList())));
+            envelope = merge(envelope, curve);
+        }
+
         positions.add(new Vector3f(0, 0, 80));
-        positions.add(new Vector3f(-85, -85, 80));
-        positions.add(new Vector3f(-85, -85, 16));
-        for (Vector3f pos : curvePos) {
+        positions.add(new Vector3f(85, 85, 80));
+        positions.add(new Vector3f(85, 85, 16));
+        for (Vector3f pos : envelope) {
             positions.add(new Vector3f(pos.x, -pos.z, 16));
         }
-        positions.forEach(cord -> System.out.println(cord));
+//        positions.forEach(cord -> System.out.println(cord));
         return new Path(compressPaths(positions));
+    }
+
+    private static List<Vector3f> merge(List<Vector3f> envelope, List<Vector3f> curve) {
+        List<Triple<Integer, Integer, Float>> distances = new ArrayList<>(curve.size());
+        for (Vector3f vec1 : curve) {
+            float best = Float.POSITIVE_INFINITY;
+            int bestI = -1;
+            for (int i = 0, envelopeSize = envelope.size(); i < envelopeSize; i++) {
+                Vector3f vec2 = envelope.get(i);
+                float dist = vec1.distance(vec2);
+                if (dist < best) {
+                    best = dist;
+                    bestI = i;
+                }
+            }
+            distances.add(Triple.of(distances.size(), bestI, best));
+        }
+        distances = distances.stream()
+                .sorted((o1, o2) -> Float.compare(o1.getRight(), o2.getRight()))
+                .limit(10)
+                .filter(t -> t.getRight() < 0.2f)
+                .collect(Collectors.toList());
+        if(distances.size() < 2 || distances.get(0).getRight() > 0.2) return envelope;
+
+        List<Triple<Integer, Integer, Float>> intersectionPoints = new ArrayList<>();
+        intersectionPoints.add(distances.get(0));
+
+        for (Triple<Integer, Integer, Float> distance : distances) {
+            Vector3f vec1 = curve.get(distance.getLeft());
+            boolean match = false;
+            for (Triple<Integer, Integer, Float> intersectionPoint : intersectionPoints) {
+                Vector3f vec2 = curve.get(intersectionPoint.getLeft());
+                if(vec1.distance(vec2) > 0.4) {
+                    match = true;
+                    break;
+                }
+            }
+            if(match) {
+                intersectionPoints.add(distance);
+                break;
+            }
+        }
+        if(intersectionPoints.size() != 2) return envelope;
+
+        List<Vector3f> merged = new ArrayList<>();
+
+        int minE = min(intersectionPoints.get(0).getMiddle(), intersectionPoints.get(1).getMiddle());
+        int maxE = max(intersectionPoints.get(0).getMiddle(), intersectionPoints.get(1).getMiddle());
+        int minC = min(intersectionPoints.get(0).getLeft(), intersectionPoints.get(1).getLeft());
+        int maxC = max(intersectionPoints.get(0).getLeft(), intersectionPoints.get(1).getLeft());
+
+        if(maxE - minE < envelope.size() + minE - maxE) {
+            for (int i = 0; i <= minE; i++) {
+                merged.add(envelope.get(i));
+            }
+
+            if(minE == intersectionPoints.get(0).getMiddle()) {
+                if(minC == intersectionPoints.get(0).getLeft()) {
+                    for (int i = minC; i < maxC; i++) {
+                        merged.add(curve.get(i));
+                    }
+                } else {
+                    for (int i = maxC - 1; i >= minC; i--) {
+                        merged.add(curve.get(i));
+                    }
+                }
+            } else {
+                if(minC == intersectionPoints.get(0).getLeft()) {
+                    for (int i = maxC - 1; i >= minC; i--) {
+                        merged.add(curve.get(i));
+                    }
+                } else {
+                    for (int i = minC; i < maxC; i++) {
+                        merged.add(curve.get(i));
+                    }
+                }
+            }
+
+            for (int i = maxE; i < envelope.size(); i++) {
+                merged.add(envelope.get(i));
+            }
+        } else {
+            System.out.println("oh noes");
+        }
+        return merged;
+    }
+
+    private static List<Vector3f> findBestIntersection(Intersectable plane, Intersectable surface) {
+        float best = -1;
+        List<Vector3f> bestCurve = List.of();
+        for (int i = 0; i < 16; i++) {
+            Intersection intersection = new Intersection(plane, surface);
+            var curve = intersection.find(null, vec -> {}, 0.01f);
+            var curvePos = curve.stream().map(c -> plane.P(c.x, c.y)).map(c -> c.mul(10).add(0, 15, 0)).collect(Collectors.toList());
+            float heuristics = (float) curvePos.stream().mapToDouble(vec -> abs(vec.x) + abs(vec.z)).sum();
+            if(heuristics > best) {
+                bestCurve = curvePos;
+                best = heuristics;
+            }
+        }
+        return bestCurve;
     }
 
     public static List<Vector3f> compressPaths(List<Vector3f> paths) {
