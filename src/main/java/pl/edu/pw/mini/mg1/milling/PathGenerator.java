@@ -174,10 +174,15 @@ public class PathGenerator {
                 .map(m -> new OffsetSurface(m, -0.5f))
                 .collect(Collectors.toList());
         Intersection intersection = new Intersection(plane, surfaces.get(0));
-        var curve = intersection.find(null, scene::setPointerWorldCoords, 0.1f);
+        var curve = intersection.find(null, scene::setPointerWorldCoords, 0.01f);
+        var curvePos = curve.stream().map(c -> plane.P(c.x, c.y)).map(c -> c.mul(10).add(0, 15, 0)).collect(Collectors.toList());
         positions.add(new Vector3f(0, 0, 80));
-        System.out.println(curve.size());
-        System.out.println(curve);
+        positions.add(new Vector3f(-85, -85, 80));
+        positions.add(new Vector3f(-85, -85, 16));
+        for (Vector3f pos : curvePos) {
+            positions.add(new Vector3f(pos.x, -pos.z, 16));
+        }
+        positions.forEach(cord -> System.out.println(cord));
         return new Path(compressPaths(positions));
     }
 

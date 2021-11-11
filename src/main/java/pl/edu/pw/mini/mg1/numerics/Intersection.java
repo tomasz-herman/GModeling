@@ -37,7 +37,6 @@ public class Intersection {
         while (i-- > 0) {
             Newton newton = new Newton(P::P, Q::P, P::N, Q::N, next, step, 100);
             next = newton.solve();
-            System.out.println(next);
             if (!next.isFinite()) return parameters;
             parameters.addLast(next);
             if (!pWrapsU && (next.x > 1 || next.x < 0)) break;
