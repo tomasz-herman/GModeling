@@ -35,7 +35,7 @@ public class MillingSimulator extends Model {
     private volatile boolean realtime = false;
 
     public MillingSimulator() {
-        block = new MaterialBlock(new Vector2f(180, 180), new Vector2i(400, 400), 50, 15);
+        block = new MaterialBlock(new Vector2f(150, 150), new Vector2i(400, 400), 50, 15);
         tool = new MillingTool(5, 15, false);
         blockModel = new MilledBlock(block);
         cutter = new Cutter(tool);

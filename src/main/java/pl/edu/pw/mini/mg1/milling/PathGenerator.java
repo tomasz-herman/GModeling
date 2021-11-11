@@ -24,19 +24,18 @@ public class PathGenerator {
                 .collect(Collectors.toList());
         block.renderPatches(patches);
         scene.addModel(new MilledBlock(block));
-        MillingTool.Cache cache = new MillingTool(8.01f, 25, false).new Cache(block);
-        float maxHeight = block.findMaxHeight(0, 0, cache);
+        MillingTool.Cache cache = new MillingTool(10f, 25, false).new Cache(block);
         positions.add(new Vector3f(0, 0, 80));
         positions.add(new Vector3f(-75, 75, 80));
-        float H1 = 32.5f;
-        float H2 = 15.0f;
+        float H1 = 33.0f;
+        float H2 = 16.0f;
         float x = -75f;
         float y = -75f;
         boolean yUp = true;
         while(x <= 75f) {
             while(y <= 75f && y >= -75f) {
                 float h = block.findMaxHeight(x, y, cache);
-                positions.add(new Vector3f(x, -y, max(h, H1 + 0.01f)));
+                positions.add(new Vector3f(x, -y, max(h, H1 + 1f)));
                 if(yUp) y += 1;
                 else y -= 1;
             }
@@ -47,7 +46,7 @@ public class PathGenerator {
         while(x >= -75f) {
             while(y <= 75f && y >= -75f) {
                 float h = block.findMaxHeight(x, y, cache);
-                positions.add(new Vector3f(x, -y, max(h, H2 + 0.01f)));
+                positions.add(new Vector3f(x, -y, max(h, H2 + 1f)));
                 if(yUp) y += 1;
                 else y -= 1;
             }
@@ -57,6 +56,101 @@ public class PathGenerator {
         }
         positions.add(new Vector3f(-75, -75, 80));
         positions.add(new Vector3f(0, 0, 80));
+        return new Path(compressPaths(positions));
+    }
+
+    public static Path generate2(Scene scene) {
+        List<Vector3f> positions = new ArrayList<>();
+        MaterialBlock block = new MaterialBlock(new Vector2f(150, 150), new Vector2i(1500, 1500), 50, 15);
+        List<Intersectable> patches = scene.getModels().stream()
+                .filter(m -> m instanceof Intersectable)
+                .map(m -> (Intersectable)m)
+                .collect(Collectors.toList());
+        MillingTool.Cache cache = new MillingTool(6.01f, 25, true).new Cache(block);
+        block.renderPatches(patches);
+        scene.addModel(new MilledBlock(block));
+        positions.add(new Vector3f(0, 0, 80));
+        positions.add(new Vector3f(-85, 85, 80));
+        float H = 16;
+        float x = -85f;
+        float y = -85f;
+        while(x <= 85f) {
+            while(y <= 85f && y >= -85f) {
+                float h = block.findMaxHeight(x, y, cache);
+                if(h > H) break;
+                positions.add(new Vector3f(x, -y, H));
+                y += 1;
+            }
+            positions.add(new Vector3f(x, -y - 1, 80));
+            positions.add(new Vector3f(x, 85, 80));
+            positions.add(new Vector3f(x, 85, H));
+
+            y = -85;
+            x += 5;
+        }
+        positions.add(new Vector3f(85, 85, 80));
+        positions.add(new Vector3f(0, 0, 80));
+
+        positions.add(new Vector3f(-85, -85, 80));
+        x = -85f;
+        y = 85f;
+        while(x <= 85f) {
+            while(y <= 85f && y >= -85f) {
+                float h = block.findMaxHeight(x, y, cache);
+                if(h > H) break;
+                positions.add(new Vector3f(x, -y, H));
+                y -= 1;
+            }
+            positions.add(new Vector3f(x, -y + 1, 80));
+            positions.add(new Vector3f(x, -85, 80));
+            positions.add(new Vector3f(x, -85, H));
+
+            y = 85;
+            x += 5;
+        }
+        positions.add(new Vector3f(85, -85, 80));
+        positions.add(new Vector3f(0, 0, 80));
+
+        positions.add(new Vector3f(-85, 85, 80));
+        x = -85f;
+        y = -85f;
+        while(y <= 85f) {
+            while(x <= 85f && x >= -85f) {
+                float h = block.findMaxHeight(x, y, cache);
+                if(h > H) break;
+                positions.add(new Vector3f(x, -y, H));
+                x += 1;
+            }
+            positions.add(new Vector3f(x - 1, -y, 80));
+            positions.add(new Vector3f(-85, -y, 80));
+            positions.add(new Vector3f(-85, -y, H));
+
+            x = -85;
+            y += 5;
+        }
+        positions.add(new Vector3f(-85, -85, 80));
+        positions.add(new Vector3f(0, 0, 80));
+
+        positions.add(new Vector3f(-85, -85, 80));
+        x = 85f;
+        y = -85f;
+        while(y <= 85f) {
+            while(x <= 85f && x >= -85f) {
+                float h = block.findMaxHeight(x, y, cache);
+                if(h > H) break;
+                positions.add(new Vector3f(x, -y, H));
+                x -= 1;
+            }
+            positions.add(new Vector3f(x + 1, -y, 80));
+            positions.add(new Vector3f(85, -y, 80));
+            positions.add(new Vector3f(85, -y, H));
+
+            x = 85;
+            y += 5;
+        }
+        positions.add(new Vector3f(-85, 85, 80));
+        positions.add(new Vector3f(0, 0, 80));
+
         return new Path(compressPaths(positions));
     }
 

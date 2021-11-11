@@ -2,6 +2,8 @@ package pl.edu.pw.mini.mg1.milling;
 
 import org.joml.Vector2i;
 
+import java.util.Arrays;
+
 import static org.joml.Math.sqrt;
 
 public record MillingTool(float radius, float length, boolean flat) {
@@ -35,6 +37,20 @@ public record MillingTool(float radius, float length, boolean flat) {
 
         public float[][] getShape() {
             return shape;
+        }
+
+        @Override
+        public String toString() {
+            StringBuilder string = new StringBuilder();
+            for (int i = -size.x; i <= size.x; i++) {
+                for (int j = -size.y; j <= size.y; j++) {
+                    float toolShapeCorrection = shape[i + size.x][j + size.y];
+                    string.append("%.2f ".formatted(toolShapeCorrection));
+                }
+                string.append("\n");
+            }
+
+            return string.toString();
         }
     }
 }

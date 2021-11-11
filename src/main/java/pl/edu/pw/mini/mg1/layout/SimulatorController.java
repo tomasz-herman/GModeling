@@ -47,8 +47,8 @@ public class SimulatorController implements Controller<MillingSimulator> {
 
     public SimulatorController() {
         $$$setupUI$$$();
-        blockSizeX.setModel(new SpinnerNumberModel(180, 1, 10000, 1));
-        blockSizeY.setModel(new SpinnerNumberModel(180, 1, 10000, 1));
+        blockSizeX.setModel(new SpinnerNumberModel(150, 1, 10000, 1));
+        blockSizeY.setModel(new SpinnerNumberModel(150, 1, 10000, 1));
         blockResX.setModel(new SpinnerNumberModel(256, 16, 1024 * 8, 64));
         blockResY.setModel(new SpinnerNumberModel(256, 16, 1024 * 8, 64));
         blockH.setModel(new SpinnerNumberModel(50, 0, 1000, 0.1));

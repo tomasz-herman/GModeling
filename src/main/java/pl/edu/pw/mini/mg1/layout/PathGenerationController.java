@@ -27,7 +27,7 @@ public class PathGenerationController implements Controller<Scene> {
             save(path, "1.k16");
         });
         generate2Button.addActionListener(e -> {
-            Path path = PathGenerator.generate1(scene);
+            Path path = PathGenerator.generate2(scene);
             save(path, "2.f12");
         });
         generate3Button.addActionListener(e -> {
