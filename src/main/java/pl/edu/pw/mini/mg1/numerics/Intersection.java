@@ -6,6 +6,7 @@ import pl.edu.pw.mini.mg1.models.Intersectable;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -19,8 +20,9 @@ public class Intersection {
         this.Q = Q;
     }
 
-    public List<Vector4f> find(Vector3f closeTo, Consumer<Vector3f> markStart, float step) {
+    public List<Vector4f> find(Vector3f closeTo, Consumer<Vector3f> markStart, float step, long seed) {
         IntersectionStart start = new IntersectionStart(P::P, Q::P, P == Q);
+        start.random = new Random(seed);
         Vector4f s = start.solve(closeTo);
         LinkedList<Vector4f> parameters = new LinkedList<>();
         if (s == null) return parameters;

@@ -18,7 +18,7 @@ public class IntersectionStart {
     private final Function<Vector2f, Vector3f> P;
     private final Function<Vector2f, Vector3f> Q;
     private final boolean self;
-    Random random = new Random();
+    public Random random = new Random();
 
     public IntersectionStart(Function<Vector2f, Vector3f> p, Function<Vector2f, Vector3f> q, boolean self) {
         P = p;

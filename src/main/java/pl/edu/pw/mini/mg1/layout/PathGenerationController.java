@@ -35,7 +35,7 @@ public class PathGenerationController implements Controller<Scene> {
             save(path, "3.f10");
         });
         generate4Button.addActionListener(e -> {
-            Path path = PathGenerator.generate1(scene);
+            Path path = PathGenerator.generate4(scene);
             save(path, "1.k08");
         });
     }

@@ -184,12 +184,13 @@ public class PathGenerator {
         }
 
         positions.add(new Vector3f(0, 0, 80));
-        positions.add(new Vector3f(85, 85, 80));
-        positions.add(new Vector3f(85, 85, 16));
+        positions.add(new Vector3f(-85, -85, 80));
+        positions.add(new Vector3f(-85, -85, 16));
         for (Vector3f pos : envelope) {
             positions.add(new Vector3f(pos.x, -pos.z, 16));
         }
-//        positions.forEach(cord -> System.out.println(cord));
+        positions.add(new Vector3f(positions.get(positions.size() - 1).setComponent(2, 80)));
+        positions.add(new Vector3f(0, 0, 80));
         return new Path(compressPaths(positions));
     }
 
@@ -278,12 +279,25 @@ public class PathGenerator {
         return merged;
     }
 
+    public static Path generate4(Scene scene) {
+        List<Vector3f> positions = new ArrayList<>();
+        positions.add(new Vector3f(0, 0, 80));
+        List<Intersectable> surfaces = scene.getModels().stream()
+                .filter(m -> m instanceof Intersectable)
+                .filter(m -> !m.getName().equals("Plane"))
+                .map(m -> (Intersectable)m)
+                .map(m -> new OffsetSurface(m, -0.4f))
+                .collect(Collectors.toList());
+
+        return new Path(compressPaths(positions));
+    }
+
     private static List<Vector3f> findBestIntersection(Intersectable plane, Intersectable surface) {
         float best = -1;
         List<Vector3f> bestCurve = List.of();
         for (int i = 0; i < 16; i++) {
             Intersection intersection = new Intersection(plane, surface);
-            var curve = intersection.find(null, vec -> {}, 0.01f);
+            var curve = intersection.find(null, vec -> {}, 0.01f, i);
             var curvePos = curve.stream().map(c -> plane.P(c.x, c.y)).map(c -> c.mul(10).add(0, 15, 0)).collect(Collectors.toList());
             float heuristics = (float) curvePos.stream().mapToDouble(vec -> abs(vec.x) + abs(vec.z)).sum();
             if(heuristics > best) {
