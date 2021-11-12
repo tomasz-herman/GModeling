@@ -264,6 +264,7 @@ public class PathGenerator {
             }
         } else {
             System.out.println("oh noes");
+            System.err.println("anyway");
         }
         return merged;
     }
@@ -321,9 +322,51 @@ public class PathGenerator {
                 .findFirst().orElseThrow();
 
         positions.addAll(generateBodyPaths(body, wing, top, topWing, plane).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(generateWingPaths(wing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
 
         positions.add(new Vector3f(0, 0, 80));
         return new Path(compressPaths(positions));
+    }
+
+    private static List<Vector3f> generateWingPaths(Intersectable wing, Intersectable body) {
+        List<Vector3f> result = new ArrayList<>();
+        Intersection finder = new Intersection(wing, body);
+        List<Vector2f> curve = finder.find(null, vec -> {
+                }, 0.01f, 1).stream()
+                .map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList());
+
+        for (int i = 1; i <= 99; i++) {
+            List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
+            for (int j = 0; j <= 200; j++) {
+                float u = (float) i / 100;
+                float v = (float) j / 200;
+                Vector3f vec = wing.P(u, v).mul(10).add(0, 15 - 4, 0);
+                Vector3f n = wing.N(u, v);
+                if(n.equals(new Vector3f(1, 0, 0), 1e-4f) ||
+                   n.equals(new Vector3f(-1, 0, 0), 1e-4f)) continue;
+                if(vec.isFinite() && vec.y > 16) tempPath.add(Pair.of(new Vector2f(u, v), vec));
+            }
+            if(tempPath.size() < 3) continue;
+
+            for (int j = 1; j < tempPath.size(); j++) {
+                Vector2f vec1 = tempPath.get(j - 1).getKey();
+                Vector2f vec2 = tempPath.get(j).getKey();
+
+                if(j == 1) {
+                    result.add(tempPath.get(1).getValue().setComponent(1, 50));
+                }
+
+                if(doIntersect(vec1, vec2, curve)) {
+                    result.add(tempPath.get(j - 1).getValue().setComponent(1, 50));
+                    break;
+                }
+
+                if(tempPath.get(j).getValue().y > 20)
+                    result.add(tempPath.get(j).getValue());
+                else System.out.println(i);
+            }
+        }
+        return result;
     }
 
     private static List<Vector3f> generateBodyPaths(Intersectable body, Intersectable... intersections) {
