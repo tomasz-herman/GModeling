@@ -324,9 +324,100 @@ public class PathGenerator {
         positions.addAll(generateBodyPaths(body, wing, top, topWing, plane).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
         positions.addAll(generateWingPaths(wing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
         positions.addAll(generateTopPaths(top, decor, topWing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(generateTopWingPaths(topWing, top, body, decor, topHorizontalWing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
 
         positions.add(new Vector3f(0, 0, 80));
         return new Path(compressPaths(positions));
+    }
+
+    private static List<Vector3f> generateTopWingPaths(Intersectable topWing, Intersectable... intersections) {
+        List<Vector3f> result = new ArrayList<>();
+        List<List<Vector2f>> curves = new ArrayList<>();
+        for (Intersectable intersection : intersections) {
+            Intersection finder = new Intersection(topWing, intersection);
+            curves.add(finder.find(null, vec -> {}, 0.01f, 3423).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList()));
+        }
+        Intersection finder = new Intersection(topWing, intersections[0]);
+        curves.add(finder.find(null, vec -> {}, 0.01f, 65).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList()));
+
+
+        for (List<Vector2f> curve : curves.subList(2, 4)) {
+            List<Vector3f> sceneCurve = curve.stream()
+                    .map(v -> topWing.P(v.x, v.y).mul(10).add(0, 15 - 4, 0))
+                    .collect(Collectors.toList());
+            for (int i = 0; i < sceneCurve.size(); i++) {
+                Vector3f vec = sceneCurve.get(i);
+                if(vec.y <= 16.00f) {
+                    sceneCurve.set(i, null);
+                }
+            }
+            for (int i = 1; i < sceneCurve.size() - 1; i++) {
+                Vector3f vec1 = sceneCurve.get(i - 1);
+                Vector3f vec2 = sceneCurve.get(i);
+                Vector3f vec3 = sceneCurve.get(i + 1);
+
+                if(vec1 == null && vec2 != null) {
+                    result.add(new Vector3f(vec2.x, 80, vec2.z));
+                    result.add(vec2);
+                }
+
+                if(vec3 != null && vec2 != null && vec1 != null) {
+                    result.add(vec2);
+                }
+
+                if(vec3 == null && vec2 != null) {
+                    result.add(vec2);
+                    result.add(new Vector3f(vec2.x, 80, vec2.z));
+                }
+            }
+        }
+
+        result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 80));
+
+        for (int i = 0; i <= 100; i++) {
+            if(i == 8) continue;
+            List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
+            for (int j = 0; j <= 200; j++) {
+                float u = (float) i / 100;
+                float v = 1.0f - (float) j / 200;
+                Vector3f vec = topWing.P(u, v).mul(10).add(0, 15 - 4, 0);
+                if(vec.isFinite() && vec.y > 16) tempPath.add(Pair.of(new Vector2f(u, v), vec));
+            }
+            if(tempPath.size() < 3) continue;
+
+            Set<List<Vector2f>> set = new HashSet<>();
+
+            outer:
+            for (int j = 1; j < tempPath.size(); j++) {
+                Vector2f vec1 = tempPath.get(j - 1).getKey();
+                Vector2f vec2 = tempPath.get(j).getKey();
+
+                boolean before = j != 1 && set.isEmpty();
+
+                for (List<Vector2f> fs : curves.subList(2, 4)) {
+                    if(doIntersect(vec1, vec2, fs)) {
+                        if(set.contains(fs)) set.remove(fs);
+                        else set.add(fs);
+                    }
+                }
+
+                for (List<Vector2f> fs : List.of(curves.get(0), curves.get(1), curves.get(4))) {
+                    if(preIntersect(vec1, vec2, fs)) {
+                        result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                        break outer;
+                    }
+                }
+
+                boolean after = j != (tempPath.size() - 1) && set.isEmpty();
+
+                if(before != after) {
+                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                }
+
+                if(before && after) result.add(tempPath.get(j).getValue());
+            }
+        }
+        return result;
     }
 
     private static List<Vector3f> generateTopPaths(Intersectable top, Intersectable... intersections) {
@@ -585,6 +676,18 @@ public class PathGenerator {
         return compressed;
     }
 
+    private static boolean preIntersect(Vector2f p1, Vector2f q1, List<Vector2f> curve) {
+        if(curve.get(0).distance(curve.get(1)) * 2 > curve.get(0).distance(curve.get(curve.size() - 1))) {
+            // cycle case:
+            if(preIntersect(p1, q1, curve.get(0), curve.get(curve.size() - 1))) return true;
+        }
+        for (int i = 0; i < curve.size() - 1; i++) {
+            if(preIntersect(p1, q1, curve.get(i), curve.get(i + 1))) return true;
+        }
+
+        return false;
+    }
+
     private static boolean doIntersect(Vector2f p1, Vector2f q1, List<Vector2f> curve) {
         if(curve.get(0).distance(curve.get(1)) * 2 > curve.get(0).distance(curve.get(curve.size() - 1))) {
             // cycle case:
@@ -600,6 +703,17 @@ public class PathGenerator {
     private static boolean doIntersect(Vector2f p0, Vector2f q0, Vector2f p1, Vector2f q1)
     {
         return owLawd(p0, q0, p1, q1) && get_line_intersection(p0.x, p0.y, q0.x, q0.y, p1.x, p1.y, q1.x, q1.y);
+    }
+
+    private static boolean preIntersect(Vector2f p0, Vector2f q0, Vector2f p1, Vector2f q1) {
+        Vector2f pq0 = p0.add(q0, new Vector2f()).div(2);
+        Vector2f pq1 = p1.add(q1, new Vector2f()).div(2);
+        float r0 = p0.distance(q0);
+        float r1 = p1.distance(q1);
+        if(pq0.distance(pq1) > 0.1) return false;
+        if(r0 > 0.1) return false;
+        if(r1 > 0.1) return false;
+        return pq0.distance(pq1) * 2 < r0 + r1;
     }
 
     private static boolean owLawd(Vector2f p0, Vector2f q0, Vector2f p1, Vector2f q1) {
