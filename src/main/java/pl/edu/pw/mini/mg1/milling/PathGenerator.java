@@ -323,9 +323,109 @@ public class PathGenerator {
 
         positions.addAll(generateBodyPaths(body, wing, top, topWing, plane).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
         positions.addAll(generateWingPaths(wing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(generateTopPaths(top, decor, topWing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
 
         positions.add(new Vector3f(0, 0, 80));
         return new Path(compressPaths(positions));
+    }
+
+    private static List<Vector3f> generateTopPaths(Intersectable top, Intersectable... intersections) {
+        List<Vector3f> result = new ArrayList<>();
+        List<Pair<Intersectable, List<Vector2f>>> curves = new ArrayList<>();
+
+        for (Intersectable intersection : intersections) {
+            Intersection finder = new Intersection(top, intersection);
+            curves.add(Pair.of(intersection, finder.find(null, vec -> {}, 0.01f, 3).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList())));
+        }
+
+        Intersection finder = new Intersection(top, intersections[1]);
+        curves.add(Pair.of(intersections[1], finder.find(null, vec -> {}, 0.01f, 6).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList())));
+
+        int k = 0;
+        for (var pairCurve : curves) {
+            List<Vector2f> curve = pairCurve.getRight();
+            if(k == 2) {
+                k++;
+                continue;
+            }
+            List<Vector3f> sceneCurve = curve.stream()
+                    .map(v -> top.P(v.x, v.y).mul(10).add(0, 15 - 4, 0))
+                    .collect(Collectors.toList());
+            for (int i = 0; i < sceneCurve.size(); i++) {
+                Vector3f vec = sceneCurve.get(i);
+                if(vec.y <= 16.00f) {
+                    sceneCurve.set(i, null);
+                }
+                if(k == 1) {
+                    if(i > 210) sceneCurve.set(i, null);
+                }
+                if(k == 3) {
+                    if(i < 256) sceneCurve.set(i, null);
+                }
+            }
+            for (int i = 1; i < sceneCurve.size() - 1; i++) {
+                Vector3f vec1 = sceneCurve.get(i - 1);
+                Vector3f vec2 = sceneCurve.get(i);
+                Vector3f vec3 = sceneCurve.get(i + 1);
+
+                if(vec1 == null && vec2 != null) {
+                    result.add(new Vector3f(vec2.x, 80, vec2.z));
+                    result.add(vec2);
+                }
+
+                if(vec3 != null && vec2 != null && vec1 != null) {
+                    result.add(vec2);
+                }
+
+                if(vec3 == null && vec2 != null) {
+                    result.add(vec2);
+                    result.add(new Vector3f(vec2.x, 80, vec2.z));
+                }
+            }
+            k++;
+        }
+
+        for (int i = 33; i <= 43; i++) {
+            List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
+            for (int j = 0; j <= 200; j++) {
+                float u = (float) i / 100;
+                float v = (float) j / 200;
+                Vector3f vec = top.P(u, v).mul(10).add(0, 15 - 4, 0);
+                if(vec.isFinite()) tempPath.add(Pair.of(new Vector2f(u, v), vec));
+            }
+            if(tempPath.size() < 3) continue;
+
+            Set<Intersectable> set = new HashSet<>();
+
+            for (int j = 1; j < tempPath.size(); j++) {
+                Vector2f vec1 = tempPath.get(j - 1).getKey();
+                Vector2f vec2 = tempPath.get(j).getKey();
+
+                boolean before = j != 1 && set.size() == 1;
+
+                for (var fs : curves) {
+                    if(doIntersect(vec1, vec2, fs.getRight())) {
+                        if(set.contains(fs.getLeft())) set.remove(fs.getLeft());
+                        else set.add(fs.getLeft());
+                    }
+                }
+
+                boolean after = j != (tempPath.size() - 1) && set.size() == 1;
+
+
+                if(before != after) {
+                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                }
+
+                if(before && after) {
+                    Vector3f v = tempPath.get(j).getValue();
+                    if(v.y < 16) v.y = 16;
+                    result.add(v);
+                }
+            }
+        }
+
+        return result;
     }
 
     private static List<Vector3f> generateWingPaths(Intersectable wing, Intersectable body) {
@@ -499,7 +599,15 @@ public class PathGenerator {
 
     private static boolean doIntersect(Vector2f p0, Vector2f q0, Vector2f p1, Vector2f q1)
     {
-        return get_line_intersection(p0.x, p0.y, q0.x, q0.y, p1.x, p1.y, q1.x, q1.y);
+        return owLawd(p0, q0, p1, q1) && get_line_intersection(p0.x, p0.y, q0.x, q0.y, p1.x, p1.y, q1.x, q1.y);
+    }
+
+    private static boolean owLawd(Vector2f p0, Vector2f q0, Vector2f p1, Vector2f q1) {
+        Vector2f pq0 = p0.add(q0, new Vector2f()).div(2);
+        Vector2f pq1 = p0.add(q1, new Vector2f()).div(2);
+        float r0 = p0.distance(q0);
+        float r1 = p0.distance(q0);
+        return pq0.distance(pq1) < r0 + r1;
     }
 
     // Returns 1 if the lines intersect, otherwise 0. In addition, if the lines

@@ -71,4 +71,8 @@ public class OffsetSurface implements Intersectable {
     public void setLeftSide(boolean value) {
 
     }
+
+    public String toString() {
+        return ((Model) intersectable).getName();
+    }
 }
