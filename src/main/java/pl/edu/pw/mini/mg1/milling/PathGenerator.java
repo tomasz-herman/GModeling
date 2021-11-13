@@ -327,9 +327,54 @@ public class PathGenerator {
         positions.addAll(generateTopPaths(top, decor, topWing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
         positions.addAll(generateTopWingPaths(topWing, top, body, decor, topHorizontalWing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
         positions.addAll(generateTopHorizontalWing(topHorizontalWing, topWing, wing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(generateDecorPaths(decor, topWing, top).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
 
         positions.add(new Vector3f(0, 0, 80));
         return new Path(compressPaths(positions));
+    }
+
+    private static List<Vector3f> generateDecorPaths(Intersectable decor, Intersectable... intersections) {
+        List<Vector3f> result = new ArrayList<>();
+        List<List<Vector2f>> curves = new ArrayList<>();
+        for (Intersectable intersection : intersections) {
+            Intersection finder = new Intersection(decor, intersection);
+            curves.add(finder.find(null, vec -> {}, 0.01f, 543).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList()));
+        }
+
+        for (int i = 0; i <= 100; i++) {
+            List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
+            for (int j = 0; j <= 200; j++) {
+                float u = (float) i / 100;
+                float v = (float) j / 200;
+                Vector3f vec = decor.P(u, v).mul(10).add(0, 15 - 4, 0);
+                if(vec.isFinite() && vec.y > 16) tempPath.add(Pair.of(new Vector2f(u, v), vec));
+            }
+            if(tempPath.size() < 3) continue;
+
+            Set<List<Vector2f>> set = new HashSet<>();
+
+            for (int j = 1; j < tempPath.size(); j++) {
+                Vector2f vec1 = tempPath.get(j - 1).getKey();
+                Vector2f vec2 = tempPath.get(j).getKey();
+
+                boolean before = j != 1 && set.size() == 1;
+
+                for (List<Vector2f> fs : curves) {
+                    if(doIntersect(vec1, vec2, fs)) {
+                        set.add(fs);
+                    }
+                }
+
+                boolean after = j != (tempPath.size() - 1) && set.size() == 1;
+
+                if(before != after) {
+                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                }
+
+                if(before && after) result.add(tempPath.get(j).getValue());
+            }
+        }
+        return result;
     }
 
     private static List<Vector3f> generateTopHorizontalWing(Intersectable topHorizontalWing, Intersectable topWing, Intersectable wing) {
