@@ -11,6 +11,7 @@ import pl.edu.pw.mini.mg1.numerics.Intersection;
 import pl.edu.pw.mini.mg1.numerics.IntersectionStart;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 import static org.joml.Math.*;
@@ -73,9 +74,9 @@ public class PathGenerator {
         positions.add(new Vector3f(0, 0, 80));
         positions.add(new Vector3f(-85, 85, 80));
         float H = 16;
-        float x = -85f;
+        float x = -75f;
         float y = -85f;
-        while(x <= 85f) {
+        while(x <= 75f) {
             while(y <= 85f && y >= -85f) {
                 float h = block.findMaxHeight(x, y, cache);
                 if(h > H) break;
@@ -90,10 +91,10 @@ public class PathGenerator {
         positions.add(new Vector3f(85, 85, 80));
         positions.add(new Vector3f(0, 0, 80));
 
-        positions.add(new Vector3f(-85, -85, 80));
-        x = -85f;
+        positions.add(new Vector3f(-55, -85, 80));
+        x = -55f;
         y = 85f;
-        while(x <= 85f) {
+        while(x <= 35f) {
             while(y <= 85f && y >= -85f) {
                 float h = block.findMaxHeight(x, y, cache);
                 if(h > H) break;
@@ -105,43 +106,7 @@ public class PathGenerator {
             y = 85;
             x += 10;
         }
-        positions.add(new Vector3f(85, -85, 80));
-        positions.add(new Vector3f(0, 0, 80));
-
-        positions.add(new Vector3f(-85, 85, 80));
-        x = -85f;
-        y = -85f;
-        while(y <= 85f) {
-            while(x <= 85f && x >= -85f) {
-                float h = block.findMaxHeight(x, y, cache);
-                if(h > H) break;
-                positions.add(new Vector3f(x, -y, H));
-                x += 1;
-            }
-            positions.add(new Vector3f(-85, -y, H));
-
-            x = -85;
-            y += 10;
-        }
-        positions.add(new Vector3f(-85, -85, 80));
-        positions.add(new Vector3f(0, 0, 80));
-
-        positions.add(new Vector3f(-85, -85, 80));
-        x = 85f;
-        y = -85f;
-        while(y <= 85f) {
-            while(x <= 85f && x >= -85f) {
-                float h = block.findMaxHeight(x, y, cache);
-                if(h > H) break;
-                positions.add(new Vector3f(x, -y, H));
-                x -= 1;
-            }
-            positions.add(new Vector3f(85, -y, H));
-
-            x = 85;
-            y += 10;
-        }
-        positions.add(new Vector3f(-85, 85, 80));
+        positions.add(new Vector3f(35, -85, 80));
         positions.add(new Vector3f(0, 0, 80));
 
         return new Path(compressPaths(positions));
@@ -329,8 +294,79 @@ public class PathGenerator {
         positions.addAll(generateTopHorizontalWing(topHorizontalWing, topWing, wing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
         positions.addAll(generateDecorPaths(decor, topWing, top).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
 
+        positions.addAll(generateHole(decor, top, topWing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+
         positions.add(new Vector3f(0, 0, 80));
         return new Path(compressPaths(positions));
+    }
+
+    private static List<Vector3f> generateHole(Intersectable decor, Intersectable top, Intersectable topWing) {
+        List<Vector3f> result = new ArrayList<>();
+
+        List<Vector2f> decorTop;
+        List<Vector2f> topTopWing;
+        List<Vector2f> topWingDecor;
+
+        Intersection finder = new Intersection(decor, top);
+        decorTop = finder.find(null, vec -> {}, -0.01f, 543).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList());
+
+        finder = new Intersection(top, topWing);
+        topTopWing = finder.find(null, vec -> {}, -0.01f, 543).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList());
+
+        finder = new Intersection(topWing, decor);
+        topWingDecor = finder.find(null, vec -> {}, -0.01f, 543).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList());
+
+        List<Vector3f> sceneCurve = decorTop.stream()
+                .map(v -> decor.P(v.x, v.y).mul(10).add(0, 15 - 4, 0))
+                .collect(Collectors.toList());
+        for (int i = 0; i < sceneCurve.size(); i++) {
+            Vector3f vec = sceneCurve.get(i);
+            if(vec.y <= 16.00f) {
+                sceneCurve.set(i, null);
+            }
+        }
+        Vector3f P1 = sceneCurve.stream().filter(Objects::nonNull).findFirst().orElseThrow();
+
+        sceneCurve = topTopWing.stream()
+                .skip(60)
+                .map(v -> top.P(v.x, v.y).mul(10).add(0, 15 - 4, 0))
+                .collect(Collectors.toList());
+        for (int i = 0; i < sceneCurve.size(); i++) {
+            Vector3f vec = sceneCurve.get(i);
+            if(vec.y <= 16.00f) {
+                sceneCurve.set(i, null);
+            }
+        }
+        Vector3f P2 = sceneCurve.stream().filter(Objects::nonNull).findFirst().orElseThrow();
+
+        sceneCurve = topWingDecor.stream()
+                .map(v -> topWing.P(v.x, v.y).mul(10).add(0, 15 - 4, 0))
+                .collect(Collectors.toList());
+        for (int i = 0; i < sceneCurve.size(); i++) {
+            Vector3f vec = sceneCurve.get(i);
+            if(vec.y <= 16.00f) {
+                sceneCurve.set(i, null);
+            }
+        }
+        Vector3f P3 = sceneCurve.stream().filter(Objects::nonNull).findFirst().orElseThrow();
+
+        result.add(new Vector3f(P1).setComponent(1, 80));
+
+        for (int i = 0; i <= 100; i++) {
+            for (int j = i; j <= 100; j++) {
+                float a = (float) i / 100;
+                float b = 1.0f - (float) j / 100;
+                float c = 1.0f - a - b;
+                Vector3f A = new Vector3f(P1).mul(a);
+                Vector3f B = new Vector3f(P2).mul(b);
+                Vector3f C = new Vector3f(P3).mul(c);
+                result.add(A.add(B).add(C));
+            }
+        }
+
+        result.add(new Vector3f(P1).setComponent(1, 80));
+
+        return result;
     }
 
     private static List<Vector3f> generateDecorPaths(Intersectable decor, Intersectable... intersections) {
@@ -386,7 +422,7 @@ public class PathGenerator {
 
         for (int i = 1; i <= 99; i++) {
             List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
-            for (int j = 20; j <= 199; j++) {
+            for (int j = 26; j <= 199; j++) {
                 float u = (float) i / 100;
                 float v = (float) j / 200;
                 Vector3f vec = topHorizontalWing.P(u, v).mul(10).add(0, 15 - 4, 0);
@@ -426,7 +462,6 @@ public class PathGenerator {
         for (Intersectable intersection : intersections) {
             Intersection finder = new Intersection(topWing, intersection);
             curves.add(finder.find(null, vec -> {}, 0.01f, 3423).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList()));
-            IntersectionStart start = new IntersectionStart(topWing::P, intersections[3]::P, false);
          }
 
         Intersection finder = new Intersection(topWing, intersections[0]);
@@ -619,7 +654,7 @@ public class PathGenerator {
 
         for (int i = 1; i <= 99; i++) {
             List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
-            for (int j = 0; j <= 200; j++) {
+            for (int j = 28; j <= 200; j++) {
                 float u = (float) i / 100;
                 float v = (float) j / 200;
                 Vector3f vec = wing.P(u, v).mul(10).add(0, 15 - 4, 0);
@@ -699,10 +734,10 @@ public class PathGenerator {
             k++;
         }
 
-        for (int i = 0; i <= 100; i++) {
+        for (int i = 0; i <= 300; i++) {
             List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
             for (int j = 0; j <= 200; j++) {
-                float u = (float) i / 100;
+                float u = (float) i / 300;
                 float v = (float) j / 200;
                 Vector3f vec = body.P(u, v).mul(10).add(0, 15 - 4, 0);
                 if(vec.isFinite() && vec.y > 16) tempPath.add(Pair.of(new Vector2f(u, v), vec));
