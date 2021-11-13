@@ -8,6 +8,7 @@ import org.joml.Vector3f;
 import pl.edu.pw.mini.mg1.layout.IntersectionWizard;
 import pl.edu.pw.mini.mg1.models.*;
 import pl.edu.pw.mini.mg1.numerics.Intersection;
+import pl.edu.pw.mini.mg1.numerics.IntersectionStart;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -325,9 +326,53 @@ public class PathGenerator {
         positions.addAll(generateWingPaths(wing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
         positions.addAll(generateTopPaths(top, decor, topWing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
         positions.addAll(generateTopWingPaths(topWing, top, body, decor, topHorizontalWing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(generateTopHorizontalWing(topHorizontalWing, topWing, wing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
 
         positions.add(new Vector3f(0, 0, 80));
         return new Path(compressPaths(positions));
+    }
+
+    private static List<Vector3f> generateTopHorizontalWing(Intersectable topHorizontalWing, Intersectable topWing, Intersectable wing) {
+        List<Vector3f> result = new ArrayList<>();
+        Intersection finder = new Intersection(topHorizontalWing, topWing);
+        List<Vector2f> curve = finder.find(null, vec -> {
+                }, 0.01f, 1).stream()
+                .map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList());
+
+        for (int i = 1; i <= 99; i++) {
+            List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
+            for (int j = 20; j <= 199; j++) {
+                float u = (float) i / 100;
+                float v = (float) j / 200;
+                Vector3f vec = topHorizontalWing.P(u, v).mul(10).add(0, 15 - 4, 0);
+                Vector3f n = topHorizontalWing.N(u, v);
+                if(n.equals(new Vector3f(1, 0, 0), 1e-3f) ||
+                   n.equals(new Vector3f(-1, 0, 0), 1e-3f)
+                   ||n.equals(new Vector3f(0, -1, 0), 1e-3f) ||
+                   n.equals(new Vector3f(0, 1, 0), 1e-3f)) continue;
+                if(vec.isFinite() && vec.y > 16) tempPath.add(Pair.of(new Vector2f(u, v), vec));
+            }
+            if(tempPath.size() < 3) continue;
+
+            for (int j = 1; j < tempPath.size(); j++) {
+                Vector2f vec1 = tempPath.get(j - 1).getKey();
+                Vector2f vec2 = tempPath.get(j).getKey();
+
+                if(j == 1) {
+                    result.add(tempPath.get(1).getValue().setComponent(1, 50));
+                }
+
+                if(doIntersect(vec1, vec2, curve)) {
+                    result.add(tempPath.get(j - 1).getValue().setComponent(1, 50));
+                    break;
+                }
+
+                if(tempPath.get(j).getValue().y > 20)
+                    result.add(tempPath.get(j).getValue());
+                else System.out.println(i);
+            }
+        }
+        return result;
     }
 
     private static List<Vector3f> generateTopWingPaths(Intersectable topWing, Intersectable... intersections) {
@@ -336,10 +381,11 @@ public class PathGenerator {
         for (Intersectable intersection : intersections) {
             Intersection finder = new Intersection(topWing, intersection);
             curves.add(finder.find(null, vec -> {}, 0.01f, 3423).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList()));
-        }
+            IntersectionStart start = new IntersectionStart(topWing::P, intersections[3]::P, false);
+         }
+
         Intersection finder = new Intersection(topWing, intersections[0]);
         curves.add(finder.find(null, vec -> {}, 0.01f, 65).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList()));
-
 
         for (List<Vector2f> curve : curves.subList(2, 4)) {
             List<Vector3f> sceneCurve = curve.stream()
