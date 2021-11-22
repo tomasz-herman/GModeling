@@ -396,7 +396,7 @@ public class PathGenerator {
         }
         Vector3f P3 = sceneCurve.stream().filter(Objects::nonNull).findFirst().orElseThrow();
 
-        result.add(new Vector3f(P1).setComponent(1, 80));
+        result.add(new Vector3f(P1).setComponent(1, 50));
 
         for (int i = 0; i <= 100; i++) {
             for (int j = i; j <= 100; j++) {
@@ -410,7 +410,7 @@ public class PathGenerator {
             }
         }
 
-        result.add(new Vector3f(P1).setComponent(1, 80));
+        result.add(new Vector3f(P1).setComponent(1, 50));
 
         return Pair.of(result, envelope);
     }
@@ -451,12 +451,14 @@ public class PathGenerator {
                 boolean after = j != (tempPath.size() - 1) && set.size() == 1;
 
                 if(before != after) {
-                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 25));
                 }
 
                 if(before && after) result.add(tempPath.get(j).getValue());
             }
         }
+        result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
+        result.add(0, new Vector3f(result.get(0)).setComponent(1, 50));
         return Pair.of(result, envelope);
     }
 
@@ -488,11 +490,11 @@ public class PathGenerator {
                 Vector2f vec2 = tempPath.get(j).getKey();
 
                 if(j == 1) {
-                    result.add(tempPath.get(1).getValue().setComponent(1, 50));
+                    result.add(new Vector3f(tempPath.get(1).getValue()).setComponent(1, 40));
                 }
 
                 if(doIntersect(vec1, vec2, curve)) {
-                    result.add(tempPath.get(j - 1).getValue().setComponent(1, 50));
+                    result.add(new Vector3f(tempPath.get(j - 1).getValue()).setComponent(1, 40));
                     break;
                 }
 
@@ -501,6 +503,8 @@ public class PathGenerator {
                 else System.out.println(i);
             }
         }
+        result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
+        result.add(0, new Vector3f(result.get(0)).setComponent(1, 50));
         return Pair.of(result, envelope);
     }
 
@@ -532,7 +536,7 @@ public class PathGenerator {
                 Vector3f vec3 = sceneCurve.get(i + 1);
 
                 if(vec1 == null && vec2 != null) {
-                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(new Vector3f(vec2.x, 50, vec2.z));
                     envelope.add(vec2);
                 }
 
@@ -542,12 +546,10 @@ public class PathGenerator {
 
                 if(vec3 == null && vec2 != null) {
                     envelope.add(vec2);
-                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(new Vector3f(vec2.x, 50, vec2.z));
                 }
             }
         }
-
-        envelope.add(new Vector3f(envelope.get(envelope.size() - 1)).setComponent(1, 80));
 
         for (int i = 0; i <= 100; i++) {
             if(i == 8) continue;
@@ -578,7 +580,7 @@ public class PathGenerator {
 
                 for (List<Vector2f> fs : List.of(curves.get(0), curves.get(1), curves.get(4))) {
                     if(preIntersect(vec1, vec2, fs)) {
-                        result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                        result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 40));
                         break outer;
                     }
                 }
@@ -586,12 +588,18 @@ public class PathGenerator {
                 boolean after = j != (tempPath.size() - 1) && set.isEmpty();
 
                 if(before != after) {
-                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 40));
                 }
 
                 if(before && after) result.add(tempPath.get(j).getValue());
             }
         }
+
+        result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
+        result.add(0, new Vector3f(result.get(0)).setComponent(1, 50));
+        envelope.add(new Vector3f(envelope.get(envelope.size() - 1)).setComponent(1, 50));
+        envelope.add(0, new Vector3f(envelope.get(0)).setComponent(1, 50));
+
         return Pair.of(result, envelope);
     }
 
@@ -636,7 +644,7 @@ public class PathGenerator {
                 Vector3f vec3 = sceneCurve.get(i + 1);
 
                 if(vec1 == null && vec2 != null) {
-                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(new Vector3f(vec2.x, 30, vec2.z));
                     envelope.add(vec2);
                 }
 
@@ -646,7 +654,7 @@ public class PathGenerator {
 
                 if(vec3 == null && vec2 != null) {
                     envelope.add(vec2);
-                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(new Vector3f(vec2.x, 30, vec2.z));
                 }
             }
             k++;
@@ -681,7 +689,7 @@ public class PathGenerator {
 
 
                 if(before != after) {
-                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 30));
                 }
 
                 if(before && after) {
@@ -691,6 +699,11 @@ public class PathGenerator {
                 }
             }
         }
+
+        result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
+        result.add(0, new Vector3f(result.get(0)).setComponent(1, 50));
+        envelope.add(new Vector3f(envelope.get(envelope.size() - 1)).setComponent(1, 50));
+        envelope.add(0, new Vector3f(envelope.get(0)).setComponent(1, 50));
 
         return Pair.of(result, envelope);
     }
@@ -721,11 +734,11 @@ public class PathGenerator {
                 Vector2f vec2 = tempPath.get(j).getKey();
 
                 if(j == 1) {
-                    result.add(tempPath.get(1).getValue().setComponent(1, 50));
+                    result.add(tempPath.get(1).getValue().setComponent(1, 45));
                 }
 
                 if(doIntersect(vec1, vec2, curve)) {
-                    result.add(tempPath.get(j - 1).getValue().setComponent(1, 50));
+                    result.add(tempPath.get(j - 1).getValue().setComponent(1, 45));
                     break;
                 }
 
@@ -734,6 +747,10 @@ public class PathGenerator {
                 else System.out.println(i);
             }
         }
+
+        result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
+        result.add(0, new Vector3f(result.get(0)).setComponent(1, 50));
+
         return Pair.of(result, envelope);
     }
 
@@ -770,7 +787,7 @@ public class PathGenerator {
                 Vector3f vec3 = sceneCurve.get(i + 1);
 
                 if(vec1 == null && vec2 != null) {
-                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(new Vector3f(vec2.x, 45, vec2.z));
                     envelope.add(vec2);
                 }
 
@@ -780,7 +797,7 @@ public class PathGenerator {
 
                 if(vec3 == null && vec2 != null) {
                     envelope.add(vec2);
-                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(new Vector3f(vec2.x, 45, vec2.z));
                 }
             }
             k++;
@@ -814,12 +831,18 @@ public class PathGenerator {
                 boolean after = j != (tempPath.size() - 1) && set.isEmpty();
 
                 if(before != after) {
-                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 80));
+                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 45));
                 }
 
                 if(before && after) result.add(tempPath.get(j).getValue());
             }
         }
+
+        result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
+        result.add(0, new Vector3f(result.get(0)).setComponent(1, 50));
+        envelope.add(new Vector3f(envelope.get(envelope.size() - 1)).setComponent(1, 50));
+        envelope.add(0, new Vector3f(envelope.get(0)).setComponent(1, 50));
+
         return Pair.of(result, envelope);
     }
 
