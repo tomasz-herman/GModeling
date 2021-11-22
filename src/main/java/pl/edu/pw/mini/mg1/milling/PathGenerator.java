@@ -287,21 +287,39 @@ public class PathGenerator {
                 .map(m -> new OffsetSurface(m, -0.4f))
                 .findFirst().orElseThrow();
 
-        positions.addAll(generateBodyPaths(body, wing, top, topWing, plane).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
-        positions.addAll(generateWingPaths(wing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
-        positions.addAll(generateTopPaths(top, decor, topWing, body).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
-        positions.addAll(generateTopWingPaths(topWing, top, body, decor, topHorizontalWing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
-        positions.addAll(generateTopHorizontalWing(topHorizontalWing, topWing, wing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
-        positions.addAll(generateDecorPaths(decor, topWing, top).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        var bodyPaths = generateBodyPaths(body, wing, top, topWing, plane);
+        var wingPaths = generateWingPaths(wing, body);
+        var topPaths = generateTopPaths(top, decor, topWing, body);
+        var topWingPaths = generateTopWingPaths(topWing, top, body, decor, topHorizontalWing);
+        var topHorizontalWingPaths = generateTopHorizontalWing(topHorizontalWing, topWing, wing);
+        var decorPaths = generateDecorPaths(decor, topWing, top);
+        var holePaths = generateHole(decor, top, topWing);
 
-        positions.addAll(generateHole(decor, top, topWing).stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(bodyPaths.getKey().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(wingPaths.getKey().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(topPaths.getKey().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(topWingPaths.getKey().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(topHorizontalWingPaths.getKey().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(decorPaths.getKey().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+
+        positions.addAll(holePaths.getKey().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+
+        positions.addAll(bodyPaths.getValue().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(wingPaths.getValue().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(topPaths.getValue().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(topWingPaths.getValue().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(topHorizontalWingPaths.getValue().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+        positions.addAll(decorPaths.getValue().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
+
+        positions.addAll(holePaths.getValue().stream().map(v -> new Vector3f(v.x, -v.z, v.y)).collect(Collectors.toList()));
 
         positions.add(new Vector3f(0, 0, 80));
         return new Path(compressPaths(positions));
     }
 
-    private static List<Vector3f> generateHole(Intersectable decor, Intersectable top, Intersectable topWing) {
+    private static Pair<List<Vector3f>, List<Vector3f>> generateHole(Intersectable decor, Intersectable top, Intersectable topWing) {
         List<Vector3f> result = new ArrayList<>();
+        List<Vector3f> envelope = new ArrayList<>();
 
         List<Vector2f> decorTop;
         List<Vector2f> topTopWing;
@@ -366,11 +384,12 @@ public class PathGenerator {
 
         result.add(new Vector3f(P1).setComponent(1, 80));
 
-        return result;
+        return Pair.of(result, envelope);
     }
 
-    private static List<Vector3f> generateDecorPaths(Intersectable decor, Intersectable... intersections) {
+    private static Pair<List<Vector3f>, List<Vector3f>> generateDecorPaths(Intersectable decor, Intersectable... intersections) {
         List<Vector3f> result = new ArrayList<>();
+        List<Vector3f> envelope = new ArrayList<>();
         List<List<Vector2f>> curves = new ArrayList<>();
         for (Intersectable intersection : intersections) {
             Intersection finder = new Intersection(decor, intersection);
@@ -410,11 +429,12 @@ public class PathGenerator {
                 if(before && after) result.add(tempPath.get(j).getValue());
             }
         }
-        return result;
+        return Pair.of(result, envelope);
     }
 
-    private static List<Vector3f> generateTopHorizontalWing(Intersectable topHorizontalWing, Intersectable topWing, Intersectable wing) {
+    private static Pair<List<Vector3f>, List<Vector3f>> generateTopHorizontalWing(Intersectable topHorizontalWing, Intersectable topWing, Intersectable wing) {
         List<Vector3f> result = new ArrayList<>();
+        List<Vector3f> envelope = new ArrayList<>();
         Intersection finder = new Intersection(topHorizontalWing, topWing);
         List<Vector2f> curve = finder.find(null, vec -> {
                 }, 0.01f, 1).stream()
@@ -453,11 +473,12 @@ public class PathGenerator {
                 else System.out.println(i);
             }
         }
-        return result;
+        return Pair.of(result, envelope);
     }
 
-    private static List<Vector3f> generateTopWingPaths(Intersectable topWing, Intersectable... intersections) {
+    private static Pair<List<Vector3f>, List<Vector3f>> generateTopWingPaths(Intersectable topWing, Intersectable... intersections) {
         List<Vector3f> result = new ArrayList<>();
+        List<Vector3f> envelope = new ArrayList<>();
         List<List<Vector2f>> curves = new ArrayList<>();
         for (Intersectable intersection : intersections) {
             Intersection finder = new Intersection(topWing, intersection);
@@ -483,22 +504,22 @@ public class PathGenerator {
                 Vector3f vec3 = sceneCurve.get(i + 1);
 
                 if(vec1 == null && vec2 != null) {
-                    result.add(new Vector3f(vec2.x, 80, vec2.z));
-                    result.add(vec2);
+                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(vec2);
                 }
 
                 if(vec3 != null && vec2 != null && vec1 != null) {
-                    result.add(vec2);
+                    envelope.add(vec2);
                 }
 
                 if(vec3 == null && vec2 != null) {
-                    result.add(vec2);
-                    result.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(vec2);
+                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
                 }
             }
         }
 
-        result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 80));
+        envelope.add(new Vector3f(envelope.get(envelope.size() - 1)).setComponent(1, 80));
 
         for (int i = 0; i <= 100; i++) {
             if(i == 8) continue;
@@ -543,11 +564,12 @@ public class PathGenerator {
                 if(before && after) result.add(tempPath.get(j).getValue());
             }
         }
-        return result;
+        return Pair.of(result, envelope);
     }
 
-    private static List<Vector3f> generateTopPaths(Intersectable top, Intersectable... intersections) {
+    private static Pair<List<Vector3f>, List<Vector3f>> generateTopPaths(Intersectable top, Intersectable... intersections) {
         List<Vector3f> result = new ArrayList<>();
+        List<Vector3f> envelope = new ArrayList<>();
         List<Pair<Intersectable, List<Vector2f>>> curves = new ArrayList<>();
 
         for (Intersectable intersection : intersections) {
@@ -586,17 +608,17 @@ public class PathGenerator {
                 Vector3f vec3 = sceneCurve.get(i + 1);
 
                 if(vec1 == null && vec2 != null) {
-                    result.add(new Vector3f(vec2.x, 80, vec2.z));
-                    result.add(vec2);
+                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(vec2);
                 }
 
                 if(vec3 != null && vec2 != null && vec1 != null) {
-                    result.add(vec2);
+                    envelope.add(vec2);
                 }
 
                 if(vec3 == null && vec2 != null) {
-                    result.add(vec2);
-                    result.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(vec2);
+                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
                 }
             }
             k++;
@@ -642,11 +664,12 @@ public class PathGenerator {
             }
         }
 
-        return result;
+        return Pair.of(result, envelope);
     }
 
-    private static List<Vector3f> generateWingPaths(Intersectable wing, Intersectable body) {
+    private static Pair<List<Vector3f>, List<Vector3f>> generateWingPaths(Intersectable wing, Intersectable body) {
         List<Vector3f> result = new ArrayList<>();
+        List<Vector3f> envelope = new ArrayList<>();
         Intersection finder = new Intersection(wing, body);
         List<Vector2f> curve = finder.find(null, vec -> {
                 }, 0.01f, 1).stream()
@@ -683,11 +706,12 @@ public class PathGenerator {
                 else System.out.println(i);
             }
         }
-        return result;
+        return Pair.of(result, envelope);
     }
 
-    private static List<Vector3f> generateBodyPaths(Intersectable body, Intersectable... intersections) {
+    private static Pair<List<Vector3f>, List<Vector3f>> generateBodyPaths(Intersectable body, Intersectable... intersections) {
         List<Vector3f> result = new ArrayList<>();
+        List<Vector3f> envelope = new ArrayList<>();
         List<List<Vector2f>> curves = new ArrayList<>();
         for (Intersectable intersection : intersections) {
             Intersection finder = new Intersection(body, intersection);
@@ -718,17 +742,17 @@ public class PathGenerator {
                 Vector3f vec3 = sceneCurve.get(i + 1);
 
                 if(vec1 == null && vec2 != null) {
-                    result.add(new Vector3f(vec2.x, 80, vec2.z));
-                    result.add(vec2);
+                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(vec2);
                 }
 
                 if(vec3 != null && vec2 != null && vec1 != null) {
-                    result.add(vec2);
+                    envelope.add(vec2);
                 }
 
                 if(vec3 == null && vec2 != null) {
-                    result.add(vec2);
-                    result.add(new Vector3f(vec2.x, 80, vec2.z));
+                    envelope.add(vec2);
+                    envelope.add(new Vector3f(vec2.x, 80, vec2.z));
                 }
             }
             k++;
@@ -768,7 +792,7 @@ public class PathGenerator {
                 if(before && after) result.add(tempPath.get(j).getValue());
             }
         }
-        return result;
+        return Pair.of(result, envelope);
     }
 
     private static List<Vector3f> findBestIntersection(Intersectable plane, Intersectable surface) {
