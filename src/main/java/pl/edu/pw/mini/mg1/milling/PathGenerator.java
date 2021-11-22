@@ -68,7 +68,7 @@ public class PathGenerator {
                 .filter(m -> m instanceof Intersectable)
                 .map(m -> (Intersectable)m)
                 .collect(Collectors.toList());
-        MillingTool.Cache cache = new MillingTool(6.01f, 25, true).new Cache(block);
+        MillingTool.Cache cache = new MillingTool(7.5f, 25, true).new Cache(block);
         block.renderPatches(patches);
         scene.addModel(new MilledBlock(block));
         positions.add(new Vector3f(0, 0, 80));
@@ -869,7 +869,7 @@ public class PathGenerator {
             Vector3f first = compressed.get(compressed.size() - 1);
             Vector3f middle = paths.get(i);
             Vector3f last = paths.get(i + 1);
-            if(!middle.sub(first, new Vector3f()).normalize().equals(last.sub(middle, new Vector3f()).normalize(), 1e-5f)) {
+            if(!middle.sub(first, new Vector3f()).normalize().equals(last.sub(middle, new Vector3f()).normalize(), 1e-3f)) {
                 compressed.add(new Vector3f(middle));
             }
         }
