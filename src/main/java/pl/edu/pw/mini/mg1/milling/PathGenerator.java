@@ -83,10 +83,17 @@ public class PathGenerator {
                 positions.add(new Vector3f(x, -y, H));
                 y += 1;
             }
-            positions.add(new Vector3f(x, 85, H));
+            while(y <= 85f && y >= -85f) {
+                float h = block.findMaxHeight(x + 10, y, cache);
+                if(h <= H) break;
+                y -= 1;
+            }
+            positions.add(new Vector3f(x, -y, H));
+            positions.add(new Vector3f(x + 10, -y, H));
+            positions.add(new Vector3f(x + 10, 85, H));
 
             y = -85;
-            x += 10;
+            x += 20;
         }
         positions.add(new Vector3f(85, 85, 80));
         positions.add(new Vector3f(0, 0, 80));
@@ -101,12 +108,28 @@ public class PathGenerator {
                 positions.add(new Vector3f(x, -y, H));
                 y -= 1;
             }
-            positions.add(new Vector3f(x, -85, H));
+            while(y <= 85f && y >= -85f) {
+                float h = block.findMaxHeight(x + 10, y, cache);
+                if(h <= H) break;
+                y += 1;
+            }
+            positions.add(new Vector3f(x, -y, H));
+            positions.add(new Vector3f(x + 10, -y, H));
+            positions.add(new Vector3f(x + 10, -85, H));
+
+            if(x == 35.0f) {
+                positions.add(new Vector3f(x + 10, 85, H));
+            }
 
             y = 85;
-            x += 10;
+            x += 20;
         }
-        positions.add(new Vector3f(35, -85, 80));
+        positions.add(new Vector3f(35, -60, H));
+        positions.add(new Vector3f(20, -60, H));
+        positions.add(new Vector3f(35, -60, H));
+        positions.add(new Vector3f(35, 85, H));
+
+        positions.add(new Vector3f(35, 85, 80));
         positions.add(new Vector3f(0, 0, 80));
 
         return new Path(compressPaths(positions));
