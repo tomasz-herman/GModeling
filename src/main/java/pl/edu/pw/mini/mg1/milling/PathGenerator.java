@@ -141,7 +141,12 @@ public class PathGenerator {
         positions.add(new Vector3f(0, 0, 80));
         positions.add(new Vector3f(-85, -85, 80));
         positions.add(new Vector3f(-85, -85, 16));
-        for (Vector3f pos : envelope) {
+        for (int i = envelope.size() - 200; i >= 0; i--) {
+            Vector3f pos = envelope.get(i);
+            positions.add(new Vector3f(pos.x, -pos.z, 16));
+        }
+        for (int i = envelope.size() - 1; i >= envelope.size() - 200; i--) {
+            Vector3f pos = envelope.get(i);
             positions.add(new Vector3f(pos.x, -pos.z, 16));
         }
         positions.add(new Vector3f(positions.get(positions.size() - 1).setComponent(2, 80)));
