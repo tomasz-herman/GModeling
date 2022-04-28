@@ -1,5 +1,6 @@
 package pl.edu.pw.mini.mg1.milling;
 
+import com.google.common.collect.Lists;
 import org.apache.commons.lang3.tuple.Pair;
 import org.apache.commons.lang3.tuple.Triple;
 import org.joml.Vector2f;
@@ -424,6 +425,8 @@ public class PathGenerator {
             curves.add(finder.find(null, vec -> {}, 0.01f, 543).stream().map(v -> new Vector2f(v.x, v.y)).collect(Collectors.toList()));
         }
 
+        boolean side = true;
+
         for (int i = 0; i <= 100; i++) {
             List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
             for (int j = 0; j <= 200; j++) {
@@ -436,6 +439,7 @@ public class PathGenerator {
 
             Set<List<Vector2f>> set = new HashSet<>();
 
+            List<Vector3f> tempResult = new ArrayList<>();
             for (int j = 1; j < tempPath.size(); j++) {
                 Vector2f vec1 = tempPath.get(j - 1).getKey();
                 Vector2f vec2 = tempPath.get(j).getKey();
@@ -451,11 +455,17 @@ public class PathGenerator {
                 boolean after = j != (tempPath.size() - 1) && set.size() == 1;
 
                 if(before != after) {
-                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 25));
+                    tempResult.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 25));
                 }
 
-                if(before && after) result.add(tempPath.get(j).getValue());
+                if(before && after) tempResult.add(tempPath.get(j).getValue());
             }
+            if (side) {
+                result.addAll(tempResult);
+            } else {
+                result.addAll(Lists.reverse(tempResult));
+            }
+            side = !side;
         }
         result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
         result.add(0, new Vector3f(result.get(0)).setComponent(1, 50));
@@ -550,6 +560,7 @@ public class PathGenerator {
                 }
             }
         }
+        boolean side = true;
 
         for (int i = 0; i <= 100; i++) {
             if(i == 8) continue;
@@ -563,6 +574,8 @@ public class PathGenerator {
             if(tempPath.size() < 3) continue;
 
             Set<List<Vector2f>> set = new HashSet<>();
+
+            List<Vector3f> tempResult = new ArrayList<>();
 
             outer:
             for (int j = 1; j < tempPath.size(); j++) {
@@ -580,7 +593,7 @@ public class PathGenerator {
 
                 for (List<Vector2f> fs : List.of(curves.get(0), curves.get(1), curves.get(4))) {
                     if(preIntersect(vec1, vec2, fs)) {
-                        result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 40));
+                        tempResult.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 40));
                         break outer;
                     }
                 }
@@ -588,11 +601,19 @@ public class PathGenerator {
                 boolean after = j != (tempPath.size() - 1) && set.isEmpty();
 
                 if(before != after) {
-                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 40));
+                    tempResult.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 40));
                 }
 
-                if(before && after) result.add(tempPath.get(j).getValue());
+                if(before && after) tempResult.add(tempPath.get(j).getValue());
             }
+
+
+            if (side) {
+                result.addAll(tempResult);
+            } else {
+                result.addAll(Lists.reverse(tempResult));
+            }
+            side = !side;
         }
 
         result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
@@ -660,6 +681,8 @@ public class PathGenerator {
             k++;
         }
 
+        boolean side = true;
+
         for (int i = 33; i <= 43; i++) {
             List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
             for (int j = 0; j <= 200; j++) {
@@ -671,6 +694,8 @@ public class PathGenerator {
             if(tempPath.size() < 3) continue;
 
             Set<Intersectable> set = new HashSet<>();
+
+            List<Vector3f> tempResult = new ArrayList<>();
 
             for (int j = 1; j < tempPath.size(); j++) {
                 Vector2f vec1 = tempPath.get(j - 1).getKey();
@@ -689,15 +714,22 @@ public class PathGenerator {
 
 
                 if(before != after) {
-                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 30));
+                    tempResult.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 30));
                 }
 
                 if(before && after) {
                     Vector3f v = tempPath.get(j).getValue();
                     if(v.y < 16) v.y = 16;
-                    result.add(v);
+                    tempResult.add(v);
                 }
             }
+
+            if (side) {
+                result.addAll(tempResult);
+            } else {
+                result.addAll(Lists.reverse(tempResult));
+            }
+            side = !side;
         }
 
         result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));
@@ -803,6 +835,8 @@ public class PathGenerator {
             k++;
         }
 
+        boolean side = true;
+
         for (int i = 0; i <= 300; i++) {
             List<Pair<Vector2f, Vector3f>> tempPath = new ArrayList<>();
             for (int j = 0; j <= 200; j++) {
@@ -814,6 +848,8 @@ public class PathGenerator {
             if(tempPath.size() < 3) continue;
 
             Set<List<Vector2f>> set = new HashSet<>();
+
+            List<Vector3f> tempResult = new ArrayList<>();
 
             for (int j = 1; j < tempPath.size(); j++) {
                 Vector2f vec1 = tempPath.get(j - 1).getKey();
@@ -831,11 +867,23 @@ public class PathGenerator {
                 boolean after = j != (tempPath.size() - 1) && set.isEmpty();
 
                 if(before != after) {
-                    result.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 45));
+                    tempResult.add(new Vector3f(tempPath.get(j).getValue()).setComponent(1, 45));
                 }
 
-                if(before && after) result.add(tempPath.get(j).getValue());
+                if(before && after) tempResult.add(tempPath.get(j).getValue());
             }
+
+            if(!tempResult.isEmpty()) {
+                tempResult.get(0).setComponent(1, 30);
+                tempResult.get(tempResult.size() - 1).setComponent(1, 30);
+            }
+
+            if (side) {
+                result.addAll(tempResult);
+            } else {
+                result.addAll(Lists.reverse(tempResult));
+            }
+            side = !side;
         }
 
         result.add(new Vector3f(result.get(result.size() - 1)).setComponent(1, 50));

@@ -113,48 +113,54 @@ public class PointerLayout implements Controller<Scene> {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        mainPane = new javax.swing.JPanel();
-        mainPane.setLayout(new GridLayoutManager(3, 1, new java.awt.Insets(0, 0, 0, 0), -1, -1));
-        final javax.swing.JPanel panel1 = new javax.swing.JPanel();
-        panel1.setLayout(new GridLayoutManager(3, 2, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        mainPane = new JPanel();
+        mainPane.setLayout(new GridLayoutManager(3, 1, new Insets(0, 0, 0, 0), -1, -1));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "world position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
-        final javax.swing.JLabel label1 = new javax.swing.JLabel();
+        panel1.setBorder(BorderFactory.createTitledBorder(null, "world position", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        final JLabel label1 = new JLabel();
+        label1.setText("x");
         panel1.add(label1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final javax.swing.JLabel label2 = new javax.swing.JLabel();
+        final JLabel label2 = new JLabel();
+        label2.setText("y");
         panel1.add(label2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final javax.swing.JLabel label3 = new javax.swing.JLabel();
+        final JLabel label3 = new JLabel();
+        label3.setText("z");
         panel1.add(label3, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        xWorld = new javax.swing.JSpinner();
+        xWorld = new JSpinner();
         panel1.add(xWorld, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        yWorld = new javax.swing.JSpinner();
+        yWorld = new JSpinner();
         panel1.add(yWorld, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        zWorld = new javax.swing.JSpinner();
+        zWorld = new JSpinner();
         panel1.add(zWorld, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         mainPane.add(spacer1, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final javax.swing.JPanel panel2 = new javax.swing.JPanel();
-        panel2.setLayout(new GridLayoutManager(3, 2, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new GridLayoutManager(3, 2, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel2, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "screen position", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
-        final javax.swing.JLabel label4 = new javax.swing.JLabel();
+        panel2.setBorder(BorderFactory.createTitledBorder(null, "screen position", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
+        final JLabel label4 = new JLabel();
+        label4.setText("x");
         panel2.add(label4, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final javax.swing.JLabel label5 = new javax.swing.JLabel();
+        final JLabel label5 = new JLabel();
+        label5.setText("y");
         panel2.add(label5, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final javax.swing.JLabel label6 = new javax.swing.JLabel();
+        final JLabel label6 = new JLabel();
+        label6.setText("z");
         panel2.add(label6, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        xScreen = new javax.swing.JSpinner();
+        xScreen = new JSpinner();
         panel2.add(xScreen, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        yScreen = new javax.swing.JSpinner();
+        yScreen = new JSpinner();
         panel2.add(yScreen, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        zScreen = new javax.swing.JSpinner();
+        zScreen = new JSpinner();
         panel2.add(zScreen, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
      * @noinspection ALL
      */
-    public javax.swing.JComponent $$$getRootComponent$$$() {
+    public JComponent $$$getRootComponent$$$() {
         return mainPane;
     }
 

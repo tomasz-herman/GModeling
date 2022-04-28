@@ -66,20 +66,24 @@ public class RendererController implements Controller<Renderer> {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        mainPane = new javax.swing.JPanel();
-        mainPane.setLayout(new GridLayoutManager(5, 1, new java.awt.Insets(0, 0, 0, 0), -1, -1));
-        stereoRadioButton = new javax.swing.JRadioButton();
+        mainPane = new JPanel();
+        mainPane.setLayout(new GridLayoutManager(5, 1, new Insets(0, 0, 0, 0), -1, -1));
+        stereoRadioButton = new JRadioButton();
+        stereoRadioButton.setText("Stereo");
         mainPane.add(stereoRadioButton, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         mainPane.add(spacer1, new GridConstraints(4, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        monoRadioButton = new javax.swing.JRadioButton();
+        monoRadioButton = new JRadioButton();
+        monoRadioButton.setText("Mono");
         mainPane.add(monoRadioButton, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        grayscaleCheckBox = new javax.swing.JCheckBox();
+        grayscaleCheckBox = new JCheckBox();
+        grayscaleCheckBox.setText("Grayscale");
         mainPane.add(grayscaleCheckBox, new GridConstraints(3, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        stereoAlternativeRadioButton = new javax.swing.JRadioButton();
+        stereoAlternativeRadioButton = new JRadioButton();
+        stereoAlternativeRadioButton.setText("Stereo Alternative");
         mainPane.add(stereoAlternativeRadioButton, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        javax.swing.ButtonGroup buttonGroup;
-        buttonGroup = new javax.swing.ButtonGroup();
+        ButtonGroup buttonGroup;
+        buttonGroup = new ButtonGroup();
         buttonGroup.add(monoRadioButton);
         buttonGroup.add(stereoRadioButton);
         buttonGroup.add(stereoAlternativeRadioButton);
@@ -88,7 +92,7 @@ public class RendererController implements Controller<Renderer> {
     /**
      * @noinspection ALL
      */
-    public javax.swing.JComponent $$$getRootComponent$$$() {
+    public JComponent $$$getRootComponent$$$() {
         return mainPane;
     }
 

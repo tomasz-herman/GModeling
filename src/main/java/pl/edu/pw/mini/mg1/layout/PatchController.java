@@ -71,26 +71,29 @@ public class PatchController implements Controller<Patch> {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        mainPane = new javax.swing.JPanel();
-        mainPane.setLayout(new GridLayoutManager(4, 2, new java.awt.Insets(0, 0, 0, 0), -1, -1));
-        showBezierMeshCheckBox = new javax.swing.JCheckBox();
+        mainPane = new JPanel();
+        mainPane.setLayout(new GridLayoutManager(4, 2, new Insets(0, 0, 0, 0), -1, -1));
+        showBezierMeshCheckBox = new JCheckBox();
+        showBezierMeshCheckBox.setText("show bezier mesh");
         mainPane.add(showBezierMeshCheckBox, new GridConstraints(0, 0, 1, 2, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
         final Spacer spacer1 = new Spacer();
         mainPane.add(spacer1, new GridConstraints(3, 0, 1, 2, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_VERTICAL, 1, GridConstraints.SIZEPOLICY_WANT_GROW, null, null, null, 0, false));
-        final javax.swing.JLabel label1 = new javax.swing.JLabel();
+        final JLabel label1 = new JLabel();
+        label1.setText("divisionsU");
         mainPane.add(label1, new GridConstraints(1, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        divisionsUSpinner = new javax.swing.JSpinner();
+        divisionsUSpinner = new JSpinner();
         mainPane.add(divisionsUSpinner, new GridConstraints(1, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        final javax.swing.JLabel label2 = new javax.swing.JLabel();
+        final JLabel label2 = new JLabel();
+        label2.setText("divisionsV");
         mainPane.add(label2, new GridConstraints(2, 0, 1, 1, GridConstraints.ANCHOR_WEST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_FIXED, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
-        divisionsVSpinner = new javax.swing.JSpinner();
+        divisionsVSpinner = new JSpinner();
         mainPane.add(divisionsVSpinner, new GridConstraints(2, 1, 1, 1, GridConstraints.ANCHOR_EAST, GridConstraints.FILL_NONE, GridConstraints.SIZEPOLICY_WANT_GROW, GridConstraints.SIZEPOLICY_FIXED, null, null, null, 0, false));
     }
 
     /**
      * @noinspection ALL
      */
-    public javax.swing.JComponent $$$getRootComponent$$$() {
+    public JComponent $$$getRootComponent$$$() {
         return mainPane;
     }
 

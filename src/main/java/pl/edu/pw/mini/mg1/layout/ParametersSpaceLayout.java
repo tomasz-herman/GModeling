@@ -38,18 +38,18 @@ public class ParametersSpaceLayout {
      * @noinspection ALL
      */
     private void $$$setupUI$$$() {
-        mainPane = new javax.swing.JPanel();
-        mainPane.setLayout(new GridLayoutManager(1, 2, new java.awt.Insets(0, 0, 0, 0), -1, -1));
-        final javax.swing.JPanel panel1 = new javax.swing.JPanel();
-        panel1.setLayout(new GridLayoutManager(1, 1, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        mainPane = new JPanel();
+        mainPane.setLayout(new GridLayoutManager(1, 2, new Insets(0, 0, 0, 0), -1, -1));
+        final JPanel panel1 = new JPanel();
+        panel1.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel1, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel1.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "P surface", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+        panel1.setBorder(BorderFactory.createTitledBorder(null, "P surface", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         pImage = new JXImageView();
         panel1.add(pImage, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        final javax.swing.JPanel panel2 = new javax.swing.JPanel();
-        panel2.setLayout(new GridLayoutManager(1, 1, new java.awt.Insets(0, 0, 0, 0), -1, -1));
+        final JPanel panel2 = new JPanel();
+        panel2.setLayout(new GridLayoutManager(1, 1, new Insets(0, 0, 0, 0), -1, -1));
         mainPane.add(panel2, new GridConstraints(0, 1, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
-        panel2.setBorder(javax.swing.BorderFactory.createTitledBorder(null, "Q surface", javax.swing.border.TitledBorder.DEFAULT_JUSTIFICATION, javax.swing.border.TitledBorder.DEFAULT_POSITION, null, null));
+        panel2.setBorder(BorderFactory.createTitledBorder(null, "Q surface", TitledBorder.DEFAULT_JUSTIFICATION, TitledBorder.DEFAULT_POSITION, null, null));
         qImage = new JXImageView();
         panel2.add(qImage, new GridConstraints(0, 0, 1, 1, GridConstraints.ANCHOR_CENTER, GridConstraints.FILL_BOTH, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, GridConstraints.SIZEPOLICY_CAN_SHRINK | GridConstraints.SIZEPOLICY_CAN_GROW, null, null, null, 0, false));
     }
@@ -57,7 +57,7 @@ public class ParametersSpaceLayout {
     /**
      * @noinspection ALL
      */
-    public javax.swing.JComponent $$$getRootComponent$$$() {
+    public JComponent $$$getRootComponent$$$() {
         return mainPane;
     }
 
